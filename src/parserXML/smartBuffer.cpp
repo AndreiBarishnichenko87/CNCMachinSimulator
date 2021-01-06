@@ -121,13 +121,13 @@ namespace parserXML
 		if (*this != iter)
 		{
 			m_BindBuffer->subChunksUser(m_ChunkIter);
-			
+
 			m_BindBuffer = iter.m_BindBuffer;
 			m_ChunkIter = iter.m_ChunkIter;
 			m_BeginChunkIter = iter.m_BeginChunkIter;
 			m_EndChunkIter  = iter.m_EndChunkIter;
 			m_BindBuffer->addChunksUser(m_ChunkIter);
-				
+
 			m_BindBuffer->removeUnusedChunk();
 		}
 		return *this;
@@ -214,7 +214,7 @@ namespace parserXML
 				m_BindBuffer->removeUnusedChunk();
 			}
 		}
-		
+
 		return *this;
 	}
 

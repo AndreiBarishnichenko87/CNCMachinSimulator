@@ -20,11 +20,13 @@ void test_smartBuffer()
 		
 		parserXML::SmartBuffer::IteratorSmartB begLexem = buf.begin();
 		parserXML::SmartBuffer::IteratorSmartB endLexem(begLexem);
-		for(int i = 0; i < 45; i++)
+		for(int i = 0; i < 10; i++)
+		{
+			
 			++endLexem;
-		
-		//std::string str(begLexem, endLexem);
-		//PRINT(str) << endl;
+		}
+		std::string str(begLexem, endLexem);
+		PRINT(str) << endl;
 		while(begLexem != endLexem)
 		{
 			fout << *begLexem;

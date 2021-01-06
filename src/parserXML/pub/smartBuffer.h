@@ -8,6 +8,7 @@
 #include <memory>
 #include <utility>
 #include <stdexcept>
+#include <iterator>
 
 namespace parserXML {
 	
@@ -37,21 +38,21 @@ namespace parserXML {
 			~SmartBuffer();
 
 		private:
-			void 				 	updateCurChunkPtr	(const std::list<Chunk*>::iterator &iter, unsigned int countRead);
-			bool 				 	addNewChunk				();
-			unsigned int 	fillChunkData			(const std::list<Chunk*>::iterator &iter);
-			void 				 	removeUnusedChunk	();
-			unsigned int 	addChunksUser			(std::list<Chunk*>::iterator &iter) { return ++((*iter)->mCountUsersChank); }
-			unsigned int 	subChunksUser			(std::list<Chunk*>::iterator &iter) { return --((*iter)->mCountUsersChank); }
-			unsigned int 	getChunksUser			(std::list<Chunk*>::iterator &iter) { return (*iter)->mCountUsersChank; }
+			void 				 		updateCurChunkPtr	(const std::list<Chunk*>::iterator &iter, unsigned int countRead);
+			bool 				 		addNewChunk				();
+			unsigned int 		fillChunkData			(const std::list<Chunk*>::iterator &iter);
+			void 				 		removeUnusedChunk	();
+			unsigned int 		addChunksUser			(std::list<Chunk*>::iterator &iter) { return ++((*iter)->mCountUsersChank); }
+			unsigned int 		subChunksUser			(std::list<Chunk*>::iterator &iter) { return --((*iter)->mCountUsersChank); }
+			unsigned int 		getChunksUser			(std::list<Chunk*>::iterator &iter) { return (*iter)->mCountUsersChank; }
 		
 		public:
-			unsigned int 		getSizeChunk	() const	{	return CHUNK_SIZE; }
-			unsigned int 		getCountChunk	() const 	{ return m_ListOfChunks.size(); }
-			IteratorSmartB 	begin					();
+			unsigned int 		getSizeChunk			() const	{	return CHUNK_SIZE; }
+			unsigned int 		getCountChunk			() const 	{ return m_ListOfChunks.size(); }
+			IteratorSmartB 	begin							();
 			
 		public:
-			class IteratorSmartB 
+			class IteratorSmartB : public std::iterator<std::input_iterator_tag, char>
 			{
 			public:
 				friend class 									SmartBuffer;
@@ -59,19 +60,17 @@ namespace parserXML {
 				std::list<Chunk*>::iterator 	m_ChunkIter;
 				char 													*m_BeginChunkIter, *m_EndChunkIter;
 			private:
-																IteratorSmartB(SmartBuffer *bindBuffer, const std::list<Chunk*>::iterator &iter);
-			public:
-																IteratorSmartB(const IteratorSmartB &iter);
-				const IteratorSmartB& 	operator=(const IteratorSmartB &iter);
-				~IteratorSmartB();
-			// ACCESS MEMBERS FUNCTION
-				char 						operator*		() const { return *m_BeginChunkIter; }
-				IteratorSmartB& operator++	();
-				IteratorSmartB 	operator++	(int);
-				
-			// RELETIONSHIP OPERATION
-				bool 						operator==	(const IteratorSmartB &rightVal);
-				bool 						operator!=	(const IteratorSmartB &rightVal);				
+																			IteratorSmartB	(SmartBuffer *bindBuffer, const std::list<Chunk*>::iterator &iter);
+				const Chunk* 									operator->() 		{ return *m_ChunkIter; }
+			public:			
+																			IteratorSmartB	(const IteratorSmartB &iter);
+				const IteratorSmartB& 				operator=				(const IteratorSmartB &iter);
+																			~IteratorSmartB	();
+				char 													operator*				() const { return *m_BeginChunkIter; }
+				IteratorSmartB& 							operator++			();
+				IteratorSmartB 								operator++			(int);
+				bool 													operator==			(const IteratorSmartB &rightVal);
+				bool 													operator!=			(const IteratorSmartB &rightVal);				
 			};
 	};
 
