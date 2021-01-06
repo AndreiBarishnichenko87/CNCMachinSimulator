@@ -1,10 +1,10 @@
 
 #include "pub/smartBuffer.h"
 
+#define EOF_BUF std::char_traits<char>::eof()
 
 namespace parserXML
 {
-
 	SmartBuffer::SmartBuffer(const std::string FileName)
 	{
 		m_Fin.open(FileName, std::ios_base::in);
@@ -14,17 +14,18 @@ namespace parserXML
 		// add new chunk and fill the data
 		if(!addNewChunk())
 			throw SmartBufferException("fail to add new chunk in SmartBuffer");
-		m_CurChunk = m_ListOfChunks.begin();
-
-		if (fillChunkData(m_CurChunk) == 0)
+		unsigned int read = fillChunkData(m_ListOfChunks.begin());
+		if (read == 0)
 			throw SmartBufferException(std::string("file is empty: " + FileName));
-		m_CurPosInChunk = (char*)(*m_CurChunk);
+
+		updateCurChunkPtr(m_ListOfChunks.begin(), read);
 	}
 
 	unsigned int SmartBuffer::fillChunkData(const std::list<Chunk*>::iterator& iter)
 	{
-
-		m_Fin.read((*iter)->mBuffer, CHUNK_SIZE);
+		// the buffer that doesn't fill intier sets the last element EOF
+		char* bufIter = (*iter)->mBuffer;
+		m_Fin.read(bufIter, (CHUNK_SIZE - 1));
 
 		return m_Fin.gcount();
 	}
@@ -38,68 +39,37 @@ namespace parserXML
 		}
 		newChank->mCountUsersChank = 0;
 		m_ListOfChunks.push_back(newChank);
+
+		std::cout << "ADD NEW CHANK" << std::endl;
+
 		return true;
 	}
 
-	SmartBuffer::~SmartBuffer()
+	void SmartBuffer::updateCurChunkPtr(const std::list<Chunk*>::iterator& iter, unsigned int countRead)
 	{
-
-		if(!m_ListOfChunks.empty())
+		m_ChunkBuf = iter;
+		m_BeginChunkBuf = (*m_ChunkBuf)->mBuffer;
+		m_EndChunkBuf = m_BeginChunkBuf + (countRead - 1);
+		if(countRead < (CHUNK_SIZE - 1))
 		{
-			for(SmartBuffer::Chunk* ptr : m_ListOfChunks)
-			{
-				std::cout << "del chunk remove listChunk" << std::endl;
-				delete ptr;
-			}
+			*m_EndChunkBuf = EOF_BUF;
 		}
-
 	}
 
-	// ITERATOR SMARTBUFFER MEMBERS FUNCTIONS
-
-	SmartBuffer::IteratorSmartB::IteratorSmartB(SmartBuffer* bindBuffer)
-		: m_BindBuffer(bindBuffer)
+	void SmartBuffer::removeUnusedChunk()
 	{
-		m_IterChunk = m_BindBuffer->m_CurChunk;
-		m_CurrIterPos = (char*)(*m_IterChunk);
-		m_EndIterPos  = m_CurrIterPos + (CHUNK_SIZE - 1);
-		(*m_IterChunk)->mCountUsersChank += 1;
-	}
-
-	SmartBuffer::IteratorSmartB::IteratorSmartB(const SmartBuffer::IteratorSmartB& iter)
-		: m_BindBuffer(iter.m_BindBuffer)
-	{
-		m_IterChunk = iter.m_IterChunk;
-		m_CurrIterPos = iter.m_CurrIterPos;
-		m_EndIterPos  = iter.m_EndIterPos;
-		(*m_IterChunk)->mCountUsersChank += 1;
-	}
-
-	const SmartBuffer::IteratorSmartB& SmartBuffer::IteratorSmartB::operator=(const SmartBuffer::IteratorSmartB& iter)
-	{
-		m_BindBuffer = iter.m_BindBuffer;
-		m_IterChunk = iter.m_IterChunk;
-		m_CurrIterPos = iter.m_CurrIterPos;
-		m_EndIterPos  = iter.m_EndIterPos;
-		(*m_IterChunk)->mCountUsersChank += 1;
-
-		return *this;
-	}
-
-	SmartBuffer::IteratorSmartB::~IteratorSmartB()
-	{
-		--((*m_IterChunk)->mCountUsersChank);
-		if(m_IterChunk == m_BindBuffer->m_ListOfChunks.begin())
+		if((*(m_ListOfChunks.begin()))->mCountUsersChank == 0)
 		{
-			unsigned int maxRemoveElement = m_BindBuffer->m_ListOfChunks.size();
-			std::list<Chunk*>::iterator iter = m_IterChunk;
+			unsigned int maxRemoveElement = m_ListOfChunks.size();
+			std::list<Chunk*>::iterator removeIter = m_ListOfChunks.begin();
+
 			for(; maxRemoveElement > 2; --maxRemoveElement)
 			{
-				std::cout << "del chunk from iter" << std::endl;
-				if((*iter)->mCountUsersChank == 0)
+				if(getChunksUser(removeIter) == 0)
 				{
-					delete *iter;
-					iter = m_BindBuffer->m_ListOfChunks.erase(iter);
+					std::cout << "del chunk from iter" << std::endl;
+					delete *removeIter;
+					removeIter = m_ListOfChunks.erase(removeIter);
 				}
 				else
 					break;
@@ -109,68 +79,145 @@ namespace parserXML
 
 	SmartBuffer::IteratorSmartB SmartBuffer::begin()
 	{
-		return SmartBuffer::IteratorSmartB(this);
+		return SmartBuffer::IteratorSmartB(this, m_ChunkBuf);
+	}
+
+	SmartBuffer::~SmartBuffer()
+	{
+		if(!m_ListOfChunks.empty())
+		{
+			for(SmartBuffer::Chunk* ptr : m_ListOfChunks)
+			{
+				std::cout << "del chunk from listChunk" << std::endl;
+				delete ptr;
+			}
+		}
+	}
+
+	// ITERATOR SMARTBUFFER MEMBERS FUNCTIONS
+	SmartBuffer::IteratorSmartB::IteratorSmartB(SmartBuffer* bindBuffer, const std::list<SmartBuffer::Chunk*>::iterator& iter)
+		: m_BindBuffer(bindBuffer)
+	{
+		m_ChunkIter = iter;
+		m_BeginChunkIter = (*m_ChunkIter)->mBuffer;
+		if(m_ChunkIter == m_BindBuffer->m_ChunkBuf)
+			m_EndChunkIter  = m_BindBuffer->m_EndChunkBuf;
+		else
+			m_EndChunkIter  = m_BeginChunkIter + (CHUNK_SIZE - 1);
+		m_BindBuffer->addChunksUser(m_ChunkIter);
+	}
+
+	SmartBuffer::IteratorSmartB::IteratorSmartB(const SmartBuffer::IteratorSmartB& iter)
+		: m_BindBuffer(iter.m_BindBuffer)
+	{
+		m_ChunkIter = iter.m_ChunkIter;
+		m_BeginChunkIter = iter.m_BeginChunkIter;
+		m_EndChunkIter  = iter.m_EndChunkIter;
+		m_BindBuffer->addChunksUser(m_ChunkIter);
+	}
+
+	const SmartBuffer::IteratorSmartB& SmartBuffer::IteratorSmartB::operator=(const SmartBuffer::IteratorSmartB& iter)
+	{
+		if (*this != iter)
+		{
+			m_BindBuffer->subChunksUser(m_ChunkIter);
+			
+			m_BindBuffer = iter.m_BindBuffer;
+			m_ChunkIter = iter.m_ChunkIter;
+			m_BeginChunkIter = iter.m_BeginChunkIter;
+			m_EndChunkIter  = iter.m_EndChunkIter;
+			m_BindBuffer->addChunksUser(m_ChunkIter);
+				
+			m_BindBuffer->removeUnusedChunk();
+		}
+		return *this;
+	}
+
+	SmartBuffer::IteratorSmartB::~IteratorSmartB()
+	{
+		m_BindBuffer->subChunksUser(m_ChunkIter);
+		m_BindBuffer->removeUnusedChunk();
 	}
 
 	SmartBuffer::IteratorSmartB& SmartBuffer::IteratorSmartB::operator++()
 	{
-		if(m_CurrIterPos == m_BindBuffer->m_CurPosInChunk)
+		if(m_BeginChunkIter == m_BindBuffer->m_BeginChunkBuf)
 		{
-			if (m_CurrIterPos != m_EndIterPos)
-				m_BindBuffer->m_CurPosInChunk = ++m_CurrIterPos;
+			// BUFFER AND ITERATOR ARE SINHRONIZED
+			if(m_BeginChunkIter != m_EndChunkIter)
+			{
+				m_BindBuffer->m_BeginChunkBuf = ++m_BeginChunkIter;
+			}
 			else
 			{
-				// add new chunk
-				IteratorSmartB old = *this;
+				std::list<SmartBuffer::Chunk*>::iterator newIter = m_BindBuffer->m_ChunkBuf;
 				if(m_BindBuffer->getCountChunk() == 2)
 				{
-					if(m_BindBuffer->m_CurChunk == m_BindBuffer->m_ListOfChunks.begin())
-						m_BindBuffer->m_CurChunk = ++m_IterChunk;
-					else if((*(m_BindBuffer->m_ListOfChunks.begin()))->mCountUsersChank == 0)
-						m_BindBuffer->m_CurChunk = m_IterChunk = m_BindBuffer->m_ListOfChunks.begin();
+					if(m_ChunkIter == m_BindBuffer->m_ListOfChunks.begin())
+					{
+						if(m_BindBuffer->getChunksUser(m_ChunkIter) > 1)
+							++newIter;
+					}
 					else
 					{
-						if(!m_BindBuffer->addNewChunk())
-							throw SmartBufferException("fail to add new chunk in SmartBuffer");
-						m_BindBuffer->m_CurChunk = ++m_IterChunk;
+						if((*(m_BindBuffer->m_ListOfChunks.begin()))->mCountUsersChank > 0)
+						{
+							if(!m_BindBuffer->addNewChunk())
+								throw SmartBufferException("fail to add new chunk in SmartBuffer");
+							++newIter;
+						}
+						else
+						{
+							if(m_BindBuffer->getChunksUser(m_ChunkIter) > 1)
+							{
+								if(!m_BindBuffer->addNewChunk())
+									throw SmartBufferException("fail to add new chunk in SmartBuffer");
+								++newIter;
+							}
+							else
+							{
+								newIter = m_BindBuffer->m_ListOfChunks.begin();
+							}
+						}
 					}
 				}
 				else
 				{
 					if(!m_BindBuffer->addNewChunk())
 						throw SmartBufferException("fail to add new chunk in SmartBuffer");
-					m_BindBuffer->m_CurChunk = ++m_IterChunk;
+					++newIter;
 				}
-
-				m_CurrIterPos = m_BindBuffer->m_CurPosInChunk = (char*)*(m_BindBuffer->m_CurChunk);
-				m_EndIterPos  = m_CurrIterPos + (CHUNK_SIZE - 1);
-				(*m_IterChunk)->mCountUsersChank += 1;
-				
-				unsigned int countReadData = 0;
-				if((countReadData = m_BindBuffer->fillChunkData(m_IterChunk)) < CHUNK_SIZE)
-				{
-					*(m_CurrIterPos + countReadData) = std::char_traits<char>::eof();
-				}
-				std::cout << "countReadData: " << countReadData << std::endl;
-				
-				(*(old.m_IterChunk))->mCountUsersChank -= 1;
+				m_BindBuffer->updateCurChunkPtr(newIter, m_BindBuffer->fillChunkData(newIter));
+				*this = m_BindBuffer->begin();
 			}
-			
 		}
 		else
 		{
-			if (m_CurrIterPos != m_EndIterPos)
-				++m_CurrIterPos;
+			if(m_BeginChunkIter != m_EndChunkIter)
+			{
+				++m_BeginChunkIter;
+			}
 			else
 			{
-				++m_IterChunk;
-				m_CurrIterPos = (char*)(*m_IterChunk);
-				m_EndIterPos  = m_CurrIterPos + CHUNK_SIZE + 1;
+				m_BindBuffer->subChunksUser(m_ChunkIter);
+				++m_ChunkIter;
+				m_BindBuffer->addChunksUser(m_ChunkIter);
+				m_BeginChunkIter = (*m_ChunkIter)->mBuffer;
+				if(m_ChunkIter == m_BindBuffer->m_ChunkBuf)
+				{
+					m_EndChunkIter = m_BindBuffer->m_EndChunkBuf;
+				}
+				else
+				{
+					m_EndChunkIter = m_BeginChunkIter + (CHUNK_SIZE - 2);
+				}
+				m_BindBuffer->removeUnusedChunk();
 			}
 		}
 		
 		return *this;
 	}
+
 	// postfix increment
 	SmartBuffer::IteratorSmartB SmartBuffer::IteratorSmartB::operator++(int)
 	{
@@ -181,12 +228,14 @@ namespace parserXML
 
 	bool SmartBuffer::IteratorSmartB::operator==(const SmartBuffer::IteratorSmartB& rightVal)
 	{
-		return m_CurrIterPos == rightVal.m_CurrIterPos;
+		return m_BeginChunkIter == rightVal.m_BeginChunkIter;
 	}
 
 	bool SmartBuffer::IteratorSmartB::operator!=(const SmartBuffer::IteratorSmartB& rightVal)
 	{
-		return m_CurrIterPos != rightVal.m_CurrIterPos;
+		return !(*this == rightVal);
 	}
 
 }
+
+#undef EOF_BUF
