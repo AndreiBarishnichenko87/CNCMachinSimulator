@@ -60,7 +60,8 @@ namespace parserXML {
 				std::list<Chunk*>::iterator 	m_ChunkIter;
 				char 													*m_BeginChunkIter, *m_EndChunkIter;
 			private:
-																			IteratorSmartB	(SmartBuffer *bindBuffer, const std::list<Chunk*>::iterator &iter);
+																			IteratorSmartB	(SmartBuffer *bindBuffer, const std::list<Chunk*>::iterator &iter, 
+																			char* beginPtr, char* endPtr);
 				const Chunk* 									operator->() 		{ return *m_ChunkIter; }
 			public:			
 																			IteratorSmartB	(const IteratorSmartB &iter);
@@ -70,7 +71,8 @@ namespace parserXML {
 				IteratorSmartB& 							operator++			();
 				IteratorSmartB 								operator++			(int);
 				bool 													operator==			(const IteratorSmartB &rightVal);
-				bool 													operator!=			(const IteratorSmartB &rightVal);				
+				bool 													operator!=			(const IteratorSmartB &rightVal);
+				char* 												c_ptr						() { return m_BeginChunkIter; }
 			};
 	};
 
