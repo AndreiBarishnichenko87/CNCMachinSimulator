@@ -46,11 +46,15 @@ namespace parserXML
 	{
 		m_ChunkBuf = iter;
 		m_BeginChunkBuf = (*m_ChunkBuf)->mBuffer;
-		m_EndChunkBuf = m_BeginChunkBuf + (countRead - 1);
-		if(countRead < CHUNK_SIZE)
-		{	
-			++m_EndChunkBuf;
+	
+		if(countRead < CHUNK_SIZE) {
+			if(countRead != 0)
+				m_EndChunkBuf = m_BeginChunkBuf + countRead;
+			else
+				m_EndChunkBuf = m_BeginChunkBuf;
 			*m_EndChunkBuf = EOF_BUF;
+		} else {
+			m_EndChunkBuf = m_BeginChunkBuf + (countRead - 1);
 		}
 	}
 	

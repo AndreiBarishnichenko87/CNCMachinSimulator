@@ -1,9 +1,10 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
-#include <list>
+#include <memory>
+
 #include "../parserXML/pub/smartBuffer.h"
+#include "../parserXML/pub/lexerXML.h"
 
 using std::cout;
 using std::cin;
@@ -12,39 +13,53 @@ using std::endl;
 // MACROS FUNCTIONS
 #define PRINT(p) std::cout << #p << " => " << p
 
-void test_smartBuffer()
-{
+void test_smartBuffer() {
 	try {
 		parserXML::SmartBuffer buf("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
 		std::ofstream fout("d:\\project\\PROJECT\\resourses\\test.xml");
-		
+
 		parserXML::SmartBuffer::IteratorSmartB begLexem = buf.begin();
 		parserXML::SmartBuffer::IteratorSmartB endLexem(begLexem);
-		for(int i = 0; i < 10; i++)
-		{
-			
+		//for(int i = 0; i < 22; i++)
+		while(*endLexem != std::char_traits<char>::eof()) {
 			++endLexem;
 		}
 		std::string str(begLexem, endLexem);
-		PRINT(str) << endl;
-		while(begLexem != endLexem)
-		{
-			fout << *begLexem;
-			++begLexem;
-		}
-			
+		fout << str;
+
 		cout << endl;
-	} 
-	catch (parserXML::SmartBufferException &exc){
+	} catch (parserXML::SmartBufferException& exc) {
 		std::cout << exc.what() << std::endl;
 	}
 
 }
 
-int main(int argc, char* argv[])
-{
-	
-	test_smartBuffer();
+void test_parserXML() {
+
+	std::ofstream fout("d:\\project\\PROJECT\\resourses\\test.xml");
+	std::shared_ptr<parserXML::SmartBuffer> ptrBuf(new parserXML::SmartBuffer("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml"));
+	if(ptrBuf.use_count() != 1) {
+		cout << "pointer is invalid" << endl;
+		return;
+	}
+	parserXML::SmartBuffer::IteratorSmartB iter(ptrBuf->begin());
+
+	parserXML::LexerXML lexer(ptrBuf);
+	parserXML::TokenXML token;
+
+	for(unsigned int i = 0; i < 30; ++i)
+		while(token.mTypeToken != parserXML::TokenXML::token_XML::END_OF_FILE) {
+			token = lexer.getNextToken();
+			fout << token.tokenName() << " : " << token.lexemValue() << endl;
+		}
+
+
+}
+
+int main(int argc, char* argv[]) {
+
+	//test_smartBuffer();
+	test_parserXML();
 
 	return 0;
 }

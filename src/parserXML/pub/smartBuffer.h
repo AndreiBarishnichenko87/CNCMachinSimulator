@@ -75,7 +75,6 @@ namespace parserXML {
 				char* 												c_ptr						() { return m_BeginChunkIter; }
 			};
 	};
-
 }
 
 #endif //SMARTBUFFER_H_
