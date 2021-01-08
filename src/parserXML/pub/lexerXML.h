@@ -58,7 +58,6 @@ namespace parserXML {
 			explicit LexerXML(const std::shared_ptr<SmartBuffer>& ptrBuffer);
 			TokenXML getNextToken();
 	};
-
 }
 
 #endif // LEXERXML_H_

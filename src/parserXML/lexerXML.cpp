@@ -41,7 +41,7 @@ namespace parserXML {
 	}
 
 	bool LexerXML::defTextToken(TokenXML& token) {
-		switch(m_LastToken) { // TEXT_TOKEN
+		switch(m_LastToken) { // "text"
 			case (token_t::FINAL_CLOSE_TAG):
 			case (token_t::CLOSE_TAG):
 			case (token_t::CLOSE_PROLOG_TAG):
@@ -55,18 +55,18 @@ namespace parserXML {
 					if(*m_Forward == '-') { // "-->"
 						SmartBuffer::IteratorSmartB substring(m_Forward);
 						if(*++substring == '-')
-							if(*++substring == '>') {
-								break;
-							}
+						if(*++substring == '>') {
+							break;
+						}
 						m_Forward = substring;
 					}
 
 					if(*m_Forward == ']') { // "]]>"
 						SmartBuffer::IteratorSmartB substring(m_Forward);
 						if(*++substring == ']')
-							if(*++substring == '>') {
-								break;
-							}
+						if(*++substring == '>') {
+							break;
+						}
 						m_Forward = substring;
 					}
 					++m_Forward;
@@ -111,16 +111,16 @@ namespace parserXML {
 							}
 						} else {
 							if(*m_Forward == '[') // "<![CDATA["
-								if(*++m_Forward == 'C')
-									if(*++m_Forward == 'D')
-										if(*++m_Forward == 'A')
-											if(*++m_Forward == 'T')
-												if(*++m_Forward == 'A')
-													if(*++m_Forward == '[') {
-														++m_Forward;
-														setToken(token, token_t::CDATA_BEGIN);
-														break;
-													}
+							if(*++m_Forward == 'C')
+							if(*++m_Forward == 'D')
+							if(*++m_Forward == 'A')
+							if(*++m_Forward == 'T')
+							if(*++m_Forward == 'A')
+							if(*++m_Forward == '[') {
+								++m_Forward;
+								setToken(token, token_t::CDATA_BEGIN);
+								break;
+							}
 							++m_Forward;
 							setToken(token, token_t::UNDEFINE_TOKEN);
 							skipSymbolUntil(' ');
@@ -192,60 +192,14 @@ namespace parserXML {
 				}
 				break;
 
-			case '_':
-			case ':':
-			case 'a':
-			case 'b':
-			case 'c':
-			case 'd':
-			case 'e':
-			case 'f':
-			case 'g':
-			case 'h':
-			case 'i':
-			case 'j':
-			case 'k':
-			case 'l':
-			case 'm':
-			case 'n':
-			case 'o':
-			case 'p':
-			case 'q':
-			case 'r':
-			case 's':
-			case 't':
-			case 'u':
-			case 'v':
-			case 'w':
-			case 'x':
-			case 'y':
-			case 'z':
-			case 'A':
-			case 'B':
-			case 'C':
-			case 'D':
-			case 'E':
-			case 'F':
-			case 'G':
-			case 'H':
-			case 'I':
-			case 'J':
-			case 'K':
-			case 'L':
-			case 'M':
-			case 'N':
-			case 'O':
-			case 'P':
-			case 'Q':
-			case 'R':
-			case 'S':
-			case 'T':
-			case 'U':
-			case 'V':
-			case 'W':
-			case 'X':
-			case 'Y':
-			case 'Z':
+			case '_':	case ':':	case 'a':	case 'b':	case 'c':	case 'd':	case 'e':
+			case 'f':	case 'g':	case 'h':	case 'i':	case 'j':	case 'k':	case 'l':
+			case 'm':	case 'n':	case 'o':	case 'p':	case 'q':	case 'r':	case 's':
+			case 't':	case 'u':	case 'v':	case 'w':	case 'x':	case 'y':	case 'z':
+			case 'A':	case 'B':	case 'C':	case 'D':	case 'E':	case 'F':	case 'G':
+			case 'H':	case 'I':	case 'J':	case 'K':	case 'L':	case 'M':	case 'N':
+			case 'O':	case 'P':	case 'Q':	case 'R':	case 'S':	case 'T':	case 'U':
+			case 'V':	case 'W':	case 'X':	case 'Y':	case 'Z':
 				++m_Forward;
 				if(!defTextToken(token)) {
 					while (std::isalpha(*m_Forward) || std::isdigit(*m_Forward) || (*m_Forward == '_') || (*m_Forward == '-') || (*m_Forward == '.') || (*m_Forward == ':'))
@@ -279,12 +233,8 @@ namespace parserXML {
 				token.mLexemValue = std::string("EOF");
 				break;
 
-			// add special entiti (< = &lt) (> = &gt) (& = &amp) (' = &apos) (" = &quot)
-			// <![CDATA[ some_text ]]>
-
 			default:
 				if(!defTextToken(token)) {
-					// ERROR => skip all simbols befor meet delim
 					skipSymbolUntil('<');
 				}
 				break;
