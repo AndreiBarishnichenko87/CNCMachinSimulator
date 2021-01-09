@@ -39,7 +39,103 @@ namespace parserXML {
 			m_LexemBegin = ++m_Forward;
 		}
 	}
+	
+	void LexerXML::replacePredefXMLEntity(std::string& str)
+	{
+		// &lt;				<			less than
+		// &gt;				>			greater than
+		// &amp;			&			ampersand 
+		// &apos;			'			apostrophe
+		// &quot;			"			quotation mark
+		std::string::iterator forwardIter(str.begin());
+		std::string::iterator prevfIter(forwardIter);
+		std::string::iterator replaceIter(forwardIter);
+		while(forwardIter != str.end())
+		{
+			if(*forwardIter != '&'){
+				*replaceIter = *forwardIter;
+				++replaceIter;
+				++forwardIter;
+				continue;
+			}
 
+			prevfIter = forwardIter;
+			switch(*++forwardIter)
+			{
+				case 'g': // &quot
+					if(*++forwardIter == 't'){
+						*replaceIter = '>';
+						++replaceIter; ++forwardIter;
+						break;					
+					}
+					++forwardIter;
+					for(;prevfIter != forwardIter; ++prevfIter){
+						*replaceIter = *prevfIter;
+						++replaceIter;
+					}
+					break;
+				
+				case 'l': // &quot
+					if(*++forwardIter == 't'){
+						*replaceIter = '<';
+						++replaceIter; ++forwardIter;
+						break;					
+					}
+					++forwardIter;
+					for(;prevfIter != forwardIter; ++prevfIter){
+						*replaceIter = *prevfIter;
+						++replaceIter;
+					}
+					break;
+				
+				case 'a': // &amp and &apos
+					if(*++forwardIter == 'm'){
+						if(*++forwardIter == 'p'){
+							*replaceIter = '&';
+							++replaceIter; ++forwardIter;
+							break;
+						}
+					}	else {
+						if(*forwardIter == 'p')
+						if(*++forwardIter == 'o')
+						if(*++forwardIter == 's'){
+							*replaceIter = '\'';
+							++replaceIter; ++forwardIter;
+							break;
+						}
+					}
+					++forwardIter;
+					for(;prevfIter != forwardIter; ++prevfIter){
+						*replaceIter = *prevfIter;
+						++replaceIter;
+					}
+					break;
+
+				case 'q': // &quot
+					if(*++forwardIter == 'u')
+					if(*++forwardIter == 'o')
+					if(*++forwardIter == 't'){
+						*replaceIter = '"';
+						++replaceIter; ++forwardIter;
+						break;					
+					}
+					++forwardIter;
+					for(;prevfIter != forwardIter; ++prevfIter){
+						*replaceIter = *prevfIter;
+						++replaceIter;
+					}
+					break;
+
+				default:
+					*replaceIter = *prevfIter;
+					++replaceIter;
+					break;
+			}
+		}
+		if(replaceIter != str.end())
+			str.erase(replaceIter, str.end());
+	}
+	
 	bool LexerXML::defTextToken(TokenXML& token) {
 		switch(m_LastToken) { // "text"
 			case (token_t::FINAL_CLOSE_TAG):
@@ -72,6 +168,8 @@ namespace parserXML {
 					++m_Forward;
 				}
 				setToken(token, token_t::TEXT);
+				if(token.mTypeToken != token_t::CDATA_BEGIN)
+					replacePredefXMLEntity(token.mLexemValue);
 				return true;
 				break;
 
@@ -216,16 +314,18 @@ namespace parserXML {
 				++m_LexemBegin;
 				setToken(token, token_t::ATRIBUTE_VALUE);
 				++m_Forward;
+				replacePredefXMLEntity(token.mLexemValue);
 				break;
 
-			case 0x27: // "'"
+			case '\'': // "'"
 				++m_Forward;
-				while((*m_Forward != char(0x27))  && (*m_Forward != std::char_traits<char>::eof())) {
+				while((*m_Forward != '\'')  && (*m_Forward != std::char_traits<char>::eof())) {
 					++m_Forward;
 				}
 				++m_LexemBegin;
 				setToken(token, token_t::ATRIBUTE_VALUE);
 				++m_Forward;
+				replacePredefXMLEntity(token.mLexemValue);
 				break;
 
 			case std::char_traits<char>::eof(): // "EOF"

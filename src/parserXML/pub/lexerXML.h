@@ -53,7 +53,7 @@ namespace parserXML {
 			void setToken(TokenXML& token, token_t tok_type);
 			bool defTextToken(TokenXML& token);
 			void skipSymbolUntil(char stopSymbol);
-
+			void replacePredefXMLEntity(std::string& str);
 		public:
 			explicit LexerXML(const std::shared_ptr<SmartBuffer>& ptrBuffer);
 			TokenXML getNextToken();
