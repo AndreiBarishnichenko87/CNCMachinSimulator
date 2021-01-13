@@ -4,11 +4,8 @@
 
 #include "pub/parserXML.h"
 
-#define PRINT_CUR_TOK_STR() std::cout << m_Lexer.getCurToken().mLexemValue << " "
-#define ERROR_PARSER //error()
-
 namespace parserXML {
-	
+
 	ParserXML::ParserXML(const std::string& fileRead)
 		: m_Lexer(std::shared_ptr<SmartBuffer>(new SmartBuffer(fileRead)))
 	{
@@ -16,145 +13,175 @@ namespace parserXML {
 	}
 	
 	void ParserXML::findElement(){
-		element();
+		m_TreeElements = element();
 	}
 	
-	void ParserXML::element(){
-			openElement();
-			closeElement();			
-	}
-	
-	void ParserXML::openElement(){
-		if(m_Lexer.getCurToken().mTypeToken == type_token::OPEN_PROLOG_TAG){
-			PRINT_CUR_TOK_STR();
-			if(m_Lexer.getNextToken().mTypeToken == type_token::NAME_ID){
-				PRINT_CUR_TOK_STR();
-				m_Lexer.getNextToken();
-			} else {
-				// error procedure
-				ERROR_PARSER;
-				return;
-			}
-			attribute();
-			if(m_Lexer.getCurToken().mTypeToken == type_token::CLOSE_PROLOG_TAG){
-				PRINT_CUR_TOK_STR();
-				m_Lexer.getNextToken();
-			} else {
-				// error procedure
-				ERROR_PARSER;
-				return;
-			}
-		} else {
-			if(m_Lexer.getCurToken().mTypeToken == type_token::OPEN_TAG){
-				PRINT_CUR_TOK_STR();
+	ElementXML ParserXML::element(){
+		
+		ElementXML newElement;
+		
+		switch(m_Lexer.getCurToken().mTypeToken){
+			case type_token::OPEN_TAG:
 				if(m_Lexer.getNextToken().mTypeToken == type_token::NAME_ID){
-					PRINT_CUR_TOK_STR();
+					newElement.assignName(m_Lexer.getCurToken().mLexemValue);
 					m_Lexer.getNextToken();
-					attribute();
+					attribute(newElement);
+					closeElement(newElement);
 				} else {
 					// error procedure
-					ERROR_PARSER;
-					return;
 				}
-			} else {
+				break;
+				
+			case type_token::OPEN_PROLOG_TAG:
+				if(m_Lexer.getNextToken().mTypeToken == type_token::NAME_ID){
+					m_Lexer.getNextToken();
+				} else {
+					// error procedure
+				}
+				attribute(newElement);
+				if(m_Lexer.getCurToken().mTypeToken == type_token::CLOSE_PROLOG_TAG){
+					m_Lexer.getNextToken();
+				} else {
+					// error procedure
+				}
+				break;
+
+			case type_token::CDATA_BEGIN:
+				if(m_Lexer.getNextToken().mTypeToken == type_token::TEXT){
+					if(m_Lexer.getNextToken().mTypeToken == type_token::CDATA_END){
+						m_Lexer.getNextToken();
+					} else {
+						// error procedure
+					}
+				} else {
+					// error procedure
+				}
+				break;
+
+			case type_token::OPEN_COMENT_TAG:
+				if(m_Lexer.getNextToken().mTypeToken == type_token::TEXT){
+					if(m_Lexer.getNextToken().mTypeToken == type_token::CLOSE_COMENT_TAG){
+						m_Lexer.getNextToken();
+					} else {
+						// error procedure
+					}
+				} else {
+					// error procedure
+				}
+				break;
+			
+			case type_token::UNDEFINE_TOKEN:
+				break;
+			
+			case type_token::END_OF_FILE:
+				break;
+			
+			default:
 				// error procedure
-				ERROR_PARSER;
-				return;
-			}
+				break;
 		}
+		return newElement;
 	}
 	
-	void ParserXML::attribute(){
+	void ParserXML::attribute(ElementXML &elementXML){
 		if(m_Lexer.getCurToken().mTypeToken == type_token::NAME_ID){
-			PRINT_CUR_TOK_STR();
+			ElementXML::pair_attrib attrib;
+			attrib.first = m_Lexer.getCurToken().mLexemValue;
 			if(m_Lexer.getNextToken().mTypeToken == type_token::EQUAL){
-				PRINT_CUR_TOK_STR();
 				if(m_Lexer.getNextToken().mTypeToken == type_token::ATRIBUTE_VALUE){
-						PRINT_CUR_TOK_STR();
+						attrib.second = m_Lexer.getCurToken().mLexemValue;
+						elementXML.addAttribute(attrib);
 						m_Lexer.getNextToken();
-						attribute();
+						attribute(elementXML);
 				} else {
 					// error procedure
-					ERROR_PARSER;
 					return;
 				}
 			} else {
 				// error procedure
-				ERROR_PARSER;
 				return;
 			}
 		} 
 	}
 	
-	void ParserXML::closeElement(){
+	void ParserXML::closeElement(ElementXML &elementXML){
 		if(m_Lexer.getCurToken().mTypeToken == type_token::FINAL_CLOSE_TAG){
-			PRINT_CUR_TOK_STR();
 			m_Lexer.getNextToken();
 		} else {
 			if(m_Lexer.getCurToken().mTypeToken == type_token::CLOSE_TAG){
-				PRINT_CUR_TOK_STR();
 				m_Lexer.getNextToken();
-				endElement();
+				endElement(elementXML);
 			} else {
 				// error procedure
-				ERROR_PARSER;
 				return;
 			}
 		}
 	}
 	
-	void ParserXML::endElement(){
-		
+	void ParserXML::endElement(ElementXML &elementXML){
+		ElementXML childElement;
 		switch(m_Lexer.getCurToken().mTypeToken){
-			
 			case type_token::TEXT:
-				PRINT_CUR_TOK_STR();
 				if(m_Lexer.getNextToken().mTypeToken == type_token::OPEN_CLOSE_TAG){
-					PRINT_CUR_TOK_STR();
 					if(m_Lexer.getNextToken().mTypeToken == type_token::NAME_ID){
-						PRINT_CUR_TOK_STR();
+						if(!elementXML.nameIsMatch(m_Lexer.getCurToken().mLexemValue)){
+							std::cout << "EndName Element is not the same as StartNameElement" << std::endl;
+							return;
+						}
 						if(m_Lexer.getNextToken().mTypeToken == type_token::CLOSE_TAG){
-							PRINT_CUR_TOK_STR();
+							elementXML.assignText(m_Lexer.getCurToken().mLexemValue);
 							m_Lexer.getNextToken();
 						} else {
 							// error procedure
-							ERROR_PARSER;
 							return;
 						}
 					} else {
 						// error procedure
-						ERROR_PARSER;
 						return;
 					}
 				} else {
 					// error procedure
-					ERROR_PARSER;
 					return;
 				}
 				break;
 			
 			case type_token::OPEN_CLOSE_TAG:
-				PRINT_CUR_TOK_STR();
 				if(m_Lexer.getNextToken().mTypeToken == type_token::NAME_ID){
-					PRINT_CUR_TOK_STR();
+					if(!elementXML.nameIsMatch(m_Lexer.getCurToken().mLexemValue)){
+						std::cout << "EndName Element is not the same as StartNameElement" << std::endl;
+						return;
+					}
 					if(m_Lexer.getNextToken().mTypeToken == type_token::CLOSE_TAG){
-						PRINT_CUR_TOK_STR();
 						m_Lexer.getNextToken();
 					} else {
 						// error procedure
-						ERROR_PARSER;
 						return;
 					}
 				} else {
 					// error procedure
-					ERROR_PARSER;
 					return;
 				}
 				break;
-
-			default:
-				element();
-				endElement();
+				
+			case type_token::UNDEFINE_TOKEN :
+			case type_token::END_OF_FILE    :
+				std::cout << "UNDEFINE_TOKEN or END_OF_FILE" << std::endl;
+				return;
+				break;
+			
+			 case type_token::OPEN_PROLOG_TAG:
+			 case type_token::OPEN_TAG       :
+			 case type_token::CDATA_BEGIN    :
+			 case type_token::OPEN_COMENT_TAG:
+				childElement = element();
+				if(!childElement.nameIsEmpty()){
+					elementXML.addNewElement(childElement);
+				}
+				else {
+					std::cout << "Child Element is undefine" << std::endl;
+					return;
+				}
+				endElement(elementXML);
 				break;
 		}
 	}
