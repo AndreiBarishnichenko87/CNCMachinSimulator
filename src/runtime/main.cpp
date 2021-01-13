@@ -60,10 +60,16 @@ void test_parserXML() {
 	}
 	
 	parserXML::ParserXML parser("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
-	for(int i = 0; i < 10; i++){
+	for(int i = 0; i < 2; i++){
 		parser.findElement();
 	}
-
+	PRINT(parser.m_TreeElements.m_Name) << std::endl;
+	PRINT(parser.m_TreeElements.m_Text) << std::endl;
+	PRINT(parser.m_TreeElements.m_ListAttrib.size()) << std::endl;
+	PRINT(parser.m_TreeElements.m_ListElement.size()) << std::endl;
+	
+	
+	
 }
 
 int main(int argc, char* argv[]) {
@@ -71,7 +77,6 @@ int main(int argc, char* argv[]) {
 	//test_smartBuffer();
 	//test_lexer();
 	test_parserXML();
-	
 	
 	return 0;
 }

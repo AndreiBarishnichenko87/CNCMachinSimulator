@@ -172,7 +172,6 @@ namespace parserXML {
 					if(*++substring == '-')
 					if(*++substring == '>') {
 						setToken(token, token_t::TEXT);
-						replacePredefXMLEntity(token.mLexemValue);
 						return true;
 					}
 					m_Forward = substring;
@@ -330,7 +329,7 @@ namespace parserXML {
 				}
 				break;
 
-			case '"': // "text"
+			case '"': // "attribute value"
 				++m_Forward;
 				while((*m_Forward != '"') && (*m_Forward != std::char_traits<char>::eof())) {
 					++m_Forward;
@@ -359,6 +358,8 @@ namespace parserXML {
 				break;
 
 			default:
+				// define text token if start symbol not mach section nameID and text 
+				// else skip all symbol untill '<'
 				if(!defTextToken(token)) {
 					skipSymbolUntil('<');
 				}
