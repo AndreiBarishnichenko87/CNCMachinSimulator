@@ -58,18 +58,12 @@ namespace parserXML {
 			bool defTextToken(TokenXML& token);
 			void skipSymbolUntil(char stopSymbol);
 			void replacePredefXMLEntity(std::string& str);
+		
 		public:
 			explicit LexerXML(const std::shared_ptr<SmartBuffer>& ptrBuffer);
 			TokenXML getNextToken();
-			inline TokenXML getCurToken() {
-				if(m_LastToken_t == token_t::START_FILE){
-					return getNextToken();
-				} else {
-					return m_PreviousToken; 
-				}
-			}
-
-			size_t getCurrentLine() { return m_CountNewLine; }
+			TokenXML getCurToken();
+			size_t getLinePositionToken() { return m_CountNewLine; }
 	};
 }
 

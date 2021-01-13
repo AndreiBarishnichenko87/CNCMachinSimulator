@@ -31,6 +31,14 @@ namespace parserXML {
 		m_CountNewLine = 1;
 	}
 
+	TokenXML LexerXML::getCurToken() {
+		if(m_LastToken_t == token_t::START_FILE){
+			return getNextToken();
+		} else {
+			return m_PreviousToken;
+		}
+	}
+
 	void LexerXML::setToken(TokenXML& token, token_t tok_type) {
 		m_LastToken_t = token.mTypeToken = tok_type;
 		token.mLexemValue = std::string(m_LexemBegin, m_Forward);
@@ -163,6 +171,18 @@ namespace parserXML {
 						setToken(token, token_t::TEXT);
 						replacePredefXMLEntity(token.mLexemValue);
 						return true;
+					}
+					++m_Forward;
+					break;
+				
+				case '/': // "/>"
+					if((m_LastToken_t != token_t::CDATA_BEGIN) && (m_LastToken_t != token_t::OPEN_COMENT_TAG)) {
+						substring = m_Forward;
+						if(*++substring == '>') {
+							setToken(token, token_t::UNDEFINE_TOKEN);
+							return true;
+						}
+						m_Forward = substring;
 					}
 					++m_Forward;
 					break;
