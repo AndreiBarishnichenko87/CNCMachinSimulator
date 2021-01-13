@@ -6,6 +6,7 @@
 #include "../parserXML/pub/smartBuffer.h"
 #include "../parserXML/pub/lexerXML.h"
 #include "../parserXML/pub/parserXML.h"
+#include "../parserXML/pub/exceptionParserXML.h"
 
 using std::cout;
 using std::cin;
@@ -63,20 +64,33 @@ void test_parserXML() {
 	for(int i = 0; i < 2; i++){
 		parser.findElement();
 	}
-	PRINT(parser.m_TreeElements.m_Name) << std::endl;
-	PRINT(parser.m_TreeElements.m_Text) << std::endl;
-	PRINT(parser.m_TreeElements.m_ListAttrib.size()) << std::endl;
-	PRINT(parser.m_TreeElements.m_ListElement.size()) << std::endl;
+	PRINT(parser.m_TreeElements->m_Name) << std::endl;
+	PRINT(parser.m_TreeElements->m_Text) << std::endl;
+	PRINT(parser.m_TreeElements->m_ListAttrib.size()) << std::endl;
+	PRINT(parser.m_TreeElements->m_ListElement.size()) << std::endl;
 	
 	
-	
+}
+
+void test_ParserException() {
+	try{
+		//throw parserXML::ExceptionParserXML("base");
+		throw parserXML::SmartBufferException("SmartBufferException");
+	} catch (parserXML::ExceptionParserXML &except) {
+		cout << except.what() << endl;
+	}	
 }
 
 int main(int argc, char* argv[]) {
 
 	//test_smartBuffer();
 	//test_lexer();
-	test_parserXML();
+	try{
+		test_parserXML();
+	} catch(parserXML::ExceptionParserXML &except) {
+		cout << except.what() << endl;
+	}	
+	//test_ParserException();
 	
 	return 0;
 }

@@ -10,12 +10,9 @@
 #include <stdexcept>
 #include <iterator>
 
+#include "exceptionParserXML.h"
+
 namespace parserXML {
-	
-	class SmartBufferException : public std::runtime_error {
-	public:
-		SmartBufferException(const std::string msg) : std::runtime_error(msg) { }
-	};
 
 	class SmartBuffer {
 		public:
