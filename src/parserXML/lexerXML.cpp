@@ -155,63 +155,62 @@ namespace parserXML {
 	bool LexerXML::defTextToken(TokenXML& token) {
 		switch(m_LastToken_t) { // "text"
 			case (token_t::CLOSE_TAG):
-			case (token_t::CLOSE_PROLOG_TAG):
 			case (token_t::OPEN_COMENT_TAG):
 			case (token_t::CDATA_BEGIN):
 				break;
 			default:
 				return false;
 		}
-
 		SmartBuffer::IteratorSmartB substring(m_Forward);
 		while(*m_Forward != std::char_traits<char>::eof()) {
 			switch(*m_Forward){
 				case '<': // "<"
-					if((m_LastToken_t != token_t::CDATA_BEGIN) && (m_LastToken_t != token_t::OPEN_COMENT_TAG)) {
-						setToken(token, token_t::TEXT);
-						replacePredefXMLEntity(token.mLexemValue);
-						return true;
+					if(m_LastToken_t == token_t::CLOSE_TAG) {
+						if(m_Forward != m_LexemBegin){
+							setToken(token, token_t::TEXT);
+							replacePredefXMLEntity(token.mLexemValue);
+							return true;								
+						} else {
+							return false;
+						}
+					} else {
+						++m_Forward;
 					}
-					++m_Forward;
 					break;
-				
-				case '/': // "/>"
-					if((m_LastToken_t != token_t::CDATA_BEGIN) && (m_LastToken_t != token_t::OPEN_COMENT_TAG)) {
+
+				case '-': // "-->"
+					if(m_LastToken_t == token_t::OPEN_COMENT_TAG){
 						substring = m_Forward;
+						if(*++substring == '-')
 						if(*++substring == '>') {
-							setToken(token, token_t::UNDEFINE_TOKEN);
+							setToken(token, token_t::TEXT);
 							return true;
 						}
-						m_Forward = substring;
+						m_Forward = substring;						
+					} else {
+						++m_Forward;
 					}
-					++m_Forward;
-					break;
-				
-				case '-': // "-->"
-					substring = m_Forward;
-					if(*++substring == '-')
-					if(*++substring == '>') {
-						setToken(token, token_t::TEXT);
-						return true;
-					}
-					m_Forward = substring;
-					++m_Forward;
 					break;
 				
 				case ']': // "]]>"
-					substring = m_Forward;
-					if(*++substring == ']')
-					if(*++substring == '>') {
-						setToken(token, token_t::TEXT);
-						return true;
+					if(m_LastToken_t == token_t::CDATA_BEGIN){
+						substring = m_Forward;
+						if(*++substring == ']')
+						if(*++substring == '>') {
+							setToken(token, token_t::TEXT);
+							return true;
+						}
+						m_Forward = substring;						
+					} else {
+						++m_Forward;
 					}
-					m_Forward = substring;
-					++m_Forward;
 					break;
 				
 				default:
 					++m_Forward;
 			}
+			if(*m_Forward == '\n')
+				++m_CountNewLine;
 		}
 		setToken(token, token_t::TEXT);
 		return true;
@@ -229,6 +228,7 @@ namespace parserXML {
 		
 		switch(*m_Forward) {
 			case '<':
+				if(defTextToken(token)) break;
 				switch(*++m_Forward) {
 					case '/': // "</"
 						++m_Forward;
@@ -275,6 +275,7 @@ namespace parserXML {
 				break;
 
 			case '/': // "/>"
+				if(defTextToken(token)) break;
 				if(*++m_Forward == '>') {
 					++m_Forward;
 					setToken(token, token_t::FINAL_CLOSE_TAG);
@@ -285,6 +286,7 @@ namespace parserXML {
 				break;
 
 			case '?': // "?>"
+				if(defTextToken(token)) break;
 				if(*++m_Forward == '>') {
 					++m_Forward;
 					setToken(token, token_t::CLOSE_PROLOG_TAG);
@@ -295,11 +297,13 @@ namespace parserXML {
 				break;
 
 			case '>': // ">"
+				if(defTextToken(token)) break;
 				++m_Forward;
 				setToken(token, token_t::CLOSE_TAG);
 				break;
 
 			case ']': // "]]>"
+				if(defTextToken(token)) break;
 				if(*++m_Forward == ']')
 					if(*++m_Forward == '>') {
 						++m_Forward;
@@ -312,11 +316,13 @@ namespace parserXML {
 				break;
 
 			case '=': // "="
+				if(defTextToken(token)) break;
 				++m_Forward;
 				setToken(token, token_t::EQUAL);
 				break;
 
 			case '-': // "-->"
+				if(defTextToken(token)) break;
 				if(*++m_Forward == '-') {
 					if(*++m_Forward == '>') {
 						++m_Forward;
@@ -342,14 +348,14 @@ namespace parserXML {
 			case 'O':	case 'P':	case 'Q':	case 'R':	case 'S':	case 'T':	case 'U':
 			case 'V':	case 'W':	case 'X':	case 'Y':	case 'Z':
 				++m_Forward;
-				if(!defTextToken(token)) {
-					while (std::isalpha(*m_Forward) || std::isdigit(*m_Forward) || (*m_Forward == '_') || (*m_Forward == '-') || (*m_Forward == '.') || (*m_Forward == ':'))
-						++m_Forward;
-					setToken(token, token_t::NAME_ID);
-				}
+				if(defTextToken(token)) break;
+				while (std::isalpha(*m_Forward) || std::isdigit(*m_Forward) || (*m_Forward == '_') || (*m_Forward == '-') || (*m_Forward == '.') || (*m_Forward == ':'))
+					++m_Forward;
+				setToken(token, token_t::NAME_ID);
 				break;
 
 			case '"': // "attribute value"
+				if(defTextToken(token)) break;
 				++m_Forward;
 				while((*m_Forward != '"') && (*m_Forward != std::char_traits<char>::eof())) {
 					++m_Forward;
@@ -361,6 +367,7 @@ namespace parserXML {
 				break;
 
 			case '\'': // "'"
+				if(defTextToken(token)) break;
 				++m_Forward;
 				while((*m_Forward != '\'')  && (*m_Forward != std::char_traits<char>::eof())) {
 					++m_Forward;

@@ -31,12 +31,13 @@ namespace parserXML{
 	class ParserXML
 	{
 		using type_token = TokenXML::token_XML;
+	private:
+		LexerXML m_Lexer;
 	public:
 		std::shared_ptr<ElementXML> m_TreeElements;
 	private:
-		LexerXML m_Lexer;
-	private:
 		// syntax rule functions
+		void findElement();
 		std::shared_ptr<ElementXML> element();
 		void attribute(std::shared_ptr<ElementXML> &elementXML);
 		void closeElement(std::shared_ptr<ElementXML> &elementXML);
@@ -44,12 +45,15 @@ namespace parserXML{
 	
 	private:
 		void errorHandleParser(const std::string &subMsgExcept);
+		
+	private:
+		std::ofstream testFile;
+		inline void PRINT_TOKEN() { testFile << m_Lexer.getCurToken().tokenName() << "[" << m_Lexer.getCurToken().mLexemValue << "]" << std::endl; }
 	
 	public:
 		ParserXML(const std::string& fileRead);
-		void findElement();
 	};
-	
+
 }
 
 #endif //PARSERXML_H_

@@ -61,15 +61,15 @@ void test_parserXML() {
 	}
 	
 	parserXML::ParserXML parser("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
-	for(int i = 0; i < 2; i++){
-		parser.findElement();
+
+	if(parser.m_TreeElements){
+		PRINT(parser.m_TreeElements->m_Name) << std::endl;
+		PRINT(parser.m_TreeElements->m_Text) << std::endl;
+		PRINT(parser.m_TreeElements->m_ListAttrib.size()) << std::endl;
+		PRINT(parser.m_TreeElements->m_ListElement.size()) << std::endl;		
+		PRINT((*(parser.m_TreeElements->m_ListElement.begin()))->m_ListElement.size()) << std::endl;		
 	}
-	PRINT(parser.m_TreeElements->m_Name) << std::endl;
-	PRINT(parser.m_TreeElements->m_Text) << std::endl;
-	PRINT(parser.m_TreeElements->m_ListAttrib.size()) << std::endl;
-	PRINT(parser.m_TreeElements->m_ListElement.size()) << std::endl;
-	
-	
+
 }
 
 void test_ParserException() {
@@ -91,7 +91,6 @@ int main(int argc, char* argv[]) {
 		cout << except.what() << endl;
 	}	
 	//test_ParserException();
-	
 	return 0;
 }
 
