@@ -35,7 +35,7 @@
 	
 	element				::= UNDEFINE_TOKEN
 	element				::= END_OF_FILE
-	element				::= OPEN_TAG NAME_ID attribute closeElement
+	element				::= skipelement OPEN_TAG NAME_ID attribute closeElement
 	
 	attribute			::= NAME_ID EQUAL ATRIBUTE_VALUE attribute
 	attribute			::= NULL
@@ -43,6 +43,6 @@
 	closeElement	::= FINAL_CLOSE_TAG	
 	closeElement	::= CLOSE_TAG endElement
 	
-	endElement		::= TEXT OPEN_CLOSE_TAG NAME_ID CLOSE_TAG
-	endElement		::= OPEN_CLOSE_TAG NAME_ID CLOSE_TAG
-	endElement		::= element endElement
+	endElement		::= skipelement TEXT OPEN_CLOSE_TAG NAME_ID CLOSE_TAG
+	endElement		::= skipelement OPEN_CLOSE_TAG NAME_ID CLOSE_TAG
+	endElement		::= skipelement element endElement
