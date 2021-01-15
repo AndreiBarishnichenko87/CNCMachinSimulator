@@ -29,9 +29,10 @@
 
 	Syntaxis XML Ruls:
 	
-	element				::= OPEN_PROLOG_TAG NAME_ID attribute CLOSE_PROLOG_TAG
-	element				::= OPEN_COMENT_TAG TEXT CLOSE_COMENT_TAG
-	element				::= CDATA_BEGIN TEXT CDATA_END
+	skipelement				::= OPEN_PROLOG_TAG NAME_ID attribute CLOSE_PROLOG_TAG
+	skipelement				::= OPEN_COMENT_TAG TEXT CLOSE_COMENT_TAG
+	skipelement				::= CDATA_BEGIN TEXT CDATA_END
+	
 	element				::= UNDEFINE_TOKEN
 	element				::= END_OF_FILE
 	element				::= OPEN_TAG NAME_ID attribute closeElement

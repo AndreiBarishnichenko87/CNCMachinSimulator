@@ -7,6 +7,7 @@
 #include "../parserXML/pub/lexerXML.h"
 #include "../parserXML/pub/parserXML.h"
 #include "../parserXML/pub/exceptionParserXML.h"
+#include "../parserXML/pub/symbolTableXML.h"
 
 using std::cout;
 using std::cin;
@@ -37,37 +38,36 @@ void test_smartBuffer() {
 }
 
 void test_lexer() {
-	std::ofstream fout("d:\\project\\PROJECT\\resourses\\testLexer.xml");
+	std::ofstream foutLexer("d:\\project\\PROJECT\\resourses\\testLexer.xml");
 	std::shared_ptr<parserXML::SmartBuffer> ptrBuf(new parserXML::SmartBuffer("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml"));
 	if(ptrBuf.use_count() != 1) {
 		cout << "pointer is invalid" << endl;
 		return;
 	}
-	parserXML::LexerXML lexer(ptrBuf);
+	parserXML::SymbolTableXML *symbolTable = new parserXML::SymbolTableXML;
+	parserXML::LexerXML lexer(ptrBuf, symbolTable);
 	parserXML::TokenXML token;
-	while(token.mTypeToken != parserXML::TokenXML::token_XML::END_OF_FILE) {
+	while(token.mTokenType != parserXML::TokenXML::TokenType::END_OF_FILE)
+	{
 		token = lexer.getNextToken();
-		fout << token.tokenName() << " : " << token.lexemValue() << endl;
+		foutLexer << parserXML::token_enum_name(token) << " : [" << symbolTable->getTokenLexemVal(token) << "]" << endl;
 	}
+	
 }
 
 void test_parserXML() {
 
 	std::ofstream fout("d:\\project\\PROJECT\\resourses\\testParser.xml");
 	std::shared_ptr<parserXML::SmartBuffer> ptrBuf(new parserXML::SmartBuffer("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml"));
-	if(ptrBuf.use_count() != 1) {
-		cout << "pointer is invalid" << endl;
-		return;
-	}
-	
+
 	parserXML::ParserXML parser("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
 
 	if(parser.m_TreeElements){
-		PRINT(parser.m_TreeElements->m_Name) << std::endl;
-		PRINT(parser.m_TreeElements->m_Text) << std::endl;
+		PRINT(parser.m_TreeElements->m_NameID) << std::endl;
+		PRINT(parser.m_TreeElements->m_TextID) << std::endl;
 		PRINT(parser.m_TreeElements->m_ListAttrib.size()) << std::endl;
 		PRINT(parser.m_TreeElements->m_ListElement.size()) << std::endl;		
-		PRINT((*(parser.m_TreeElements->m_ListElement.begin()))->m_ListElement.size()) << std::endl;		
+		//PRINT((*(parser.m_TreeElements->m_ListElement.begin()))->m_ListElement.size()) << std::endl;		
 	}
 
 }
@@ -91,6 +91,7 @@ int main(int argc, char* argv[]) {
 		cout << except.what() << endl;
 	}	
 	//test_ParserException();
+	std::cin.get();
 	return 0;
 }
 

@@ -1,351 +1,909 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<machine_definition>
-    <machine_data name="NTX1000" version="1.7" units="metric">
-        <view_transform initialvalue="0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,-1.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-    </machine_data>
-    <axis id="C1" type="rotation" x="0.00000000" y="0.00000000" z="-1.00000000" minvalue="-99999.999000" maxvalue="99999.999000" valuetype="cont" initial_value="0.000000" rzx="0.00000000" rzy="0.00000000" rzz="106.06500244">
-        <geometry name="chuck_6_inch" geo="ntx1000 - chuck_6_inch-1.stl" clrr="0.75294119" clrg="0.75294119" clrb="0.75294119" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        <transform id="fixture_transform1" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-            <transform id="fixture_adaptor1" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-        </transform>
-        <transform id="workpiece_transform1" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-            <transform id="wcs1" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-            <transform id="workpiece_adaptor1" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-        </transform>
-    </axis>
-    <axis id="Z1" type="translation" x="0.00000000" y="0.00000000" z="1.00000000" minvalue="113.000000" maxvalue="567.000000" valuetype="cont" initial_value="350.000000">
-        <axis id="X1" type="translation" x="1.00000000" y="0.00000000" z="0.00000000" minvalue="-50.000000" maxvalue="330.000000" valuetype="cont" initial_value="326.390000">
-            <axis id="Y1" type="translation" x="0.00000000" y="1.00000000" z="0.00000000" minvalue="-105.000000" maxvalue="105.000000" valuetype="cont" initial_value="0.000000">
-                <axis id="B1" type="rotation" x="0.00000000" y="1.00000000" z="0.00000000" minvalue="-30.000000" maxvalue="210.000000" valuetype="cont" initial_value="90.000000" rzx="0.00000000" rzy="0.00000000" rzz="0.00000000">
-                    <transform id="station_transform" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,-75.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <transform id="holder_transform" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_1" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="tool_adaptor1" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-                        </transform>
-                    </transform>
-                    <geometry name="turret_A_B" geo="ntx1000 - turret_a_4-1.stl" clrr="0.65098041" clrg="0.79215688" clrb="0.94117647" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                </axis>
-                <geometry name="turret_A_Y" geo="ntx1000 - turret_a_3-1.stl" clrr="0.75294119" clrg="0.75294119" clrb="0.75294119" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-            </axis>
-            <geometry name="turret_A_X" geo="ntx1000 - turret_a_2-1.stl" clrr="0.50196081" clrg="0.50196081" clrb="0.50196081" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        </axis>
-        <geometry name="turret_A_Z" geo="ntx1000 - turret_a_1-1.stl" clrr="0.62745100" clrg="0.62745100" clrb="0.64313728" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    </axis>
-    <axis id="Z2" type="translation" x="0.00000000" y="0.00000000" z="1.00000000" minvalue="0.000000" maxvalue="610.000000" valuetype="cont" initial_value="304.065000">
-        <axis id="X2" type="translation" x="-1.00000000" y="0.00000000" z="0.00000000" minvalue="60.000000" maxvalue="215.000000" valuetype="cont" initial_value="215.000000">
-            <axis id="C2" type="rotation" x="0.00000000" y="0.00000000" z="-1.00000000" minvalue="-99999.999000" maxvalue="99999.999000" valuetype="cont" show_slider="false" initial_value="0.000000" rzx="-170.00000000" rzy="0.00000000" rzz="107.00000000">
-                <geometry name="turret_B" geo="ntx1000 - turret_b_3-1.stl" clrr="0.65098041" clrg="0.79215688" clrb="0.94117647" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                <geometry name="turret_B_numbers" geo="ntx1000 - turret_b_4-1.stl" clrr="0.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                <transform id="turret_transform" initialvalue="1.00000000,0.00000000,0.00000000,-170.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,107.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                    <transform id="station_transform2101" initialvalue="1.00000000,0.00000000,0.00000000,170.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2101" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2101" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2201" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A01" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A01" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A01" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B01" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B01" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B01" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2102" initialvalue="0.86602539,-0.50000000,0.00000000,147.22431946,0.50000000,0.86602539,0.00000000,85.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2102" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2102" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2202" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A02" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A02" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A02" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B02" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B02" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B02" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2103" initialvalue="0.50000000,-0.86602539,0.00000000,85.00000000,0.86602539,0.50000000,0.00000000,147.22431946,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2103" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2103" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2203" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A03" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A03" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A03" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B03" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B03" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B03" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2104" initialvalue="0.00000000,-1.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,170.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2104" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2104" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2204" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A04" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A04" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A04" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B04" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B04" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B04" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2105" initialvalue="-0.50000000,-0.86602539,0.00000000,-85.00000000,0.86602539,-0.50000000,0.00000000,147.22431946,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2105" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2105" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2205" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A05" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A05" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A05" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B05" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B05" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B05" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2106" initialvalue="-0.86602539,-0.50000000,0.00000000,-147.22431946,0.50000000,-0.86602539,0.00000000,85.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2106" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2106" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2206" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A06" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A06" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A06" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B06" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B06" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B06" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2107" initialvalue="-1.00000000,0.00000000,0.00000000,-170.00000000,0.00000000,-1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2107" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2107" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2207" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A07" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A07" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A07" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B07" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B07" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B07" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2108" initialvalue="-0.86602539,0.50000000,0.00000000,-147.22431946,-0.50000000,-0.86602539,0.00000000,-85.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2108" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2108" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2208" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A08" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A08" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A08" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B08" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B08" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B08" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2109" initialvalue="-0.50000000,0.86602539,0.00000000,-85.00000000,-0.86602539,-0.50000000,0.00000000,-147.22431946,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2109" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2109" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2209" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A09" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A09" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A09" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B09" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B09" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B09" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2110" initialvalue="0.00000000,1.00000000,0.00000000,0.00000000,-1.00000000,0.00000000,0.00000000,-170.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2110" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2110" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2210" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A10" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A10" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A10" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B10" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B10" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B10" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2111" initialvalue="0.50000000,0.86602539,0.00000000,85.00000000,-0.86602539,0.50000000,0.00000000,-147.22431946,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2111" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2111" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2211" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A11" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A11" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A11" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B11" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B11" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B11" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                    <transform id="station_transform2112" initialvalue="0.86602539,0.50000000,0.00000000,147.22431946,-0.50000000,0.86602539,0.00000000,-85.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                        <transform id="adaptor_transform2112" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                            <geometry name="TH_adaptor2112" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <geometry name="TH_adaptor2212" geo="th_adaptor.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-                            <transform id="holder_transform2A12" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2A12" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2A12" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                            <transform id="holder_transform2B12" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                                <geometry name="tool2B12" geo="tool.stl" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="tool" cuttr="1.00000000" cuttg="1.00000000" cuttb="0.00000000" noncuttr="0.11764706" noncuttg="0.11764706" noncuttb="0.11764706" arborr="0.11764706" arborg="0.11764706" arborb="0.11764706" holderr="0.11764706" holderg="0.11764706" holderb="0.11764706" />
-                                <geometry name="tool_tip_2B12" geo="tool_tip.stl" clrr="1.00000000" clrg="0.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                            </transform>
-                        </transform>
-                    </transform>
-                </transform>
-            </axis>
-            <geometry name="turret_B_X" geo="ntx1000 - turret_b_2-1.stl" clrr="0.62745100" clrg="0.62745100" clrb="0.64313728" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        </axis>
-        <geometry name="turret_B_Z" geo="ntx1000 - turret_b_1-1.stl" clrr="0.50196081" clrg="0.50196081" clrb="0.50196081" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    </axis>
-    <axis id="Z3" type="translation" x="0.00000000" y="0.00000000" z="1.00000000" minvalue="-698.000000" maxvalue="0.000000" valuetype="cont" initial_value="0.000000">
-        <axis id="B3" type="rotation" x="0.00000000" y="-1.00000000" z="0.00000000" minvalue="0.000000" maxvalue="225.000000" valuetype="cont" initial_value="0.000000" rzx="0.00000000" rzy="0.00000000" rzz="1071.00000000">
-            <axis id="C3" type="rotation" x="0.00000000" y="0.00000000" z="-1.00000000" minvalue="-99999.999000" maxvalue="99999.999000" valuetype="cont" initial_value="0.000000" rzx="0.00000000" rzy="0.00000000" rzz="773.91900635">
-                <geometry name="chuck_5_inch" geo="ntx1000 - chuck_5_inch-1.stl" clrr="0.75294119" clrg="0.75294119" clrb="0.75294119" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-                <transform id="fixture_transform2" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                    <transform id="fixture_adaptor2" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-                </transform>
-                <transform id="workpiece_transform2" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,-1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,-1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000">
-                    <transform id="wcs2" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-                    <transform id="workpiece_adaptor2" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-                </transform>
-            </axis>
-            <geometry name="back_spindle" geo="ntx1000 - back_spindle_2-1.stl" clrr="0.75294119" clrg="0.86274511" clrb="0.75294119" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        </axis>
-        <geometry name="back_spindle_support" geo="ntx1000 - back_spindle_1-1.stl" clrr="0.62745100" clrg="0.62745100" clrb="0.64313728" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    </axis>
-    <axis id="Z4" type="translation" x="0.00000000" y="0.00000000" z="1.00000000" minvalue="0.000000" maxvalue="790.000000" valuetype="cont" initial_value="0.000000">
-        <geometry name="mh_housing_12" geo="ntx1000 - door_1-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        <geometry name="mh_housing_13" geo="ntx1000 - door_2-1.stl" clrr="0.00000000" clrg="1.00000000" clrb="0.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        <geometry name="mh_housing_14" geo="ntx1000 - door_3-1.stl" clrr="0.34117648" clrg="0.75294119" clrb="1.00000000" alpha="0.9" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        <geometry name="mh_housing_15" geo="ntx1000 - door_4-1.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        <geometry name="mh_housing_16" geo="ntx1000 - door_5-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-        <geometry name="mh_housing_17" geo="ntx1000 - door_6-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    </axis>
-    <geometry name="chassis" geo="ntx1000 - chassis-1.stl" clrr="0.91372550" clrg="0.91372550" clrb="1.00000000" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="main_spindle" geo="ntx1000 - main_spindle-1.stl" clrr="0.75294119" clrg="0.86274511" clrb="0.75294119" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_1" geo="ntx1000 - housing_1-1.stl" clrr="0.29411766" clrg="0.29411766" clrb="0.29411766" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_10" geo="ntx1000 - magazine_window_2-1.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_11" geo="ntx1000 - magazine_window_3-1.stl" clrr="0.34117648" clrg="0.75294119" clrb="1.00000000" alpha="0.9" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_18" geo="ntx1000 - controller_1-1.stl" clrr="0.75294119" clrg="0.75294119" clrb="0.75294119" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_19" geo="ntx1000 - controller_2-1.stl" clrr="0.75294119" clrg="0.75294119" clrb="0.75294119" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_2" geo="ntx1000 - housing_2-1.stl" clrr="0.50196081" clrg="0.50196081" clrb="0.50196081" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_20" geo="ntx1000 - controller_3-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_21" geo="ntx1000 - controller_4-1.stl" clrr="0.29411766" clrg="0.29411766" clrb="0.29411766" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_22" geo="ntx1000 - controller_5-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_3" geo="ntx1000 - left_closet_1-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_4" geo="ntx1000 - left_closet_2-1.stl" clrr="0.29411766" clrg="0.29411766" clrb="0.29411766" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_5" geo="ntx1000 - left_closet_3-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_6" geo="ntx1000 - right_closet_1-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_7" geo="ntx1000 - right_closet_2-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_8" geo="ntx1000 - right_closet_3-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <geometry name="mh_housing_9" geo="ntx1000 - magazine_window_1-1.stl" clrr="0.82352942" clrg="0.82352942" clrb="0.82352942" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="geometry" />
-    <collcheck id="cc1" name="cc1" group1="tool,turret_A_B" dynamic1="true" dynamic2="true" active="true" group2="back_spindle,back_spindle_support,chassis,chuck_5_inch,chuck_6_inch,main_spindle,mh_housing_1,turret_B,turret_B_X,turret_B_Z" />
-    <collcheck id="cc2" name="cc2" group1="turret_B,turret_B_X,turret_B_Z" dynamic1="true" dynamic2="true" active="true" group2="back_spindle,back_spindle_support,chuck_5_inch,chuck_6_inch,main_spindle" />
-    <collcheck id="cc3" name="cc3" group1="TH_adaptor2101,TH_adaptor2102,TH_adaptor2103,TH_adaptor2104,TH_adaptor2105,TH_adaptor2106,TH_adaptor2107,TH_adaptor2108,TH_adaptor2109,TH_adaptor2110,TH_adaptor2111,TH_adaptor2112,TH_adaptor2201,TH_adaptor2202,TH_adaptor2203,TH_adaptor2204,TH_adaptor2205,TH_adaptor2206,TH_adaptor2207,TH_adaptor2208,TH_adaptor2209,TH_adaptor2210,TH_adaptor2211,TH_adaptor2212,tool2A01,tool2A02,tool2A03,tool2A04,tool2A05,tool2A06,tool2A07,tool2A08,tool2A09,tool2A10,tool2A11,tool2A12,tool2B01,tool2B02,tool2B03,tool2B04,tool2B05,tool2B06,tool2B07,tool2B08,tool2B09,tool2B10,tool2B11,tool2B12" dynamic1="true" dynamic2="true" active="true" group2="back_spindle,back_spindle_support,chassis,chuck_5_inch,chuck_6_inch,main_spindle,tool,turret_A_B,turret_B_X" />
-    <collcheck id="cc4" name="cc4" group1="workpiece_adaptor1,fixture_adaptor1" dynamic1="true" dynamic2="true" active="true" group2="tool,turret_A_B,TH_adaptor2101,TH_adaptor2102,TH_adaptor2103,TH_adaptor2104,TH_adaptor2105,TH_adaptor2106,TH_adaptor2107,TH_adaptor2108,TH_adaptor2109,TH_adaptor2110,TH_adaptor2111,TH_adaptor2112,TH_adaptor2201,TH_adaptor2202,TH_adaptor2203,TH_adaptor2204,TH_adaptor2205,TH_adaptor2206,TH_adaptor2207,TH_adaptor2208,TH_adaptor2209,TH_adaptor2210,TH_adaptor2211,TH_adaptor2212,tool2A01,tool2A02,tool2A03,tool2A04,tool2A05,tool2A06,tool2A07,tool2A08,tool2A09,tool2A10,tool2A11,tool2A12,tool2B01,tool2B02,tool2B03,tool2B04,tool2B05,tool2B06,tool2B07,tool2B08,tool2B09,tool2B10,tool2B11,tool2B12,turret_B" />
-    <collcheck id="cc5" name="cc5" group1="workpiece_adaptor2,fixture_adaptor2" dynamic1="true" dynamic2="true" active="true" group2="tool,turret_A_B,TH_adaptor2101,TH_adaptor2102,TH_adaptor2103,TH_adaptor2104,TH_adaptor2105,TH_adaptor2106,TH_adaptor2107,TH_adaptor2108,TH_adaptor2109,TH_adaptor2110,TH_adaptor2111,TH_adaptor2112,TH_adaptor2201,TH_adaptor2202,TH_adaptor2203,TH_adaptor2204,TH_adaptor2205,TH_adaptor2206,TH_adaptor2207,TH_adaptor2208,TH_adaptor2209,TH_adaptor2210,TH_adaptor2211,TH_adaptor2212,tool2A01,tool2A02,tool2A03,tool2A04,tool2A05,tool2A06,tool2A07,tool2A08,tool2A09,tool2A10,tool2A11,tool2A12,tool2B01,tool2B02,tool2B03,tool2B04,tool2B05,tool2B06,tool2B07,tool2B08,tool2B09,tool2B10,tool2B11,tool2B12,turret_B" />
-    <magazine>
-        <head name="CS1">
-            <transform id="Part_CS" initialvalue="1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000,0.00000000,0.00000000,1.00000000" />
-        </head>
-        <head name="TH_FX1">
-            <geometry name="TH_adaptor1" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX10">
-            <geometry name="TH_adaptor10" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX11">
-            <geometry name="TH_adaptor11" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX12">
-            <geometry name="TH_adaptor12" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX13">
-            <geometry name="TH_adaptor13" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX14">
-            <geometry name="TH_adaptor14" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX15">
-            <geometry name="TH_adaptor15" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX16">
-            <geometry name="TH_adaptor16" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX17">
-            <geometry name="TH_adaptor17" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX18">
-            <geometry name="TH_adaptor18" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX19">
-            <geometry name="TH_adaptor19" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX2">
-            <geometry name="TH_adaptor2" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX20">
-            <geometry name="TH_adaptor20" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX3">
-            <geometry name="TH_adaptor3" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX4">
-            <geometry name="TH_adaptor4" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX5">
-            <geometry name="TH_adaptor5" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX6">
-            <geometry name="TH_adaptor6" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX7">
-            <geometry name="TH_adaptor7" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX8">
-            <geometry name="TH_adaptor8" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="TH_FX9">
-            <geometry name="TH_adaptor9" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="fixture" />
-        </head>
-        <head name="Target_Stock1">
-            <geometry name="workpiece1" geo="workpiece1.stl" clrr="0.65098041" clrg="0.79215688" clrb="0.94117647" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="tablereflection.bmp" objtype="workpiece" />
-            <geometry name="stock1" geo="stock1.stl" clrr="0.41176471" clrg="0.41176471" clrb="0.41176471" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="stock" />
-            <geometry name="toolpath" geo="toolpath1.asc" clrr="0.80000001" clrg="0.80000001" clrb="0.80000001" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="toolpath" />
-        </head>
-        <head name="Target_Stock2">
-            <geometry name="workpiece2" geo="workpiece.stl" clrr="0.65098041" clrg="0.79215688" clrb="0.94117647" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="tablereflection.bmp" objtype="workpiece" />
-            <geometry name="stock2" geo="stock.stl" clrr="0.41176471" clrg="0.41176471" clrb="0.41176471" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="stock" />
-            <geometry name="toolpath1" geo="toolpath1.asc" clrr="0.80000001" clrg="0.80000001" clrb="0.80000001" alpha="0.0" reflectivity="0.0" reflectivityBitmapFileName="" objtype="toolpath" />
-        </head>
-        <head name="fxt1">
-            <geometry name="fixture1" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.1" reflectivityBitmapFileName="tablereflection.bmp" objtype="fixture" />
-        </head>
-        <head name="fxt2">
-            <geometry name="fixture2" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.1" reflectivityBitmapFileName="tablereflection.bmp" objtype="fixture" />
-        </head>
-        <head name="fxt3">
-            <geometry name="fixture3" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.1" reflectivityBitmapFileName="tablereflection.bmp" objtype="fixture" />
-        </head>
-        <head name="fxt4">
-            <geometry name="fixture4" geo="fixture.stl" clrr="0.11764706" clrg="0.11764706" clrb="0.11764706" alpha="0.0" reflectivity="0.1" reflectivityBitmapFileName="tablereflection.bmp" objtype="fixture" />
-        </head>
-    </magazine>
-</machine_definition>
+<?xml version="1.0"?>
+
+<unattend>
+    <settings pass="offlineServicing">
+        <component name="Microsoft-Windows-BaseCrashDumpSettings"
+                   processorArchitecture="x86"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl]
+            -->
+          <AutoReboot>1</AutoReboot>
+          <CrashDumpEnabled>2</CrashDumpEnabled>
+        </component>
+
+        <component name="Microsoft-Windows-BaseCrashDumpSettings"
+                   processorArchitecture="amd64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl]
+            -->
+          <AutoReboot>1</AutoReboot>
+          <CrashDumpEnabled>2</CrashDumpEnabled>
+        </component>
+
+        <component name="Microsoft-Windows-BaseCrashDumpSettings"
+                   processorArchitecture="ia64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+        <!--
+            [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl]
+            -->
+          <AutoReboot>1</AutoReboot>
+          <CrashDumpEnabled>2</CrashDumpEnabled>
+        </component>
+
+        <component name="Microsoft-Windows-explorer"
+                   processorArchitecture="x86"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+          <CPHideDefaultValue>1</CPHideDefaultValue>
+          <CPOpenDefaultValue>1</CPOpenDefaultValue>
+	  <CPMenuDefaultValue>1</CPMenuDefaultValue>
+
+          <ATHideDefaultValue>0</ATHideDefaultValue>
+          <ATBothDefaultValue>0</ATBothDefaultValue>
+	  <ATMenuDefaultValue>0</ATMenuDefaultValue>
+
+          <PHideDefaultValue>1</PHideDefaultValue>
+          <POpenDefaultValue>1</POpenDefaultValue>
+	  <PMenuDefaultValue>1</PMenuDefaultValue>
+
+          <MHideDefaultValue>1</MHideDefaultValue>
+          <MOpenDefaultValue>1</MOpenDefaultValue>
+	  <MMenuDefaultValue>1</MMenuDefaultValue>
+
+          <GHideDefaultValue>0</GHideDefaultValue>
+          <GOpenDefaultValue>0</GOpenDefaultValue>
+	  <GMenuDefaultValue>0</GMenuDefaultValue>
+
+          <UHideDefaultValue>1</UHideDefaultValue>
+          <UOpenDefaultValue>1</UOpenDefaultValue>
+	  <UMenuDefaultValue>1</UMenuDefaultValue>
+
+	  <CDefaultValue>1</CDefaultValue>
+
+	  <RDefaultValue>0</RDefaultValue>
+
+        <!--
+            [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced!Start_SearchFiles]
+                (REG_DWORD): 2
+            -->
+	  <Start_SearchFiles>2</Start_SearchFiles>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\FullIndex!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <IndexSearchFilesDefaultValue>2</IndexSearchFilesDefaultValue>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\NoSearch!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <NoSearchFilesDefaultValue>2</NoSearchFilesDefaultValue>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\UserOnly!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <UserSearchFilesDefaultValue>2</UserSearchFilesDefaultValue>
+
+        </component>
+
+        <component name="Microsoft-Windows-explorer"
+                   processorArchitecture="amd64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+          <CPHideDefaultValue>1</CPHideDefaultValue>
+          <CPOpenDefaultValue>1</CPOpenDefaultValue>
+	  <CPMenuDefaultValue>1</CPMenuDefaultValue>
+
+          <ATHideDefaultValue>0</ATHideDefaultValue>
+          <ATBothDefaultValue>0</ATBothDefaultValue>
+	  <ATMenuDefaultValue>0</ATMenuDefaultValue>
+
+          <PHideDefaultValue>1</PHideDefaultValue>
+          <POpenDefaultValue>1</POpenDefaultValue>
+	  <PMenuDefaultValue>1</PMenuDefaultValue>
+
+          <MHideDefaultValue>1</MHideDefaultValue>
+          <MOpenDefaultValue>1</MOpenDefaultValue>
+	  <MMenuDefaultValue>1</MMenuDefaultValue>
+
+          <GHideDefaultValue>0</GHideDefaultValue>
+          <GOpenDefaultValue>0</GOpenDefaultValue>
+	  <GMenuDefaultValue>0</GMenuDefaultValue>
+
+          <UHideDefaultValue>1</UHideDefaultValue>
+          <UOpenDefaultValue>1</UOpenDefaultValue>
+	  <UMenuDefaultValue>1</UMenuDefaultValue>
+
+	  <CDefaultValue>1</CDefaultValue>
+
+	  <RDefaultValue>0</RDefaultValue>
+
+        <!--
+            [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced!Start_SearchFiles]
+                (REG_DWORD): 2
+            -->
+	  <Start_SearchFiles>2</Start_SearchFiles>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\FullIndex!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <IndexSearchFilesDefaultValue>2</IndexSearchFilesDefaultValue>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\NoSearch!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <NoSearchFilesDefaultValue>2</NoSearchFilesDefaultValue>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\UserOnly!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <UserSearchFilesDefaultValue>2</UserSearchFilesDefaultValue>
+
+        </component>
+
+        <component name="Microsoft-Windows-explorer"
+                   processorArchitecture="ia64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+          <CPHideDefaultValue>1</CPHideDefaultValue>
+          <CPOpenDefaultValue>1</CPOpenDefaultValue>
+	  <CPMenuDefaultValue>1</CPMenuDefaultValue>
+
+          <ATHideDefaultValue>0</ATHideDefaultValue>
+          <ATBothDefaultValue>0</ATBothDefaultValue>
+	  <ATMenuDefaultValue>0</ATMenuDefaultValue>
+
+          <PHideDefaultValue>1</PHideDefaultValue>
+          <POpenDefaultValue>1</POpenDefaultValue>
+	  <PMenuDefaultValue>1</PMenuDefaultValue>
+
+          <MHideDefaultValue>1</MHideDefaultValue>
+          <MOpenDefaultValue>1</MOpenDefaultValue>
+	  <MMenuDefaultValue>1</MMenuDefaultValue>
+
+          <GHideDefaultValue>0</GHideDefaultValue>
+          <GOpenDefaultValue>0</GOpenDefaultValue>
+	  <GMenuDefaultValue>0</GMenuDefaultValue>
+
+          <UHideDefaultValue>1</UHideDefaultValue>
+          <UOpenDefaultValue>1</UOpenDefaultValue>
+	  <UMenuDefaultValue>1</UMenuDefaultValue>
+
+	  <CDefaultValue>1</CDefaultValue>
+
+	  <RDefaultValue>0</RDefaultValue>
+
+        <!--
+            [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced!Start_SearchFiles]
+                (REG_DWORD): 2
+            -->
+	  <Start_SearchFiles>2</Start_SearchFiles>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\FullIndex!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <IndexSearchFilesDefaultValue>2</IndexSearchFilesDefaultValue>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\NoSearch!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <NoSearchFilesDefaultValue>2</NoSearchFilesDefaultValue>
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\StartPanel\SearchFiles\UserOnly!DefaultValue]
+                (REG_DWORD): 2
+            -->
+      <UserSearchFilesDefaultValue>2</UserSearchFilesDefaultValue>
+      
+        </component>
+
+        <component name="Microsoft-Windows-themeservice"
+                   processorArchitecture="x86"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Themes!Start]
+                (REG_DWORD): 2
+            -->
+
+          <Start>2</Start>
+        </component>
+
+        <component name="Microsoft-Windows-themeservice"
+                   processorArchitecture="amd64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Themes!Start]
+                (REG_DWORD): 2
+            -->
+
+          <Start>2</Start>
+        </component>
+
+        <component name="Microsoft-Windows-themeservice"
+                   processorArchitecture="ia64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Themes!Start]
+                (REG_DWORD): 2
+            -->
+
+          <Start>2</Start>
+        </component>
+
+        <component name="Microsoft-Windows-scrnsave"
+                   processorArchitecture="x86"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_CURRENT_USER\Control Panel\Desktop!ScreenSaverIsSecure]
+                (REG_DWORD): 0
+            -->
+
+          <ScreenSaverIsSecure>0</ScreenSaverIsSecure>
+        </component>
+
+        <component name="Microsoft-Windows-scrnsave"
+                   processorArchitecture="amd64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_CURRENT_USER\Control Panel\Desktop!ScreenSaverIsSecure]
+                (REG_DWORD): 0
+            -->
+
+          <ScreenSaverIsSecure>0</ScreenSaverIsSecure>
+        </component>
+
+        <component name="Microsoft-Windows-scrnsave"
+                   processorArchitecture="ia64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_CURRENT_USER\Control Panel\Desktop!ScreenSaverIsSecure]
+                (REG_DWORD): 0
+            -->
+
+          <ScreenSaverIsSecure>0</ScreenSaverIsSecure>
+        </component>
+
+        <component name="Microsoft-Windows-Networking-Internet_Authentication_Service_DataStore"
+                   processorArchitecture="x86"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_CLASSES_ROOT\AppID\{48da6741-1bf0-4a44-8325-293086c79077}!DllSurrogate]
+                (REG_EXPAND_SZ): ""
+            -->
+
+          <DataStoreHostProcess></DataStoreHostProcess>
+        </component>
+
+        <component name="Microsoft-Windows-Networking-Internet_Authentication_Service_DataStore"
+                   processorArchitecture="wow64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_CLASSES_ROOT\AppID\{48da6741-1bf0-4a44-8325-293086c79077}!DllSurrogate]
+                (REG_EXPAND_SZ): ""
+            -->
+
+          <DataStoreHostProcess></DataStoreHostProcess>
+        </component>
+
+        <component name="Microsoft-Windows-Networking-Internet_Authentication_Service_DataStore"
+                   processorArchitecture="amd64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_CLASSES_ROOT\AppID\{48da6741-1bf0-4a44-8325-293086c79077}!DllSurrogate]
+                (REG_EXPAND_SZ): ""
+            -->
+
+          <DataStoreHostProcess></DataStoreHostProcess>
+        </component>
+
+        <component name="Microsoft-Windows-Networking-Internet_Authentication_Service_DataStore"
+                   processorArchitecture="ia64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+        <!--
+            [HKEY_CLASSES_ROOT\AppID\{48da6741-1bf0-4a44-8325-293086c79077}!DllSurrogate]
+                (REG_EXPAND_SZ): ""
+            -->
+
+          <DataStoreHostProcess></DataStoreHostProcess>
+        </component>
+
+        <component name="Microsoft-Windows-Power-Policy-Definitions"
+                   processorArchitecture="x86"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+            <!-- COMMON CLIENT POWER POLICY OVERRIDES BEGIN -->
+            <!-- DO NOT EDIT OVERRIDES IN THIS SECTION BY HAND!!! -->
+            <!-- see base\manifests\power\client-overrides.txt to make changes to these policy values -->
+
+            <!-- security descriptor for power settings --> 
+            <DefaultSecurityDescriptor>O:BAG:SYD:P(A;CI;KRKW;;;BU)(A;CI;KA;;;BA)(A;CI;KA;;;SY)(A;CI;KA;;;CO)</DefaultSecurityDescriptor>
+
+            <!-- hibernate enabled -->
+            <HibernateEnabled>1</HibernateEnabled>
+
+            <!-- hiberfile size -->
+            <HiberFileSizePercent>75</HiberFileSizePercent>
+
+            <!-- hard disk power down timeout -->
+            <DefaultBalancedHardDiskPowerDownTimeoutACSetting>1200</DefaultBalancedHardDiskPowerDownTimeoutACSetting>
+            <DefaultBalancedHardDiskPowerDownTimeoutDCSetting>600</DefaultBalancedHardDiskPowerDownTimeoutDCSetting>
+            <DefaultHighPerformanceHardDiskPowerDownTimeoutACSetting>1200</DefaultHighPerformanceHardDiskPowerDownTimeoutACSetting>
+            <DefaultHighPerformanceHardDiskPowerDownTimeoutDCSetting>1200</DefaultHighPerformanceHardDiskPowerDownTimeoutDCSetting>
+
+            <!-- unattended sleep timeout -->
+            <DefaultBalancedUnattendedSleepTimeoutACSetting>120</DefaultBalancedUnattendedSleepTimeoutACSetting>
+            <DefaultBalancedUnattendedSleepTimeoutDCSetting>120</DefaultBalancedUnattendedSleepTimeoutDCSetting>
+            <DefaultHighPerformanceUnattendedSleepTimeoutACSetting>120</DefaultHighPerformanceUnattendedSleepTimeoutACSetting>
+            <DefaultHighPerformanceUnattendedSleepTimeoutDCSetting>120</DefaultHighPerformanceUnattendedSleepTimeoutDCSetting>
+            <DefaultPowerSaverUnattendedSleepTimeoutACSetting>120</DefaultPowerSaverUnattendedSleepTimeoutACSetting>
+            <DefaultPowerSaverUnattendedSleepTimeoutDCSetting>120</DefaultPowerSaverUnattendedSleepTimeoutDCSetting>
+
+            <!-- system standby timeout -->
+            <DefaultBalancedSystemStandbyTimeoutACSetting>1800</DefaultBalancedSystemStandbyTimeoutACSetting>
+            <DefaultBalancedSystemStandbyTimeoutDCSetting>900</DefaultBalancedSystemStandbyTimeoutDCSetting>
+            <DefaultPowerSaverSystemStandbyTimeoutACSetting>900</DefaultPowerSaverSystemStandbyTimeoutACSetting>
+            <DefaultPowerSaverSystemStandbyTimeoutDCSetting>600</DefaultPowerSaverSystemStandbyTimeoutDCSetting>
+
+            <!-- hardware sleep button action -->
+            <DefaultBalancedSleepButtonActionACSetting>1</DefaultBalancedSleepButtonActionACSetting>
+            <DefaultBalancedSleepButtonActionDCSetting>1</DefaultBalancedSleepButtonActionDCSetting>
+            <DefaultHighPerformanceSleepButtonActionACSetting>1</DefaultHighPerformanceSleepButtonActionACSetting>
+            <DefaultHighPerformanceSleepButtonActionDCSetting>1</DefaultHighPerformanceSleepButtonActionDCSetting>
+            <DefaultPowerSaverSleepButtonActionACSetting>1</DefaultPowerSaverSleepButtonActionACSetting>
+            <DefaultPowerSaverSleepButtonActionDCSetting>1</DefaultPowerSaverSleepButtonActionDCSetting>
+
+            <!-- start menu button action -->
+            <DefaultBalancedUIButtonActionACSetting>0</DefaultBalancedUIButtonActionACSetting>
+            <DefaultBalancedUIButtonActionDCSetting>0</DefaultBalancedUIButtonActionDCSetting>
+            <DefaultHighPerformanceUIButtonActionACSetting>0</DefaultHighPerformanceUIButtonActionACSetting>
+            <DefaultHighPerformanceUIButtonActionDCSetting>0</DefaultHighPerformanceUIButtonActionDCSetting>
+            <DefaultPowerSaverUIButtonActionACSetting>0</DefaultPowerSaverUIButtonActionACSetting>
+            <DefaultPowerSaverUIButtonActionDCSetting>0</DefaultPowerSaverUIButtonActionDCSetting>
+
+            <!-- core parking core override -->
+            <DefaultBalancedPpmCoreParkingCoreOverrideACSetting>1</DefaultBalancedPpmCoreParkingCoreOverrideACSetting>
+            <DefaultBalancedPpmCoreParkingCoreOverrideDCSetting>1</DefaultBalancedPpmCoreParkingCoreOverrideDCSetting>
+            <DefaultHighPerformancePpmCoreParkingCoreOverrideACSetting>1</DefaultHighPerformancePpmCoreParkingCoreOverrideACSetting>
+            <DefaultHighPerformancePpmCoreParkingCoreOverrideDCSetting>1</DefaultHighPerformancePpmCoreParkingCoreOverrideDCSetting>
+            <DefaultPowerSaverPpmCoreParkingCoreOverrideACSetting>1</DefaultPowerSaverPpmCoreParkingCoreOverrideACSetting>
+            <DefaultPowerSaverPpmCoreParkingCoreOverrideDCSetting>1</DefaultPowerSaverPpmCoreParkingCoreOverrideDCSetting>
+
+            <!-- core parking increase time -->
+            <DefaultBalancedPpmCoreParkingIncreaseTimeACSetting>3</DefaultBalancedPpmCoreParkingIncreaseTimeACSetting>
+            <DefaultBalancedPpmCoreParkingIncreaseTimeDCSetting>3</DefaultBalancedPpmCoreParkingIncreaseTimeDCSetting>
+            <DefaultHighPerformancePpmCoreParkingIncreaseTimeACSetting>7</DefaultHighPerformancePpmCoreParkingIncreaseTimeACSetting>
+            <DefaultHighPerformancePpmCoreParkingIncreaseTimeDCSetting>7</DefaultHighPerformancePpmCoreParkingIncreaseTimeDCSetting>
+            <DefaultPowerSaverPpmCoreParkingIncreaseTimeACSetting>1</DefaultPowerSaverPpmCoreParkingIncreaseTimeACSetting>
+            <DefaultPowerSaverPpmCoreParkingIncreaseTimeDCSetting>1</DefaultPowerSaverPpmCoreParkingIncreaseTimeDCSetting>
+
+            <!-- core parking decrease time -->
+            <DefaultBalancedPpmCoreParkingDecreaseTimeACSetting>10</DefaultBalancedPpmCoreParkingDecreaseTimeACSetting>
+            <DefaultBalancedPpmCoreParkingDecreaseTimeDCSetting>10</DefaultBalancedPpmCoreParkingDecreaseTimeDCSetting>
+            <DefaultHighPerformancePpmCoreParkingDecreaseTimeACSetting>20</DefaultHighPerformancePpmCoreParkingDecreaseTimeACSetting>
+            <DefaultHighPerformancePpmCoreParkingDecreaseTimeDCSetting>20</DefaultHighPerformancePpmCoreParkingDecreaseTimeDCSetting>
+            <DefaultPowerSaverPpmCoreParkingDecreaseTimeACSetting>2</DefaultPowerSaverPpmCoreParkingDecreaseTimeACSetting>
+            <DefaultPowerSaverPpmCoreParkingDecreaseTimeDCSetting>2</DefaultPowerSaverPpmCoreParkingDecreaseTimeDCSetting>
+
+            <!-- core parking increase threshold -->
+            <DefaultBalancedPpmCoreParkingIncreaseThresholdACSetting>85</DefaultBalancedPpmCoreParkingIncreaseThresholdACSetting>
+            <DefaultBalancedPpmCoreParkingIncreaseThresholdDCSetting>85</DefaultBalancedPpmCoreParkingIncreaseThresholdDCSetting>
+            <DefaultHighPerformancePpmCoreParkingIncreaseThresholdACSetting>85</DefaultHighPerformancePpmCoreParkingIncreaseThresholdACSetting>
+            <DefaultHighPerformancePpmCoreParkingIncreaseThresholdDCSetting>85</DefaultHighPerformancePpmCoreParkingIncreaseThresholdDCSetting>
+            <DefaultPowerSaverPpmCoreParkingIncreaseThresholdACSetting>85</DefaultPowerSaverPpmCoreParkingIncreaseThresholdACSetting>
+            <DefaultPowerSaverPpmCoreParkingIncreaseThresholdDCSetting>85</DefaultPowerSaverPpmCoreParkingIncreaseThresholdDCSetting>
+
+            <!-- core parking decrease threshold -->
+            <DefaultBalancedPpmCoreParkingDecreaseThresholdACSetting>50</DefaultBalancedPpmCoreParkingDecreaseThresholdACSetting>
+            <DefaultBalancedPpmCoreParkingDecreaseThresholdDCSetting>50</DefaultBalancedPpmCoreParkingDecreaseThresholdDCSetting>
+            <DefaultHighPerformancePpmCoreParkingDecreaseThresholdACSetting>50</DefaultHighPerformancePpmCoreParkingDecreaseThresholdACSetting>
+            <DefaultHighPerformancePpmCoreParkingDecreaseThresholdDCSetting>50</DefaultHighPerformancePpmCoreParkingDecreaseThresholdDCSetting>
+            <DefaultPowerSaverPpmCoreParkingDecreaseThresholdACSetting>50</DefaultPowerSaverPpmCoreParkingDecreaseThresholdACSetting>
+            <DefaultPowerSaverPpmCoreParkingDecreaseThresholdDCSetting>50</DefaultPowerSaverPpmCoreParkingDecreaseThresholdDCSetting>
+
+            <!-- core parking max cores -->
+            <DefaultBalancedPpmMaxUnparkedCoresACSetting>100</DefaultBalancedPpmMaxUnparkedCoresACSetting>
+            <DefaultBalancedPpmMaxUnparkedCoresDCSetting>100</DefaultBalancedPpmMaxUnparkedCoresDCSetting>
+            <DefaultHighPerformancePpmMaxUnparkedCoresACSetting>100</DefaultHighPerformancePpmMaxUnparkedCoresACSetting>
+            <DefaultHighPerformancePpmMaxUnparkedCoresDCSetting>100</DefaultHighPerformancePpmMaxUnparkedCoresDCSetting>
+            <DefaultPowerSaverPpmMaxUnparkedCoresACSetting>100</DefaultPowerSaverPpmMaxUnparkedCoresACSetting>
+            <DefaultPowerSaverPpmMaxUnparkedCoresDCSetting>100</DefaultPowerSaverPpmMaxUnparkedCoresDCSetting>
+
+            <!-- core parking min cores -->
+            <DefaultBalancedPpmMinUnparkedCoresACSetting>10</DefaultBalancedPpmMinUnparkedCoresACSetting>
+            <DefaultBalancedPpmMinUnparkedCoresDCSetting>10</DefaultBalancedPpmMinUnparkedCoresDCSetting>
+            <DefaultHighPerformancePpmMinUnparkedCoresACSetting>10</DefaultHighPerformancePpmMinUnparkedCoresACSetting>
+            <DefaultHighPerformancePpmMinUnparkedCoresDCSetting>10</DefaultHighPerformancePpmMinUnparkedCoresDCSetting>
+            <DefaultPowerSaverPpmMinUnparkedCoresACSetting>10</DefaultPowerSaverPpmMinUnparkedCoresACSetting>
+            <DefaultPowerSaverPpmMinUnparkedCoresDCSetting>10</DefaultPowerSaverPpmMinUnparkedCoresDCSetting>
+
+            <!-- perf check time -->
+            <DefaultBalancedPpmPerfTimeCheckACSetting>30</DefaultBalancedPpmPerfTimeCheckACSetting>
+            <DefaultBalancedPpmPerfTimeCheckDCSetting>30</DefaultBalancedPpmPerfTimeCheckDCSetting>
+            <DefaultHighPerformancePpmPerfTimeCheckACSetting>15</DefaultHighPerformancePpmPerfTimeCheckACSetting>
+            <DefaultHighPerformancePpmPerfTimeCheckDCSetting>15</DefaultHighPerformancePpmPerfTimeCheckDCSetting>
+            <DefaultPowerSaverPpmPerfTimeCheckACSetting>200</DefaultPowerSaverPpmPerfTimeCheckACSetting>
+            <DefaultPowerSaverPpmPerfTimeCheckDCSetting>200</DefaultPowerSaverPpmPerfTimeCheckDCSetting>
+
+            <!-- perf state increase threshold -->
+            <DefaultBalancedPpmPerfIncreaseACSetting>60</DefaultBalancedPpmPerfIncreaseACSetting>
+            <DefaultBalancedPpmPerfIncreaseDCSetting>90</DefaultBalancedPpmPerfIncreaseDCSetting>
+            <DefaultHighPerformancePpmPerfIncreaseACSetting>30</DefaultHighPerformancePpmPerfIncreaseACSetting>
+            <DefaultHighPerformancePpmPerfIncreaseDCSetting>30</DefaultHighPerformancePpmPerfIncreaseDCSetting>
+            <DefaultPowerSaverPpmPerfIncreaseACSetting>90</DefaultPowerSaverPpmPerfIncreaseACSetting>
+            <DefaultPowerSaverPpmPerfIncreaseDCSetting>90</DefaultPowerSaverPpmPerfIncreaseDCSetting>
+
+            <!-- perf state decrease threshold -->
+            <DefaultBalancedPpmPerfDecreaseACSetting>20</DefaultBalancedPpmPerfDecreaseACSetting>
+            <DefaultBalancedPpmPerfDecreaseDCSetting>30</DefaultBalancedPpmPerfDecreaseDCSetting>
+            <DefaultHighPerformancePpmPerfDecreaseACSetting>10</DefaultHighPerformancePpmPerfDecreaseACSetting>
+            <DefaultHighPerformancePpmPerfDecreaseDCSetting>10</DefaultHighPerformancePpmPerfDecreaseDCSetting>
+            <DefaultPowerSaverPpmPerfDecreaseACSetting>60</DefaultPowerSaverPpmPerfDecreaseACSetting>
+            <DefaultPowerSaverPpmPerfDecreaseDCSetting>60</DefaultPowerSaverPpmPerfDecreaseDCSetting>
+
+            <!-- perf state increase policy -->
+            <DefaultBalancedPpmPerfIncreasePolicyACSetting>0</DefaultBalancedPpmPerfIncreasePolicyACSetting>
+            <DefaultBalancedPpmPerfIncreasePolicyDCSetting>0</DefaultBalancedPpmPerfIncreasePolicyDCSetting>
+            <DefaultHighPerformancePpmPerfIncreasePolicyACSetting>2</DefaultHighPerformancePpmPerfIncreasePolicyACSetting>
+            <DefaultHighPerformancePpmPerfIncreasePolicyDCSetting>2</DefaultHighPerformancePpmPerfIncreasePolicyDCSetting>
+            <DefaultPowerSaverPpmPerfIncreasePolicyACSetting>1</DefaultPowerSaverPpmPerfIncreasePolicyACSetting>
+            <DefaultPowerSaverPpmPerfIncreasePolicyDCSetting>1</DefaultPowerSaverPpmPerfIncreasePolicyDCSetting>
+
+            <!-- perf state decrease policy -->
+            <DefaultBalancedPpmPerfDecreasePolicyACSetting>0</DefaultBalancedPpmPerfDecreasePolicyACSetting>
+            <DefaultBalancedPpmPerfDecreasePolicyDCSetting>0</DefaultBalancedPpmPerfDecreasePolicyDCSetting>
+            <DefaultHighPerformancePpmPerfDecreasePolicyACSetting>1</DefaultHighPerformancePpmPerfDecreasePolicyACSetting>
+            <DefaultHighPerformancePpmPerfDecreasePolicyDCSetting>1</DefaultHighPerformancePpmPerfDecreasePolicyDCSetting>
+            <DefaultPowerSaverPpmPerfDecreasePolicyACSetting>2</DefaultPowerSaverPpmPerfDecreasePolicyACSetting>
+            <DefaultPowerSaverPpmPerfDecreasePolicyDCSetting>2</DefaultPowerSaverPpmPerfDecreasePolicyDCSetting>
+
+            <!-- perf history count -->
+            <DefaultBalancedPpmPerfHistoryPolicyACSetting>1</DefaultBalancedPpmPerfHistoryPolicyACSetting>
+            <DefaultBalancedPpmPerfHistoryPolicyDCSetting>1</DefaultBalancedPpmPerfHistoryPolicyDCSetting>
+            <DefaultHighPerformancePpmPerfHistoryPolicyACSetting>1</DefaultHighPerformancePpmPerfHistoryPolicyACSetting>
+            <DefaultHighPerformancePpmPerfHistoryPolicyDCSetting>1</DefaultHighPerformancePpmPerfHistoryPolicyDCSetting>
+            <DefaultPowerSaverPpmPerfHistoryPolicyACSetting>1</DefaultPowerSaverPpmPerfHistoryPolicyACSetting>
+            <DefaultPowerSaverPpmPerfHistoryPolicyDCSetting>1</DefaultPowerSaverPpmPerfHistoryPolicyDCSetting>
+           
+            <!-- idle time check -->
+            <DefaultBalancedPpmIdleTimeCheckACSetting>50000</DefaultBalancedPpmIdleTimeCheckACSetting>
+            <DefaultBalancedPpmIdleTimeCheckDCSetting>50000</DefaultBalancedPpmIdleTimeCheckDCSetting>
+            <DefaultHighPerformancePpmIdleTimeCheckACSetting>50000</DefaultHighPerformancePpmIdleTimeCheckACSetting>
+            <DefaultHighPerformancePpmIdleTimeCheckDCSetting>50000</DefaultHighPerformancePpmIdleTimeCheckDCSetting>
+            <DefaultPowerSaverPpmIdleTimeCheckACSetting>50000</DefaultPowerSaverPpmIdleTimeCheckACSetting>
+            <DefaultPowerSaverPpmIdleTimeCheckDCSetting>50000</DefaultPowerSaverPpmIdleTimeCheckDCSetting>
+
+            <!-- core parking parked perf state -->
+            <DefaultBalancedPpmCoreParkingParkedPerfStateACSetting>0</DefaultBalancedPpmCoreParkingParkedPerfStateACSetting>
+            <DefaultBalancedPpmCoreParkingParkedPerfStateDCSetting>0</DefaultBalancedPpmCoreParkingParkedPerfStateDCSetting>
+            <DefaultHighPerformancePpmCoreParkingParkedPerfStateACSetting>0</DefaultHighPerformancePpmCoreParkingParkedPerfStateACSetting>
+            <DefaultHighPerformancePpmCoreParkingParkedPerfStateDCSetting>0</DefaultHighPerformancePpmCoreParkingParkedPerfStateDCSetting>
+            <DefaultPowerSaverPpmCoreParkingParkedPerfStateACSetting>0</DefaultPowerSaverPpmCoreParkingParkedPerfStateACSetting>
+            <DefaultPowerSaverPpmCoreParkingParkedPerfStateDCSetting>0</DefaultPowerSaverPpmCoreParkingParkedPerfStateDCSetting>
+
+            <!-- perf boost policy -->
+            <DefaultBalancedPpmPerfBoostPolicyACSetting>65</DefaultBalancedPpmPerfBoostPolicyACSetting>
+            <DefaultBalancedPpmPerfBoostPolicyDCSetting>50</DefaultBalancedPpmPerfBoostPolicyDCSetting>
+            <DefaultHighPerformancePpmPerfBoostPolicyACSetting>100</DefaultHighPerformancePpmPerfBoostPolicyACSetting>
+            <DefaultHighPerformancePpmPerfBoostPolicyDCSetting>100</DefaultHighPerformancePpmPerfBoostPolicyDCSetting>
+            <DefaultPowerSaverPpmPerfBoostPolicyACSetting>50</DefaultPowerSaverPpmPerfBoostPolicyACSetting>
+            <DefaultPowerSaverPpmPerfBoostPolicyDCSetting>50</DefaultPowerSaverPpmPerfBoostPolicyDCSetting>
+
+            <!-- perf max p-state -->
+            <DefaultBalancedProcessorPStateUpperBoundACSetting>100</DefaultBalancedProcessorPStateUpperBoundACSetting>
+            <DefaultBalancedProcessorPStateUpperBoundDCSetting>100</DefaultBalancedProcessorPStateUpperBoundDCSetting>
+            <DefaultHighPerformanceProcessorPStateUpperBoundACSetting>100</DefaultHighPerformanceProcessorPStateUpperBoundACSetting>
+            <DefaultHighPerformanceProcessorPStateUpperBoundDCSetting>100</DefaultHighPerformanceProcessorPStateUpperBoundDCSetting>
+            <DefaultPowerSaverProcessorPStateUpperBoundACSetting>100</DefaultPowerSaverProcessorPStateUpperBoundACSetting>
+            <DefaultPowerSaverProcessorPStateUpperBoundDCSetting>100</DefaultPowerSaverProcessorPStateUpperBoundDCSetting>
+
+            <!-- COMMON CLIENT POWER POLICY OVERRIDES END -->
+
+            <!-- lock on resume -->
+            <BalancedACSettingIndex>1</BalancedACSettingIndex>
+            <BalancedDCSettingIndex>1</BalancedDCSettingIndex>
+            <PerformanceACSettingIndex>1</PerformanceACSettingIndex>
+            <PerformanceDCSettingIndex>1</PerformanceDCSettingIndex>
+            <PowerACSettingIndex>1</PowerACSettingIndex>
+            <PowerDCSettingIndex>1</PowerDCSettingIndex>
+        </component>
+
+        <component name="Microsoft-Windows-Power-Policy-Definitions"
+                   processorArchitecture="amd64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+
+            <!-- COMMON CLIENT POWER POLICY OVERRIDES BEGIN -->
+            <!-- DO NOT EDIT OVERRIDES IN THIS SECTION BY HAND!!! -->
+            <!-- see base\manifests\power\client-overrides.txt to make changes to these policy values -->
+
+            <!-- security descriptor for power settings --> 
+            <DefaultSecurityDescriptor>O:BAG:SYD:P(A;CI;KRKW;;;BU)(A;CI;KA;;;BA)(A;CI;KA;;;SY)(A;CI;KA;;;CO)</DefaultSecurityDescriptor>
+
+            <!-- hibernate enabled -->
+            <HibernateEnabled>1</HibernateEnabled>
+
+            <!-- hiberfile size -->
+            <HiberFileSizePercent>75</HiberFileSizePercent>
+
+            <!-- hard disk power down timeout -->
+            <DefaultBalancedHardDiskPowerDownTimeoutACSetting>1200</DefaultBalancedHardDiskPowerDownTimeoutACSetting>
+            <DefaultBalancedHardDiskPowerDownTimeoutDCSetting>600</DefaultBalancedHardDiskPowerDownTimeoutDCSetting>
+            <DefaultHighPerformanceHardDiskPowerDownTimeoutACSetting>1200</DefaultHighPerformanceHardDiskPowerDownTimeoutACSetting>
+            <DefaultHighPerformanceHardDiskPowerDownTimeoutDCSetting>1200</DefaultHighPerformanceHardDiskPowerDownTimeoutDCSetting>
+
+            <!-- unattended sleep timeout -->
+            <DefaultBalancedUnattendedSleepTimeoutACSetting>120</DefaultBalancedUnattendedSleepTimeoutACSetting>
+            <DefaultBalancedUnattendedSleepTimeoutDCSetting>120</DefaultBalancedUnattendedSleepTimeoutDCSetting>
+            <DefaultHighPerformanceUnattendedSleepTimeoutACSetting>120</DefaultHighPerformanceUnattendedSleepTimeoutACSetting>
+            <DefaultHighPerformanceUnattendedSleepTimeoutDCSetting>120</DefaultHighPerformanceUnattendedSleepTimeoutDCSetting>
+            <DefaultPowerSaverUnattendedSleepTimeoutACSetting>120</DefaultPowerSaverUnattendedSleepTimeoutACSetting>
+            <DefaultPowerSaverUnattendedSleepTimeoutDCSetting>120</DefaultPowerSaverUnattendedSleepTimeoutDCSetting>
+
+            <!-- system standby timeout -->
+            <DefaultBalancedSystemStandbyTimeoutACSetting>1800</DefaultBalancedSystemStandbyTimeoutACSetting>
+            <DefaultBalancedSystemStandbyTimeoutDCSetting>900</DefaultBalancedSystemStandbyTimeoutDCSetting>
+            <DefaultPowerSaverSystemStandbyTimeoutACSetting>900</DefaultPowerSaverSystemStandbyTimeoutACSetting>
+            <DefaultPowerSaverSystemStandbyTimeoutDCSetting>600</DefaultPowerSaverSystemStandbyTimeoutDCSetting>
+
+            <!-- hardware sleep button action -->
+            <DefaultBalancedSleepButtonActionACSetting>1</DefaultBalancedSleepButtonActionACSetting>
+            <DefaultBalancedSleepButtonActionDCSetting>1</DefaultBalancedSleepButtonActionDCSetting>
+            <DefaultHighPerformanceSleepButtonActionACSetting>1</DefaultHighPerformanceSleepButtonActionACSetting>
+            <DefaultHighPerformanceSleepButtonActionDCSetting>1</DefaultHighPerformanceSleepButtonActionDCSetting>
+            <DefaultPowerSaverSleepButtonActionACSetting>1</DefaultPowerSaverSleepButtonActionACSetting>
+            <DefaultPowerSaverSleepButtonActionDCSetting>1</DefaultPowerSaverSleepButtonActionDCSetting>
+
+            <!-- start menu button action -->
+            <DefaultBalancedUIButtonActionACSetting>0</DefaultBalancedUIButtonActionACSetting>
+            <DefaultBalancedUIButtonActionDCSetting>0</DefaultBalancedUIButtonActionDCSetting>
+            <DefaultHighPerformanceUIButtonActionACSetting>0</DefaultHighPerformanceUIButtonActionACSetting>
+            <DefaultHighPerformanceUIButtonActionDCSetting>0</DefaultHighPerformanceUIButtonActionDCSetting>
+            <DefaultPowerSaverUIButtonActionACSetting>0</DefaultPowerSaverUIButtonActionACSetting>
+            <DefaultPowerSaverUIButtonActionDCSetting>0</DefaultPowerSaverUIButtonActionDCSetting>
+
+            <!-- core parking core override -->
+            <DefaultBalancedPpmCoreParkingCoreOverrideACSetting>1</DefaultBalancedPpmCoreParkingCoreOverrideACSetting>
+            <DefaultBalancedPpmCoreParkingCoreOverrideDCSetting>1</DefaultBalancedPpmCoreParkingCoreOverrideDCSetting>
+            <DefaultHighPerformancePpmCoreParkingCoreOverrideACSetting>1</DefaultHighPerformancePpmCoreParkingCoreOverrideACSetting>
+            <DefaultHighPerformancePpmCoreParkingCoreOverrideDCSetting>1</DefaultHighPerformancePpmCoreParkingCoreOverrideDCSetting>
+            <DefaultPowerSaverPpmCoreParkingCoreOverrideACSetting>1</DefaultPowerSaverPpmCoreParkingCoreOverrideACSetting>
+            <DefaultPowerSaverPpmCoreParkingCoreOverrideDCSetting>1</DefaultPowerSaverPpmCoreParkingCoreOverrideDCSetting>
+
+            <!-- core parking increase time -->
+            <DefaultBalancedPpmCoreParkingIncreaseTimeACSetting>3</DefaultBalancedPpmCoreParkingIncreaseTimeACSetting>
+            <DefaultBalancedPpmCoreParkingIncreaseTimeDCSetting>3</DefaultBalancedPpmCoreParkingIncreaseTimeDCSetting>
+            <DefaultHighPerformancePpmCoreParkingIncreaseTimeACSetting>7</DefaultHighPerformancePpmCoreParkingIncreaseTimeACSetting>
+            <DefaultHighPerformancePpmCoreParkingIncreaseTimeDCSetting>7</DefaultHighPerformancePpmCoreParkingIncreaseTimeDCSetting>
+            <DefaultPowerSaverPpmCoreParkingIncreaseTimeACSetting>1</DefaultPowerSaverPpmCoreParkingIncreaseTimeACSetting>
+            <DefaultPowerSaverPpmCoreParkingIncreaseTimeDCSetting>1</DefaultPowerSaverPpmCoreParkingIncreaseTimeDCSetting>
+
+            <!-- core parking decrease time -->
+            <DefaultBalancedPpmCoreParkingDecreaseTimeACSetting>10</DefaultBalancedPpmCoreParkingDecreaseTimeACSetting>
+            <DefaultBalancedPpmCoreParkingDecreaseTimeDCSetting>10</DefaultBalancedPpmCoreParkingDecreaseTimeDCSetting>
+            <DefaultHighPerformancePpmCoreParkingDecreaseTimeACSetting>20</DefaultHighPerformancePpmCoreParkingDecreaseTimeACSetting>
+            <DefaultHighPerformancePpmCoreParkingDecreaseTimeDCSetting>20</DefaultHighPerformancePpmCoreParkingDecreaseTimeDCSetting>
+            <DefaultPowerSaverPpmCoreParkingDecreaseTimeACSetting>2</DefaultPowerSaverPpmCoreParkingDecreaseTimeACSetting>
+            <DefaultPowerSaverPpmCoreParkingDecreaseTimeDCSetting>2</DefaultPowerSaverPpmCoreParkingDecreaseTimeDCSetting>
+
+            <!-- core parking increase threshold -->
+            <DefaultBalancedPpmCoreParkingIncreaseThresholdACSetting>85</DefaultBalancedPpmCoreParkingIncreaseThresholdACSetting>
+            <DefaultBalancedPpmCoreParkingIncreaseThresholdDCSetting>85</DefaultBalancedPpmCoreParkingIncreaseThresholdDCSetting>
+            <DefaultHighPerformancePpmCoreParkingIncreaseThresholdACSetting>85</DefaultHighPerformancePpmCoreParkingIncreaseThresholdACSetting>
+            <DefaultHighPerformancePpmCoreParkingIncreaseThresholdDCSetting>85</DefaultHighPerformancePpmCoreParkingIncreaseThresholdDCSetting>
+            <DefaultPowerSaverPpmCoreParkingIncreaseThresholdACSetting>85</DefaultPowerSaverPpmCoreParkingIncreaseThresholdACSetting>
+            <DefaultPowerSaverPpmCoreParkingIncreaseThresholdDCSetting>85</DefaultPowerSaverPpmCoreParkingIncreaseThresholdDCSetting>
+
+            <!-- core parking decrease threshold -->
+            <DefaultBalancedPpmCoreParkingDecreaseThresholdACSetting>50</DefaultBalancedPpmCoreParkingDecreaseThresholdACSetting>
+            <DefaultBalancedPpmCoreParkingDecreaseThresholdDCSetting>50</DefaultBalancedPpmCoreParkingDecreaseThresholdDCSetting>
+            <DefaultHighPerformancePpmCoreParkingDecreaseThresholdACSetting>50</DefaultHighPerformancePpmCoreParkingDecreaseThresholdACSetting>
+            <DefaultHighPerformancePpmCoreParkingDecreaseThresholdDCSetting>50</DefaultHighPerformancePpmCoreParkingDecreaseThresholdDCSetting>
+            <DefaultPowerSaverPpmCoreParkingDecreaseThresholdACSetting>50</DefaultPowerSaverPpmCoreParkingDecreaseThresholdACSetting>
+            <DefaultPowerSaverPpmCoreParkingDecreaseThresholdDCSetting>50</DefaultPowerSaverPpmCoreParkingDecreaseThresholdDCSetting>
+
+            <!-- core parking max cores -->
+            <DefaultBalancedPpmMaxUnparkedCoresACSetting>100</DefaultBalancedPpmMaxUnparkedCoresACSetting>
+            <DefaultBalancedPpmMaxUnparkedCoresDCSetting>100</DefaultBalancedPpmMaxUnparkedCoresDCSetting>
+            <DefaultHighPerformancePpmMaxUnparkedCoresACSetting>100</DefaultHighPerformancePpmMaxUnparkedCoresACSetting>
+            <DefaultHighPerformancePpmMaxUnparkedCoresDCSetting>100</DefaultHighPerformancePpmMaxUnparkedCoresDCSetting>
+            <DefaultPowerSaverPpmMaxUnparkedCoresACSetting>100</DefaultPowerSaverPpmMaxUnparkedCoresACSetting>
+            <DefaultPowerSaverPpmMaxUnparkedCoresDCSetting>100</DefaultPowerSaverPpmMaxUnparkedCoresDCSetting>
+
+            <!-- core parking min cores -->
+            <DefaultBalancedPpmMinUnparkedCoresACSetting>10</DefaultBalancedPpmMinUnparkedCoresACSetting>
+            <DefaultBalancedPpmMinUnparkedCoresDCSetting>10</DefaultBalancedPpmMinUnparkedCoresDCSetting>
+            <DefaultHighPerformancePpmMinUnparkedCoresACSetting>10</DefaultHighPerformancePpmMinUnparkedCoresACSetting>
+            <DefaultHighPerformancePpmMinUnparkedCoresDCSetting>10</DefaultHighPerformancePpmMinUnparkedCoresDCSetting>
+            <DefaultPowerSaverPpmMinUnparkedCoresACSetting>10</DefaultPowerSaverPpmMinUnparkedCoresACSetting>
+            <DefaultPowerSaverPpmMinUnparkedCoresDCSetting>10</DefaultPowerSaverPpmMinUnparkedCoresDCSetting>
+
+            <!-- perf check time -->
+            <DefaultBalancedPpmPerfTimeCheckACSetting>30</DefaultBalancedPpmPerfTimeCheckACSetting>
+            <DefaultBalancedPpmPerfTimeCheckDCSetting>30</DefaultBalancedPpmPerfTimeCheckDCSetting>
+            <DefaultHighPerformancePpmPerfTimeCheckACSetting>15</DefaultHighPerformancePpmPerfTimeCheckACSetting>
+            <DefaultHighPerformancePpmPerfTimeCheckDCSetting>15</DefaultHighPerformancePpmPerfTimeCheckDCSetting>
+            <DefaultPowerSaverPpmPerfTimeCheckACSetting>200</DefaultPowerSaverPpmPerfTimeCheckACSetting>
+            <DefaultPowerSaverPpmPerfTimeCheckDCSetting>200</DefaultPowerSaverPpmPerfTimeCheckDCSetting>
+
+            <!-- perf state increase threshold -->
+            <DefaultBalancedPpmPerfIncreaseACSetting>60</DefaultBalancedPpmPerfIncreaseACSetting>
+            <DefaultBalancedPpmPerfIncreaseDCSetting>90</DefaultBalancedPpmPerfIncreaseDCSetting>
+            <DefaultHighPerformancePpmPerfIncreaseACSetting>30</DefaultHighPerformancePpmPerfIncreaseACSetting>
+            <DefaultHighPerformancePpmPerfIncreaseDCSetting>30</DefaultHighPerformancePpmPerfIncreaseDCSetting>
+            <DefaultPowerSaverPpmPerfIncreaseACSetting>90</DefaultPowerSaverPpmPerfIncreaseACSetting>
+            <DefaultPowerSaverPpmPerfIncreaseDCSetting>90</DefaultPowerSaverPpmPerfIncreaseDCSetting>
+
+            <!-- perf state decrease threshold -->
+            <DefaultBalancedPpmPerfDecreaseACSetting>20</DefaultBalancedPpmPerfDecreaseACSetting>
+            <DefaultBalancedPpmPerfDecreaseDCSetting>30</DefaultBalancedPpmPerfDecreaseDCSetting>
+            <DefaultHighPerformancePpmPerfDecreaseACSetting>10</DefaultHighPerformancePpmPerfDecreaseACSetting>
+            <DefaultHighPerformancePpmPerfDecreaseDCSetting>10</DefaultHighPerformancePpmPerfDecreaseDCSetting>
+            <DefaultPowerSaverPpmPerfDecreaseACSetting>60</DefaultPowerSaverPpmPerfDecreaseACSetting>
+            <DefaultPowerSaverPpmPerfDecreaseDCSetting>60</DefaultPowerSaverPpmPerfDecreaseDCSetting>
+
+            <!-- perf state increase policy -->
+            <DefaultBalancedPpmPerfIncreasePolicyACSetting>0</DefaultBalancedPpmPerfIncreasePolicyACSetting>
+            <DefaultBalancedPpmPerfIncreasePolicyDCSetting>0</DefaultBalancedPpmPerfIncreasePolicyDCSetting>
+            <DefaultHighPerformancePpmPerfIncreasePolicyACSetting>2</DefaultHighPerformancePpmPerfIncreasePolicyACSetting>
+            <DefaultHighPerformancePpmPerfIncreasePolicyDCSetting>2</DefaultHighPerformancePpmPerfIncreasePolicyDCSetting>
+            <DefaultPowerSaverPpmPerfIncreasePolicyACSetting>1</DefaultPowerSaverPpmPerfIncreasePolicyACSetting>
+            <DefaultPowerSaverPpmPerfIncreasePolicyDCSetting>1</DefaultPowerSaverPpmPerfIncreasePolicyDCSetting>
+
+            <!-- perf state decrease policy -->
+            <DefaultBalancedPpmPerfDecreasePolicyACSetting>0</DefaultBalancedPpmPerfDecreasePolicyACSetting>
+            <DefaultBalancedPpmPerfDecreasePolicyDCSetting>0</DefaultBalancedPpmPerfDecreasePolicyDCSetting>
+            <DefaultHighPerformancePpmPerfDecreasePolicyACSetting>1</DefaultHighPerformancePpmPerfDecreasePolicyACSetting>
+            <DefaultHighPerformancePpmPerfDecreasePolicyDCSetting>1</DefaultHighPerformancePpmPerfDecreasePolicyDCSetting>
+            <DefaultPowerSaverPpmPerfDecreasePolicyACSetting>2</DefaultPowerSaverPpmPerfDecreasePolicyACSetting>
+            <DefaultPowerSaverPpmPerfDecreasePolicyDCSetting>2</DefaultPowerSaverPpmPerfDecreasePolicyDCSetting>
+
+            <!-- perf history count -->
+            <DefaultBalancedPpmPerfHistoryPolicyACSetting>1</DefaultBalancedPpmPerfHistoryPolicyACSetting>
+            <DefaultBalancedPpmPerfHistoryPolicyDCSetting>1</DefaultBalancedPpmPerfHistoryPolicyDCSetting>
+            <DefaultHighPerformancePpmPerfHistoryPolicyACSetting>1</DefaultHighPerformancePpmPerfHistoryPolicyACSetting>
+            <DefaultHighPerformancePpmPerfHistoryPolicyDCSetting>1</DefaultHighPerformancePpmPerfHistoryPolicyDCSetting>
+            <DefaultPowerSaverPpmPerfHistoryPolicyACSetting>1</DefaultPowerSaverPpmPerfHistoryPolicyACSetting>
+            <DefaultPowerSaverPpmPerfHistoryPolicyDCSetting>1</DefaultPowerSaverPpmPerfHistoryPolicyDCSetting>
+           
+            <!-- idle time check -->
+            <DefaultBalancedPpmIdleTimeCheckACSetting>50000</DefaultBalancedPpmIdleTimeCheckACSetting>
+            <DefaultBalancedPpmIdleTimeCheckDCSetting>50000</DefaultBalancedPpmIdleTimeCheckDCSetting>
+            <DefaultHighPerformancePpmIdleTimeCheckACSetting>50000</DefaultHighPerformancePpmIdleTimeCheckACSetting>
+            <DefaultHighPerformancePpmIdleTimeCheckDCSetting>50000</DefaultHighPerformancePpmIdleTimeCheckDCSetting>
+            <DefaultPowerSaverPpmIdleTimeCheckACSetting>50000</DefaultPowerSaverPpmIdleTimeCheckACSetting>
+            <DefaultPowerSaverPpmIdleTimeCheckDCSetting>50000</DefaultPowerSaverPpmIdleTimeCheckDCSetting>
+
+            <!-- core parking parked perf state -->
+            <DefaultBalancedPpmCoreParkingParkedPerfStateACSetting>0</DefaultBalancedPpmCoreParkingParkedPerfStateACSetting>
+            <DefaultBalancedPpmCoreParkingParkedPerfStateDCSetting>0</DefaultBalancedPpmCoreParkingParkedPerfStateDCSetting>
+            <DefaultHighPerformancePpmCoreParkingParkedPerfStateACSetting>0</DefaultHighPerformancePpmCoreParkingParkedPerfStateACSetting>
+            <DefaultHighPerformancePpmCoreParkingParkedPerfStateDCSetting>0</DefaultHighPerformancePpmCoreParkingParkedPerfStateDCSetting>
+            <DefaultPowerSaverPpmCoreParkingParkedPerfStateACSetting>0</DefaultPowerSaverPpmCoreParkingParkedPerfStateACSetting>
+            <DefaultPowerSaverPpmCoreParkingParkedPerfStateDCSetting>0</DefaultPowerSaverPpmCoreParkingParkedPerfStateDCSetting>
+
+            <!-- perf boost policy -->
+            <DefaultBalancedPpmPerfBoostPolicyACSetting>65</DefaultBalancedPpmPerfBoostPolicyACSetting>
+            <DefaultBalancedPpmPerfBoostPolicyDCSetting>50</DefaultBalancedPpmPerfBoostPolicyDCSetting>
+            <DefaultHighPerformancePpmPerfBoostPolicyACSetting>100</DefaultHighPerformancePpmPerfBoostPolicyACSetting>
+            <DefaultHighPerformancePpmPerfBoostPolicyDCSetting>100</DefaultHighPerformancePpmPerfBoostPolicyDCSetting>
+            <DefaultPowerSaverPpmPerfBoostPolicyACSetting>50</DefaultPowerSaverPpmPerfBoostPolicyACSetting>
+            <DefaultPowerSaverPpmPerfBoostPolicyDCSetting>50</DefaultPowerSaverPpmPerfBoostPolicyDCSetting>
+
+            <!-- perf max p-state -->
+            <DefaultBalancedProcessorPStateUpperBoundACSetting>100</DefaultBalancedProcessorPStateUpperBoundACSetting>
+            <DefaultBalancedProcessorPStateUpperBoundDCSetting>100</DefaultBalancedProcessorPStateUpperBoundDCSetting>
+            <DefaultHighPerformanceProcessorPStateUpperBoundACSetting>100</DefaultHighPerformanceProcessorPStateUpperBoundACSetting>
+            <DefaultHighPerformanceProcessorPStateUpperBoundDCSetting>100</DefaultHighPerformanceProcessorPStateUpperBoundDCSetting>
+            <DefaultPowerSaverProcessorPStateUpperBoundACSetting>100</DefaultPowerSaverProcessorPStateUpperBoundACSetting>
+            <DefaultPowerSaverProcessorPStateUpperBoundDCSetting>100</DefaultPowerSaverProcessorPStateUpperBoundDCSetting>
+
+            <!-- COMMON CLIENT POWER POLICY OVERRIDES END -->
+
+            <!-- lock on resume -->
+            <BalancedACSettingIndex>1</BalancedACSettingIndex>
+            <BalancedDCSettingIndex>1</BalancedDCSettingIndex>
+            <PerformanceACSettingIndex>1</PerformanceACSettingIndex>
+            <PerformanceDCSettingIndex>1</PerformanceDCSettingIndex>
+            <PowerACSettingIndex>1</PowerACSettingIndex>
+            <PowerDCSettingIndex>1</PowerDCSettingIndex>
+        </component>
+
+        <component name="Microsoft-Windows-OfflineFiles-Service"
+           processorArchitecture="x86"
+           publicKeyToken="31bf3856ad364e35"
+           language="neutral"
+           versionScope="nonSxS">
+           <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\CscService!Start]
+                    (REG_DWORD): 2
+           -->
+
+            <ServiceStart>2</ServiceStart>
+        </component>
+
+        <component name="Microsoft-Windows-OfflineFiles-Core"
+           processorArchitecture="x86"
+           publicKeyToken="31bf3856ad364e35"
+           language="neutral"
+           versionScope="nonSxS">
+           <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Csc!Start]
+                    (REG_DWORD): 1
+           -->
+
+            <DriverStartType>1</DriverStartType>
+        </component>
+
+        <component name="Microsoft-Windows-OfflineFiles-Service"
+           processorArchitecture="amd64"
+           publicKeyToken="31bf3856ad364e35"
+           language="neutral"
+           versionScope="nonSxS">
+           <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\CscService!Start]
+                    (REG_DWORD): 2
+           -->
+
+            <ServiceStart>2</ServiceStart>
+        </component>
+
+        <component name="Microsoft-Windows-OfflineFiles-Core"
+           processorArchitecture="amd64"
+           publicKeyToken="31bf3856ad364e35"
+           language="neutral"
+           versionScope="nonSxS">
+           <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Csc!Start]
+                    (REG_DWORD): 1
+           -->
+
+            <DriverStartType>1</DriverStartType>
+        </component>
+
+        <component name="Microsoft-Windows-OfflineFiles-Service"
+           processorArchitecture="ia64"
+           publicKeyToken="31bf3856ad364e35"
+           language="neutral"
+           versionScope="nonSxS">
+           <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\CscService!Start]
+                    (REG_DWORD): 2
+           -->
+
+            <ServiceStart>2</ServiceStart>
+        </component>
+
+        <component name="Microsoft-Windows-OfflineFiles-Core"
+           processorArchitecture="ia64"
+           publicKeyToken="31bf3856ad364e35"
+           language="neutral"
+           versionScope="nonSxS">
+           <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Csc!Start]
+                    (REG_DWORD): 1
+           -->
+
+            <DriverStartType>1</DriverStartType>
+        </component>
+
+        <component name="Microsoft-Windows-HAL" 
+                   processorArchitecture="x86" 
+                   publicKeyToken="31bf3856ad364e35" 
+                   language="neutral" 
+                   versionScope="nonSxS">
+
+          <!-- [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\ACPI -->
+          <AMLIGlobalHeapSize>65536</AMLIGlobalHeapSize>
+        </component>
+
+        <component name="Microsoft-Windows-HAL" 
+                   processorArchitecture="amd64" 
+                   publicKeyToken="31bf3856ad364e35" 
+                   language="neutral" 
+                   versionScope="nonSxS">
+
+          <!-- [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\ACPI -->
+          <AMLIGlobalHeapSize>524288</AMLIGlobalHeapSize>
+        </component>
+
+        <component name="Microsoft-Windows-HAL" 
+                   processorArchitecture="ia64" 
+                   publicKeyToken="31bf3856ad364e35" 
+                   language="neutral" 
+                   versionScope="nonSxS">
+
+          <!-- [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\ACPI -->
+          <AMLIGlobalHeapSize>524288</AMLIGlobalHeapSize>
+        </component>
+
+        <component name="Microsoft-Windows-NDIS"
+                   processorArchitecture="x86"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+            <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NDIS\Parameters]
+            -->
+            <TrackNblOwner>1</TrackNblOwner>
+        </component>
+
+        <component name="Microsoft-Windows-NDIS"
+                   processorArchitecture="amd64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+            <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NDIS\Parameters]
+            -->
+            <TrackNblOwner>1</TrackNblOwner>
+        </component>
+
+        <component name="Microsoft-Windows-NDIS"
+                   processorArchitecture="ia64"
+                   publicKeyToken="31bf3856ad364e35"
+                   language="neutral"
+                   versionScope="nonSxS">
+            <!--
+                [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NDIS\Parameters]
+            -->
+            <TrackNblOwner>1</TrackNblOwner>
+        </component>
+    </settings>
+</unattend>
+
