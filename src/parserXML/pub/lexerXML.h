@@ -13,13 +13,12 @@ namespace parserXML {
 			using token_t = TokenXML::TokenType;
 		private:
 			SymbolTableXML *m_SymbolTable;
-			token_t m_LastToken_t;
 			TokenXML m_PreviousToken;
-			std::shared_ptr<SmartBuffer> m_Buffer;
+			SmartBuffer m_Buffer;
 			SmartBuffer::IteratorSmartB m_LexemBegin;
 			SmartBuffer::IteratorSmartB m_Forward;
 			size_t m_CountNewLine;
-
+		
 		private:
 			void setToken(TokenXML& token, token_t tok_type);
 			void setToken(TokenXML& token, token_t tok_type, const std::string &lexemVal);
@@ -28,7 +27,11 @@ namespace parserXML {
 			std::string replacePredefXMLEntity(const SmartBuffer::IteratorSmartB &begin, const SmartBuffer::IteratorSmartB &end);
 		
 		public:
-			explicit LexerXML(const std::shared_ptr<SmartBuffer>& ptrBuffer, SymbolTableXML *symbolTable);
+			LexerXML();
+			explicit LexerXML(const std::string &fileName, SymbolTableXML *symbolTable);
+			bool init(const std::string &fileName, SymbolTableXML *symbolTable);
+			void reset();
+			bool isInit() const;
 			TokenXML getNextToken();
 			TokenXML getCurToken();
 			size_t getLinePositionToken() { return m_CountNewLine; }

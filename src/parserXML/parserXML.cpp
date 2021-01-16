@@ -8,12 +8,47 @@
 #define DEBUG PRINT_TOKEN();
 
 namespace parserXML {
-
-	ParserXML::ParserXML(const std::string& fileRead)
-		: m_Lexer(std::shared_ptr<SmartBuffer>(new SmartBuffer(fileRead)), &m_SymbolTable)
+	
+	ParserXML::ParserXML() {	
+			testFile.open("d:\\project\\PROJECT\\resourses\\parser_testFile.xml");
+	}
+	
+	ParserXML::ParserXML(const std::string& fileName)
+		: m_Lexer(fileName, &m_SymbolTable)
 	{
 		testFile.open("d:\\project\\PROJECT\\resourses\\parser_testFile.xml");
+	}
+	
+	bool ParserXML::parse(){
+		if(!isInit())
+			return false;
 		m_TreeElements = findElement(); // skip prolog of xmlFile
+		if(!m_TreeElements)
+			return false;
+		return true;
+	}
+	
+	// ????????????? invalid look at this 
+	bool ParserXML::bindFile(const std::string &fileName){
+		if(m_Lexer.isInit())
+			unbind();
+		if(m_Lexer.init(fileName, &m_SymbolTable)){
+			return true;
+		}
+		unbind();
+		return false;
+	}
+	
+	void ParserXML::unbind(){
+		m_Lexer.reset();
+		m_SymbolTable.reset();
+		m_TreeElements.reset();
+	}
+	
+	bool ParserXML::isInit() const {
+		if(!m_Lexer.isInit())
+			return false;
+		return true;
 	}
 	
 	void ParserXML::errorHandleParser(const std::string &subMsgExcept){
@@ -34,60 +69,60 @@ namespace parserXML {
 		std::shared_ptr<ElementXML> newElement(new ElementXML);
 		newElement->m_NameID = -1;
 		newElement->m_TextID = -1;
-		switch(m_Lexer.getCurToken().mTokenType){
+		switch(m_Lexer.getCurToken().getTokenType()){
 			case type_token::OPEN_PROLOG_TAG:
 				DEBUG
-				if(m_Lexer.getNextToken().mTokenType == type_token::NAME_ID){
+				if(m_Lexer.getNextToken().getTokenType() == type_token::NAME_ID){
 					DEBUG
 					m_Lexer.getNextToken();
 				} else {
 					// error procedure
-					errorHandleParser("element(): NAME_ID");
+					errorHandleParser("skipelement(): NAME_ID");
 				}
 				attribute(newElement);
-				if(m_Lexer.getCurToken().mTokenType == type_token::CLOSE_PROLOG_TAG){
+				if(m_Lexer.getCurToken().getTokenType() == type_token::CLOSE_PROLOG_TAG){
 					DEBUG
 					m_Lexer.getNextToken();
 					skipelement();
 				} else {
 					// error procedure
-					errorHandleParser("element(): CLOSE_PROLOG_TAG");
+					errorHandleParser("skipelement(): CLOSE_PROLOG_TAG");
 				}
 				break;
 			
 			case type_token::CDATA_BEGIN:
 				DEBUG
-				if(m_Lexer.getNextToken().mTokenType == type_token::TEXT){
+				if(m_Lexer.getNextToken().getTokenType() == type_token::TEXT){
 					DEBUG
-					if(m_Lexer.getNextToken().mTokenType == type_token::CDATA_END){
+					if(m_Lexer.getNextToken().getTokenType() == type_token::CDATA_END){
 						DEBUG
 						m_Lexer.getNextToken();
 						skipelement();
 					} else {
 						// error procedure
-						errorHandleParser("element(): CDATA_END");
+						errorHandleParser("skipelement(): CDATA_END");
 					}
 				} else {
 					// error procedure
-					errorHandleParser("element(): TEXT");
+					errorHandleParser("skipelement(): TEXT");
 				}
 				break;
 			
 			case type_token::OPEN_COMENT_TAG:
 				DEBUG
-				if(m_Lexer.getNextToken().mTokenType == type_token::TEXT){
+				if(m_Lexer.getNextToken().getTokenType() == type_token::TEXT){
 					DEBUG
-					if(m_Lexer.getNextToken().mTokenType == type_token::CLOSE_COMENT_TAG){
+					if(m_Lexer.getNextToken().getTokenType() == type_token::CLOSE_COMENT_TAG){
 						DEBUG
 						m_Lexer.getNextToken();
 						skipelement();
 					} else {
 						// error procedure
-						errorHandleParser("element(): CLOSE_COMENT_TAG");
+						errorHandleParser("skipelement(): CLOSE_COMENT_TAG");
 					}
 				} else {
 					// error procedure
-					errorHandleParser("element(): TEXT");
+					errorHandleParser("skipelement(): TEXT");
 				}
 				break;
 				
@@ -104,12 +139,12 @@ namespace parserXML {
 		
 		skipelement();
 		
-		switch(m_Lexer.getCurToken().mTokenType){
+		switch(m_Lexer.getCurToken().getTokenType()){
 			case type_token::OPEN_TAG:
 				DEBUG
-				if(m_Lexer.getNextToken().mTokenType == type_token::NAME_ID){
+				if(m_Lexer.getNextToken().getTokenType() == type_token::NAME_ID){
 					DEBUG
-					newElement->assignNameID(m_Lexer.getCurToken().mLexemPos);
+					newElement->assignNameID(m_Lexer.getCurToken());
 					m_Lexer.getNextToken();
 					attribute(newElement);
 					closeElement(newElement);
@@ -131,15 +166,15 @@ namespace parserXML {
 	}
 	
 	void ParserXML::attribute(std::shared_ptr<ElementXML> &elementXML){
-		if(m_Lexer.getCurToken().mTokenType == type_token::NAME_ID){
+		if(m_Lexer.getCurToken().getTokenType() == type_token::NAME_ID){
 			DEBUG
-			ElementXML::pair_attrib attrib;
-			attrib.first = m_Lexer.getCurToken().mLexemPos;
-			if(m_Lexer.getNextToken().mTokenType == type_token::EQUAL){
+			std::pair<TokenXML, TokenXML> attrib;
+			std::get<0>(attrib) = m_Lexer.getCurToken();
+			if(m_Lexer.getNextToken().getTokenType() == type_token::EQUAL){
 				DEBUG
-				if(m_Lexer.getNextToken().mTokenType == type_token::ATRIBUTE_VALUE){
+				if(m_Lexer.getNextToken().getTokenType() == type_token::ATRIBUTE_VALUE){
 					DEBUG
-					attrib.second = m_Lexer.getCurToken().mLexemPos;
+					std::get<1>(attrib) = m_Lexer.getCurToken();
 					elementXML->addAttribute(attrib);
 					m_Lexer.getNextToken();
 					attribute(elementXML);
@@ -157,11 +192,11 @@ namespace parserXML {
 	}
 	
 	void ParserXML::closeElement(std::shared_ptr<ElementXML> &elementXML){
-		if(m_Lexer.getCurToken().mTokenType == type_token::FINAL_CLOSE_TAG){
+		if(m_Lexer.getCurToken().getTokenType() == type_token::FINAL_CLOSE_TAG){
 			DEBUG
 			m_Lexer.getNextToken();
 		} else {
-			if(m_Lexer.getCurToken().mTokenType == type_token::CLOSE_TAG){
+			if(m_Lexer.getCurToken().getTokenType() == type_token::CLOSE_TAG){
 				DEBUG
 				m_Lexer.getNextToken();
 				endElement(elementXML);
@@ -178,22 +213,22 @@ namespace parserXML {
 		
 		skipelement();
 		
-		switch(m_Lexer.getCurToken().mTokenType){
+		switch(m_Lexer.getCurToken().getTokenType()){
 			
 			case type_token::TEXT:
 				DEBUG
-				if(m_Lexer.getNextToken().mTokenType == type_token::OPEN_CLOSE_TAG){
+				if(m_Lexer.getNextToken().getTokenType() == type_token::OPEN_CLOSE_TAG){
 					DEBUG
-					if(m_Lexer.getNextToken().mTokenType == type_token::NAME_ID){
+					if(m_Lexer.getNextToken().getTokenType() == type_token::NAME_ID){
 						DEBUG
-						if(!elementXML->nameIsMatch(m_Lexer.getCurToken().mLexemPos)){
+						if(!elementXML->nameIsMatch(m_Lexer.getCurToken())){
 							// error procedure
 							errorHandleParser("endElement(): case TEXT: EndName Element is not the same as StartNameElement");
 							return;
 						}
-						if(m_Lexer.getNextToken().mTokenType == type_token::CLOSE_TAG){
+						if(m_Lexer.getNextToken().getTokenType() == type_token::CLOSE_TAG){
 							DEBUG
-							elementXML->assignTextID(m_Lexer.getCurToken().mLexemPos);
+							elementXML->assignTextID(m_Lexer.getCurToken());
 							m_Lexer.getNextToken();
 						} else {
 							// error procedure
@@ -214,14 +249,14 @@ namespace parserXML {
 			
 			case type_token::OPEN_CLOSE_TAG:
 				DEBUG
-				if(m_Lexer.getNextToken().mTokenType == type_token::NAME_ID){
+				if(m_Lexer.getNextToken().getTokenType() == type_token::NAME_ID){
 					DEBUG
-					if(!elementXML->nameIsMatch(m_Lexer.getCurToken().mLexemPos)){
+					if(!elementXML->nameIsMatch(m_Lexer.getCurToken())){
 						// error procedure
 						errorHandleParser("endElement(): case OPEN_CLOSE_TAG: EndName Element is not the same as StartNameElement");
 						return;
 					}
-					if(m_Lexer.getNextToken().mTokenType == type_token::CLOSE_TAG){
+					if(m_Lexer.getNextToken().getTokenType() == type_token::CLOSE_TAG){
 						DEBUG
 						m_Lexer.getNextToken();
 					} else {

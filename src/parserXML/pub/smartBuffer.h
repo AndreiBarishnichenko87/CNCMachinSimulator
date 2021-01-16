@@ -24,16 +24,11 @@ namespace parserXML {
 				char 					mBuffer[CHUNK_SIZE];
 				unsigned int 	mCountUsersChank; 
 			};
-				
 			std::ifstream 								m_Fin;
 			std::list<Chunk*> 						m_ListOfChunks;
 			std::list<Chunk*>::iterator		m_ChunkBuf;
 			char 													*m_BeginChunkBuf, *m_EndChunkBuf;
 			
-		public:
-			explicit SmartBuffer(const std::string FileName);
-			~SmartBuffer();
-
 		private:
 			void 				 		updateCurChunkPtr	(const std::list<Chunk*>::iterator &iter, unsigned int countRead);
 			bool 				 		addNewChunk				();
@@ -44,23 +39,30 @@ namespace parserXML {
 			unsigned int 		getChunksUser			(std::list<Chunk*>::iterator &iter) { return (*iter)->mCountUsersChank; }
 		
 		public:
-			unsigned int 		getSizeChunk			() const	{	return CHUNK_SIZE; }
-			unsigned int 		getCountChunk			() const 	{ return m_ListOfChunks.size(); }
-			IteratorSmartB 	begin							();
+		 explicit 				SmartBuffer				(const std::string fileName);
+											SmartBuffer				();
+											~SmartBuffer			();
+		public:									
+		 bool 						init							(const std::string &fileName);
+		 void	 						reset							();
+		 bool 						isInit						() const;
+		 IteratorSmartB  	begin							();
 			
 		public:
+		
 			class IteratorSmartB : public std::iterator<std::input_iterator_tag, char>
 			{
-			public:
 				friend class 									SmartBuffer;
+			private:
 				SmartBuffer 									*m_BindBuffer;
 				std::list<Chunk*>::iterator 	m_ChunkIter;
 				char 													*m_BeginChunkIter, *m_EndChunkIter;
 			private:
 																			IteratorSmartB	(SmartBuffer *bindBuffer, const std::list<Chunk*>::iterator &iter, 
-																			char* beginPtr, char* endPtr);
+																											char* beginPtr, char* endPtr);
 				const Chunk* 									operator->() 		{ return *m_ChunkIter; }
-			public:			
+			public:
+																			IteratorSmartB	();
 																			IteratorSmartB	(const IteratorSmartB &iter);
 				const IteratorSmartB& 				operator=				(const IteratorSmartB &iter);
 																			~IteratorSmartB	();
@@ -69,6 +71,7 @@ namespace parserXML {
 				IteratorSmartB 								operator++			(int);
 				bool 													operator==			(const IteratorSmartB &rightVal);
 				bool 													operator!=			(const IteratorSmartB &rightVal);
+				explicit 											operator bool		() const noexcept { return m_BindBuffer == nullptr ? false : true;}
 				char* 												c_ptr						() { return m_BeginChunkIter; }
 			};
 	};

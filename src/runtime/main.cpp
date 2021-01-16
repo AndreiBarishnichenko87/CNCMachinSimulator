@@ -39,46 +39,42 @@ void test_smartBuffer() {
 
 void test_lexer() {
 	std::ofstream foutLexer("d:\\project\\PROJECT\\resourses\\testLexer.xml");
-	std::shared_ptr<parserXML::SmartBuffer> ptrBuf(new parserXML::SmartBuffer("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml"));
-	if(ptrBuf.use_count() != 1) {
-		cout << "pointer is invalid" << endl;
-		return;
-	}
-	parserXML::SymbolTableXML *symbolTable = new parserXML::SymbolTableXML;
-	parserXML::LexerXML lexer(ptrBuf, symbolTable);
-	parserXML::TokenXML token;
-	while(token.mTokenType != parserXML::TokenXML::TokenType::END_OF_FILE)
-	{
-		token = lexer.getNextToken();
-		foutLexer << parserXML::token_enum_name(token) << " : [" << symbolTable->getTokenLexemVal(token) << "]" << endl;
-	}
+
+	parserXML::SmartBuffer buf;
+	parserXML::SmartBuffer::IteratorSmartB iter(buf.begin());
+	parserXML::SmartBuffer::IteratorSmartB iter1;
+	iter1 = iter;
 	
+	parserXML::SymbolTableXML *table = new parserXML::SymbolTableXML;
+	parserXML::LexerXML lexer;
+	lexer.init("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml", table);
+	while(lexer.getNextToken().getTokenType() != parserXML::TokenXML::TokenType::END_OF_FILE)
+	{
+		foutLexer << table->getTokenLexemVal(lexer.getCurToken()) << endl;
+	}
+	foutLexer << "============ NEXT FILE ==============\n";
+	cout << "SIZE: " << table->m_StoreNameID.size() << endl;
+	lexer.reset();
+	lexer.init("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml", table);
+	while(lexer.getNextToken().getTokenType() != parserXML::TokenXML::TokenType::END_OF_FILE)
+	{
+		foutLexer << table->getTokenLexemVal(lexer.getCurToken()) << endl;
+	}
+	//std::cin.get();
 }
 
 void test_parserXML() {
 
 	std::ofstream fout("d:\\project\\PROJECT\\resourses\\testParser.xml");
-	std::shared_ptr<parserXML::SmartBuffer> ptrBuf(new parserXML::SmartBuffer("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml"));
 
 	parserXML::ParserXML parser("d:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
-
+	parser.parse() ? cout << "parse is valid\n" : cout << "parse is invalid\n";
 	if(parser.m_TreeElements){
 		PRINT(parser.m_TreeElements->m_NameID) << std::endl;
 		PRINT(parser.m_TreeElements->m_TextID) << std::endl;
 		PRINT(parser.m_TreeElements->m_ListAttrib.size()) << std::endl;
-		PRINT(parser.m_TreeElements->m_ListElement.size()) << std::endl;		
-		//PRINT((*(parser.m_TreeElements->m_ListElement.begin()))->m_ListElement.size()) << std::endl;		
+		PRINT(parser.m_TreeElements->m_ListElement.size()) << std::endl;	
 	}
-
-}
-
-void test_ParserException() {
-	try{
-		//throw parserXML::ExceptionParserXML("base");
-		throw parserXML::SmartBufferException("SmartBufferException");
-	} catch (parserXML::ExceptionParserXML &except) {
-		cout << except.what() << endl;
-	}	
 }
 
 int main(int argc, char* argv[]) {
@@ -89,9 +85,9 @@ int main(int argc, char* argv[]) {
 		test_parserXML();
 	} catch(parserXML::ExceptionParserXML &except) {
 		cout << except.what() << endl;
-	}	
-	//test_ParserException();
-	std::cin.get();
+	}
+
+	//std::cin.get();
 	return 0;
 }
 

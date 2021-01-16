@@ -21,11 +21,11 @@ namespace parserXML{
 		std::list<pair_attrib> m_ListAttrib;
 		std::list<std::shared_ptr<ElementXML> > m_ListElement;
 	public:
-		inline void assignNameID(size_t elementName) { m_NameID = elementName; }
-		inline void assignTextID(size_t text) { m_TextID = text; }
-		inline void addAttribute(const pair_attrib attrib) { m_ListAttrib.push_back(attrib); }
+		inline void assignNameID(const TokenXML &token) { m_NameID = token.getTokenLexemVal(); }
+		inline void assignTextID(const TokenXML &token) { m_TextID = token.getTokenLexemVal(); }
+		inline void addAttribute(const std::pair<TokenXML, TokenXML> attrib) { m_ListAttrib.push_back(std::make_pair(attrib.first.getTokenLexemVal(), attrib.second.getTokenLexemVal())); }
 		inline void addNewElement(const std::shared_ptr<ElementXML> &element) { m_ListElement.push_back(element); }
-		inline bool nameIsMatch(size_t strMatches) const { return strMatches == m_NameID; }
+		inline bool nameIsMatch(const TokenXML &token) const { return token.getTokenLexemVal() == m_NameID; }
 		bool nameIsEmpty() const { return m_NameID == -1; }
 	};
 	
@@ -49,12 +49,18 @@ namespace parserXML{
 	private:
 		void errorHandleParser(const std::string &subMsgExcept);
 		
+	// test functions 
 	private:
 		std::ofstream testFile;
 		inline void PRINT_TOKEN() { testFile << token_enum_name(m_Lexer.getCurToken()) << "  [" << m_SymbolTable.getTokenLexemVal(m_Lexer.getCurToken()) << "]" << std::endl; }
 	
 	public:
-		ParserXML(const std::string& fileRead);
+		ParserXML();
+		ParserXML(const std::string& fileName);
+		bool bindFile(const std::string &fileName);
+		void unbind();
+		bool isInit() const;
+		bool parse();
 	};
 
 }

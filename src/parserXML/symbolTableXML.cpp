@@ -4,7 +4,10 @@
 namespace parserXML {
 	
 	std::string token_enum_name(TokenXML token) {
-		return std::string(TokenXML::smTokenEnumName[token.mTokenType]);
+		return std::string(TokenXML::smTokenEnumName[token.getTokenType()]);
+	}
+	std::string token_lexem_name(TokenXML token) {
+		return std::string(TokenXML::smTokenLexem[token.getTokenType()]);
 	}
 	
 	const char* TokenXML::smTokenEnumName[] = {
@@ -45,34 +48,40 @@ namespace parserXML {
 		R"(]]>)",
 		"START_FILE"
 	};
+
+	TokenXML::TokenXML(TokenType tokType, const std::string &lexemString, SymbolTableXML *symbTable){
+		mTokenType = tokType;
+		mLexemPos = symbTable->addNewLexemVal(*this, lexemString);
+	}
+
+	void SymbolTableXML::reset(){
+		std::vector<std::string>().swap(m_StoreNameID);
+		std::vector<std::string>().swap(m_StoreAttribValue);
+		std::vector<std::string>().swap(m_StoreText);
+	}
 	
 	std::string SymbolTableXML::getTokenLexemVal(TokenXML token) const {
-		switch(token.mTokenType){
+		switch(token.getTokenType()){
 			case token_t::NAME_ID:
-				return m_StoreNameID[token.mLexemPos];
+				return m_StoreNameID[token.getTokenLexemVal()];
 				break;
 				
 			case token_t::TEXT:
-				return m_StoreText[token.mLexemPos];
+				return m_StoreText[token.getTokenLexemVal()];
 				break;
 				
 			case token_t::ATRIBUTE_VALUE:
-				return m_StoreAttribValue[token.mLexemPos];
+				return m_StoreAttribValue[token.getTokenLexemVal()];
 				break;
 				
 			default:
-				return TokenXML::smTokenLexem[token.mLexemPos];
+				return TokenXML::smTokenLexem[token.getTokenLexemVal()];
 				break;
 		}
 	}
-	
-	size_t SymbolTableXML::addNewLexemVal(TokenXML token, const iterToken& beginLexem, const iterToken& endLexem){
-		std::string valToken(beginLexem, endLexem);
-		return addNewLexemVal(token, valToken);
-	}
-	
+
 	size_t  SymbolTableXML::addNewLexemVal(TokenXML token, const std::string &lexemString){
-		switch(token.mTokenType){
+		switch(token.getTokenType()){
 			case token_t::NAME_ID:
 				for(size_t i = 0; i < m_StoreNameID.size(); ++i){
 					if(lexemString == m_StoreNameID[i])
@@ -106,7 +115,7 @@ namespace parserXML {
 			case token_t::CDATA_BEGIN     :
 			case token_t::CDATA_END       :
 			case token_t::START_FILE      :
-				return token.mTokenType;
+				return token.getTokenType();
 				break;
 			
 			default:

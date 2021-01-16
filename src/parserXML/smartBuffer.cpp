@@ -4,19 +4,70 @@
 #define EOF_BUF std::char_traits<char>::eof()
 
 namespace parserXML
-{
-	SmartBuffer::SmartBuffer(const std::string FileName)
+{	
+	
+	SmartBuffer::SmartBuffer(){
+		m_BeginChunkBuf = nullptr;
+		m_EndChunkBuf = nullptr;
+	}
+	
+	void SmartBuffer::reset() {
+		if(m_Fin.is_open())
+			m_Fin.close();
+		if(!m_ListOfChunks.empty()){
+			for(auto iter = m_ListOfChunks.begin(); iter != m_ListOfChunks.end(); ++iter){
+				(*iter)->mCountUsersChank = 0;
+			}
+			removeUnusedChunk();
+		}
+		m_ChunkBuf = std::list<Chunk*>::iterator();
+		m_BeginChunkBuf = nullptr;
+		m_EndChunkBuf = nullptr;
+	}
+	
+	bool SmartBuffer::isInit() const{
+		if(m_Fin.is_open())
+			return true;
+		else
+			return false;
+	}
+	
+	bool SmartBuffer::init(const std::string &fileName){
+		reset();
+		m_Fin.open(fileName, std::ios_base::in);
+		if(!m_Fin.is_open()){
+			throw SmartBufferException(std::string("file " + fileName + " doesn't exist"));
+			return false;
+		}
+		// add new chunk and fill the data
+		if(m_ListOfChunks.empty()){
+			if(!addNewChunk()){
+				m_Fin.close();
+				throw SmartBufferException("fail to add new chunk in SmartBuffer");
+				return false;
+			}		
+		}
+		unsigned int read = fillChunkData(m_ListOfChunks.begin());
+		if (read == 0){
+			m_Fin.close();
+			return false;
+		}
+		updateCurChunkPtr(m_ListOfChunks.begin(), read);
+		return true;
+	}
+
+	SmartBuffer::SmartBuffer(const std::string fileName)
 	{
-		m_Fin.open(FileName, std::ios_base::in);
+		m_Fin.open(fileName, std::ios_base::in);
 		if(!m_Fin)
-			throw SmartBufferException(std::string("file is invalid: " + FileName));
+			throw SmartBufferException(std::string("file " + fileName + " doesn't exist"));
 
 		// add new chunk and fill the data
 		if(!addNewChunk())
 			throw SmartBufferException("fail to add new chunk in SmartBuffer");
 		unsigned int read = fillChunkData(m_ListOfChunks.begin());
 		if (read == 0)
-			throw SmartBufferException(std::string("file is empty: " + FileName));
+			throw SmartBufferException(std::string("file is empty: " + fileName));
 
 		updateCurChunkPtr(m_ListOfChunks.begin(), read);
 	}
@@ -57,14 +108,11 @@ namespace parserXML
 			m_EndChunkBuf = m_BeginChunkBuf + (countRead - 1);
 		}
 	}
-	
-	SmartBuffer::IteratorSmartB SmartBuffer::begin()
-	{
-		return SmartBuffer::IteratorSmartB(this, m_ChunkBuf, m_BeginChunkBuf, m_EndChunkBuf);
-	}
 
 	void SmartBuffer::removeUnusedChunk()
 	{
+		if(m_ListOfChunks.empty())
+			return;
 		std::list<Chunk*>::iterator removeIter = m_ListOfChunks.begin();
 		if(getChunksUser(removeIter) == 0)
 		{
@@ -82,7 +130,6 @@ namespace parserXML
 		}
 	}
 
-
 	SmartBuffer::~SmartBuffer()
 	{
 		if(!m_ListOfChunks.empty())
@@ -93,9 +140,23 @@ namespace parserXML
 			}
 		}
 	}
+	
+	SmartBuffer::IteratorSmartB SmartBuffer::begin()
+	{
+		if((m_BeginChunkBuf != nullptr) && (m_EndChunkBuf != nullptr))
+			return SmartBuffer::IteratorSmartB(this, m_ChunkBuf, m_BeginChunkBuf, m_EndChunkBuf);
+		else 
+			return SmartBuffer::IteratorSmartB(nullptr, m_ChunkBuf, m_BeginChunkBuf, m_EndChunkBuf);
+	}
 
 	// ITERATOR SMARTBUFFER MEMBERS FUNCTIONS
-
+	
+	SmartBuffer::IteratorSmartB::IteratorSmartB(){
+		m_BindBuffer = nullptr;
+		m_BeginChunkIter = nullptr;
+		m_EndChunkIter = nullptr;
+	}
+	
 	SmartBuffer::IteratorSmartB::IteratorSmartB(SmartBuffer* bindBuffer, 
 	const std::list<SmartBuffer::Chunk*>::iterator& iter, 
 	char* beginPtr, char* endPtr)
@@ -104,7 +165,8 @@ namespace parserXML
 		m_ChunkIter = iter;
 		m_BeginChunkIter = beginPtr;
 		m_EndChunkIter  = endPtr;
-		m_BindBuffer->addChunksUser(m_ChunkIter);
+		if(m_BindBuffer != nullptr)
+			m_BindBuffer->addChunksUser(m_ChunkIter);
 	}
 
 	SmartBuffer::IteratorSmartB::IteratorSmartB(const SmartBuffer::IteratorSmartB& iter)
@@ -113,31 +175,36 @@ namespace parserXML
 		m_ChunkIter = iter.m_ChunkIter;
 		m_BeginChunkIter = iter.m_BeginChunkIter;
 		m_EndChunkIter  = iter.m_EndChunkIter;
-		m_BindBuffer->addChunksUser(m_ChunkIter);
+		if(m_BindBuffer != nullptr)
+			m_BindBuffer->addChunksUser(m_ChunkIter);
 	}
 
 	const SmartBuffer::IteratorSmartB& SmartBuffer::IteratorSmartB::operator=(const SmartBuffer::IteratorSmartB& iter)
 	{
 		if (this != &iter)
 		{
-			m_BindBuffer->subChunksUser(m_ChunkIter);
+			if(m_BindBuffer != nullptr)
+				m_BindBuffer->subChunksUser(m_ChunkIter);
 			
 			m_BindBuffer = iter.m_BindBuffer;
 			m_ChunkIter = iter.m_ChunkIter;
 			m_BeginChunkIter = iter.m_BeginChunkIter;
 			m_EndChunkIter  = iter.m_EndChunkIter;
 			
-			m_BindBuffer->addChunksUser(m_ChunkIter);
-
-			m_BindBuffer->removeUnusedChunk();
+			if(m_BindBuffer != nullptr){
+				m_BindBuffer->addChunksUser(m_ChunkIter);
+				m_BindBuffer->removeUnusedChunk();
+			}
 		}
 		return *this;
 	}
 
 	SmartBuffer::IteratorSmartB::~IteratorSmartB()
 	{
-		m_BindBuffer->subChunksUser(m_ChunkIter);
-		m_BindBuffer->removeUnusedChunk();
+		if(m_BindBuffer != nullptr){
+			m_BindBuffer->subChunksUser(m_ChunkIter);
+			m_BindBuffer->removeUnusedChunk();
+		}
 	}
 
 	SmartBuffer::IteratorSmartB& SmartBuffer::IteratorSmartB::operator++()
@@ -154,7 +221,7 @@ namespace parserXML
 			else
 			{
 				std::list<SmartBuffer::Chunk*>::iterator newIter = m_BindBuffer->m_ChunkBuf;
-				if(m_BindBuffer->getCountChunk() == 2)
+				if(m_BindBuffer->m_ListOfChunks.size() == 2)
 				{
 					if(m_ChunkIter == m_BindBuffer->m_ListOfChunks.begin())
 					{
