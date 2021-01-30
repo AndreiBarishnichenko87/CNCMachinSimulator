@@ -26,6 +26,8 @@ namespace parserXML {
 			void skipSymbolUntil(char stopSymbol);
 			std::string replacePredefXMLEntity(const SmartBuffer::IteratorSmartB &begin, const SmartBuffer::IteratorSmartB &end);
 		
+			LexerXML(const LexerXML& lexerXML) = delete;
+			LexerXML& operator=(const LexerXML& lexerXML) = delete;
 		public:
 			LexerXML();
 			explicit LexerXML(const std::string &fileName, SymbolTableXML *symbolTable);

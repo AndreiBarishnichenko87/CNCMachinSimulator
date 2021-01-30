@@ -1,6 +1,6 @@
-
 #include <cctype>
-#include "pub/lexerXML.h"
+
+#include "lexerXML.h"
 
 namespace parserXML {
 	
@@ -42,7 +42,7 @@ namespace parserXML {
 		else 
 			return false;
 	}
-	
+
 	LexerXML::LexerXML(const std::string &fileName, SymbolTableXML *symbolTable)
 		: m_Buffer(fileName), m_SymbolTable(symbolTable), m_PreviousToken(token_t::START_FILE)
 	{
@@ -178,6 +178,7 @@ namespace parserXML {
 			case (token_t::CLOSE_TAG):
 			case (token_t::OPEN_COMENT_TAG):
 			case (token_t::CDATA_BEGIN):
+			case (token_t::DOCTYPE):
 				break;
 			default:
 				return false;
@@ -226,6 +227,15 @@ namespace parserXML {
 					}
 					break;
 				
+				case '>': // ">"
+					if(m_PreviousToken.getTokenType() == token_t::DOCTYPE)
+					{
+						setToken(token, token_t::TEXT, std::string(m_LexemBegin, m_Forward));
+						return true;
+					} else {
+						++m_Forward;
+					}
+				
 				default:
 					++m_Forward;
 			}
@@ -237,8 +247,8 @@ namespace parserXML {
 	}
 
 	TokenXML LexerXML::getNextToken() {
+		
 		TokenXML token;
-
 		while((*m_Forward == '\t') || (*m_Forward == '\n') || (*m_Forward == ' '))
 		{
 			if(*m_Forward == '\n')
@@ -270,17 +280,30 @@ namespace parserXML {
 								setToken(token, token_t::UNDEFINE_TOKEN, std::string(m_LexemBegin, m_Forward));
 								skipSymbolUntil(' ');
 							}
-						} else {
-							if(*m_Forward == '[') // "<![CDATA["
-							if(*++m_Forward == 'C')
-							if(*++m_Forward == 'D')
-							if(*++m_Forward == 'A')
-							if(*++m_Forward == 'T')
-							if(*++m_Forward == 'A')
-							if(*++m_Forward == '[') {
-								++m_Forward;
-								setToken(token, token_t::CDATA_BEGIN, std::string(m_LexemBegin, m_Forward));
-								break;
+						} else { // "<![CDATA["
+							if(*m_Forward == '[') {
+								if(*++m_Forward == 'C')
+								if(*++m_Forward == 'D')
+								if(*++m_Forward == 'A')
+								if(*++m_Forward == 'T')
+								if(*++m_Forward == 'A')
+								if(*++m_Forward == '[') {
+									++m_Forward;
+									setToken(token, token_t::CDATA_BEGIN, std::string(m_LexemBegin, m_Forward));
+									break;
+								}
+							} else { // <!DOCTYPE
+								if(*m_Forward == 'D')
+								if(*++m_Forward == 'O')
+								if(*++m_Forward == 'C')
+								if(*++m_Forward == 'T')
+								if(*++m_Forward == 'Y')
+								if(*++m_Forward == 'P')
+								if(*++m_Forward == 'E') {
+									++m_Forward;
+									setToken(token, token_t::DOCTYPE, std::string(m_LexemBegin, m_Forward));
+									break;
+								}
 							}
 							++m_Forward;
 							setToken(token, token_t::UNDEFINE_TOKEN, std::string(m_LexemBegin, m_Forward));

@@ -29,6 +29,11 @@ namespace parserXML {
 	public:
 		ParserXMLException(const std::string &msg) : ExceptionParserXML("ParserXMLException::" + msg) { }
 	};
+	
+	class ElementXMLException : public ExceptionParserXML {
+	public:
+		ElementXMLException(const std::string &msg) : ExceptionParserXML("ElementXMLException::" + msg) { }
+	};
 
 }
 

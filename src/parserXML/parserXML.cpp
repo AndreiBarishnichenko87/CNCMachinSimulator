@@ -1,13 +1,59 @@
-
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 #include "pub/parserXML.h"
-#include <sstream>
 
 #define DEBUG PRINT_TOKEN();
 
 namespace parserXML {
+	
+	ElementXML::ElementXML() : m_NameID(-1), m_TextID(-1), m_SymbTable(nullptr) { }
+	
+	long ElementXML::getExistNumAttrib(const std::string &name) const {
+		if(m_ListAttrib.size() > 0){
+			for (unsigned int i = 0; i < m_ListAttrib.size(); ++i) {
+				if(m_SymbTable->nameIsMatch(name, m_ListAttrib[i].first))
+					return i;
+			}
+			return -1;
+		} else {
+			return -1;
+		}
+	}
+	
+	std::string ElementXML::attribVal(const std::string &attribName) const {
+		long numAttribPos = getExistNumAttrib(attribName);
+		return numAttribPos != -1 ? m_SymbTable->getAttribValByID(m_ListAttrib[numAttribPos].second) : std::string(""); 
+	}
+	
+	void ParserXML::findElements(std::shared_ptr<ElementXML> element, long tagNameID, std::vector<ElementXML> &vecElement) {
+		if(element->m_NameID == tagNameID)
+			vecElement.push_back(*element);
+		for(auto iter = element->m_ListElement.begin(); iter != element->m_ListElement.end(); ++iter) {
+			findElements(*iter, tagNameID, vecElement);
+		}
+	}
+	
+	void ParserXML::findElements(std::shared_ptr<ElementXML> element, std::vector<ElementXML> &vecElement) {
+		vecElement.push_back(*element);
+		for(auto iter = element->m_ListElement.begin(); iter != element->m_ListElement.end(); ++iter) {
+			findElements(*iter, vecElement);
+		}
+	}
+	
+	std::vector<ElementXML> ParserXML::getAllElement() {
+		std::vector<ElementXML> listElement;
+		findElements(m_RootTreeElements, listElement);
+		return listElement;
+	}
+	
+	std::vector<ElementXML> ParserXML::getElementsByTagName(const std::string &tagName) {
+		std::vector<ElementXML> listElement;
+		long tagNameID = m_SymbolTable.getNameID(tagName);
+		findElements(m_RootTreeElements, tagNameID, listElement);
+		return listElement;
+	}
 	
 	ParserXML::ParserXML() {	
 			testFile.open("d:\\project\\PROJECT\\resourses\\parser_testFile.xml");
@@ -22,13 +68,12 @@ namespace parserXML {
 	bool ParserXML::parse(){
 		if(!isInit())
 			return false;
-		m_TreeElements = findElement(); // skip prolog of xmlFile
-		if(!m_TreeElements)
+		m_RootTreeElements = findElement(); // skip prolog of xmlFile
+		if(!m_RootTreeElements)
 			return false;
 		return true;
 	}
-	
-	// ????????????? invalid look at this 
+
 	bool ParserXML::bindFile(const std::string &fileName){
 		if(m_Lexer.isInit())
 			unbind();
@@ -42,7 +87,7 @@ namespace parserXML {
 	void ParserXML::unbind(){
 		m_Lexer.reset();
 		m_SymbolTable.reset();
-		m_TreeElements.reset();
+		m_RootTreeElements.reset();
 	}
 	
 	bool ParserXML::isInit() const {
@@ -60,15 +105,13 @@ namespace parserXML {
 		throw ParserXMLException(msgExcept.str());
 	}
 	
-	std::shared_ptr<ElementXML> ParserXML::findElement(){
+	std::shared_ptr<ParserXML::BuildElementXML> ParserXML::findElement(){
 		std::cout << "findElement \n";
 		return element();
 	}
 	
 	void ParserXML::skipelement(){
-		std::shared_ptr<ElementXML> newElement(new ElementXML);
-		newElement->m_NameID = -1;
-		newElement->m_TextID = -1;
+		std::shared_ptr<ParserXML::BuildElementXML> newElement(new ParserXML::BuildElementXML(&m_SymbolTable));
 		switch(m_Lexer.getCurToken().getTokenType()){
 			case type_token::OPEN_PROLOG_TAG:
 				DEBUG
@@ -125,18 +168,34 @@ namespace parserXML {
 					errorHandleParser("skipelement(): TEXT");
 				}
 				break;
+			
+			case type_token::DOCTYPE:
+				DEBUG
+				if(m_Lexer.getNextToken().getTokenType() == type_token::TEXT){
+					DEBUG
+					if(m_Lexer.getNextToken().getTokenType() == type_token::CLOSE_TAG){
+						DEBUG
+						m_Lexer.getNextToken();
+						skipelement();
+					} else {
+						// error procedure
+						errorHandleParser("skipelement(): DOCTYPE => CLOSE_TAG");
+					}
+				} else {
+					// error procedure
+					errorHandleParser("skipelement(): DOCTYPE => TEXT");
+				}
+				break;
 				
 			default:
 				return;
 		}
 	}
 	
-	std::shared_ptr<ElementXML> ParserXML::element(){
+	std::shared_ptr<ParserXML::BuildElementXML> ParserXML::element(){
 		
-		std::shared_ptr<ElementXML> newElement(new ElementXML);
-		newElement->m_NameID = -1;
-		newElement->m_TextID = -1;
-		
+		std::shared_ptr<ParserXML::BuildElementXML> newElement(new ParserXML::BuildElementXML(&m_SymbolTable));
+
 		skipelement();
 		
 		switch(m_Lexer.getCurToken().getTokenType()){
@@ -165,7 +224,7 @@ namespace parserXML {
 		return newElement;
 	}
 	
-	void ParserXML::attribute(std::shared_ptr<ElementXML> &elementXML){
+	void ParserXML::attribute(std::shared_ptr<ParserXML::BuildElementXML> &elementXML){
 		if(m_Lexer.getCurToken().getTokenType() == type_token::NAME_ID){
 			DEBUG
 			std::pair<TokenXML, TokenXML> attrib;
@@ -191,7 +250,7 @@ namespace parserXML {
 		} 
 	}
 	
-	void ParserXML::closeElement(std::shared_ptr<ElementXML> &elementXML){
+	void ParserXML::closeElement(std::shared_ptr<ParserXML::BuildElementXML> &elementXML){
 		if(m_Lexer.getCurToken().getTokenType() == type_token::FINAL_CLOSE_TAG){
 			DEBUG
 			m_Lexer.getNextToken();
@@ -208,15 +267,16 @@ namespace parserXML {
 		}
 	}
 	
-	void ParserXML::endElement(std::shared_ptr<ElementXML> &elementXML){
-		std::shared_ptr<ElementXML> childElement;
+	void ParserXML::endElement(std::shared_ptr<ParserXML::BuildElementXML> &elementXML){
+		std::shared_ptr<ParserXML::BuildElementXML> childElement;
 		
 		skipelement();
-		
+		TokenXML tokenText;
 		switch(m_Lexer.getCurToken().getTokenType()){
 			
 			case type_token::TEXT:
 				DEBUG
+				tokenText = m_Lexer.getCurToken();
 				if(m_Lexer.getNextToken().getTokenType() == type_token::OPEN_CLOSE_TAG){
 					DEBUG
 					if(m_Lexer.getNextToken().getTokenType() == type_token::NAME_ID){
@@ -228,7 +288,7 @@ namespace parserXML {
 						}
 						if(m_Lexer.getNextToken().getTokenType() == type_token::CLOSE_TAG){
 							DEBUG
-							elementXML->assignTextID(m_Lexer.getCurToken());
+							elementXML->assignTextID(tokenText);
 							m_Lexer.getNextToken();
 						} else {
 							// error procedure

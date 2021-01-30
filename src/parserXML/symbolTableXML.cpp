@@ -1,5 +1,5 @@
 
-#include "pub/symbolTableXML.h"
+#include "symbolTableXML.h"
 
 namespace parserXML {
 	
@@ -27,7 +27,8 @@ namespace parserXML {
 		"CLOSE_COMENT_TAG", // -->
 		"CDATA_BEGIN",      // <![CDATA[
 		"CDATA_END",        //	]]>
-		"START_FILE"
+		"START_FILE",
+		"DOCTYPE"
 	};
 	const char* TokenXML::smTokenLexem[] = {
 		"UNDEFINE_TOKEN",
@@ -46,7 +47,8 @@ namespace parserXML {
 		R"(-->)",
 		R"(<![CDATA[)",
 		R"(]]>)",
-		"START_FILE"
+		"START_FILE",
+		R"(<!DOCTYPE)"
 	};
 
 	TokenXML::TokenXML(TokenType tokType, const std::string &lexemString, SymbolTableXML *symbTable){
@@ -58,6 +60,14 @@ namespace parserXML {
 		std::vector<std::string>().swap(m_StoreNameID);
 		std::vector<std::string>().swap(m_StoreAttribValue);
 		std::vector<std::string>().swap(m_StoreText);
+	}
+
+	long SymbolTableXML::getNameID(const std::string &name) const {
+		for(size_t i = 0; i < m_StoreNameID.size(); ++i){
+			if(name == m_StoreNameID[i])
+				return i;
+		}
+		return -1;
 	}
 	
 	std::string SymbolTableXML::getTokenLexemVal(TokenXML token) const {
@@ -101,20 +111,21 @@ namespace parserXML {
 				return m_StoreAttribValue.size() - 1;
 				break;
 			
-			case token_t::UNDEFINE_TOKEN  :
-			case token_t::OPEN_TAG        :
-			case token_t::OPEN_CLOSE_TAG  :
-			case token_t::OPEN_PROLOG_TAG :
-			case token_t::FINAL_CLOSE_TAG :
-			case token_t::CLOSE_TAG       :
-			case token_t::EQUAL           :
-			case token_t::CLOSE_PROLOG_TAG:
-			case token_t::END_OF_FILE     :
-			case token_t::OPEN_COMENT_TAG :
-			case token_t::CLOSE_COMENT_TAG:
-			case token_t::CDATA_BEGIN     :
-			case token_t::CDATA_END       :
-			case token_t::START_FILE      :
+			case token_t::UNDEFINE_TOKEN  	:
+			case token_t::OPEN_TAG        	:
+			case token_t::OPEN_CLOSE_TAG  	:
+			case token_t::OPEN_PROLOG_TAG 	:
+			case token_t::FINAL_CLOSE_TAG 	:
+			case token_t::CLOSE_TAG       	:
+			case token_t::EQUAL           	:
+			case token_t::CLOSE_PROLOG_TAG	:
+			case token_t::END_OF_FILE     	:
+			case token_t::OPEN_COMENT_TAG 	:
+			case token_t::CLOSE_COMENT_TAG	:
+			case token_t::CDATA_BEGIN     	:
+			case token_t::CDATA_END       	:
+			case token_t::START_FILE      	:
+			case token_t::DOCTYPE      		:
 				return token.getTokenType();
 				break;
 			

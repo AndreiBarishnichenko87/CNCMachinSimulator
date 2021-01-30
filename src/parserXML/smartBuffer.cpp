@@ -1,5 +1,4 @@
-
-#include "pub/smartBuffer.h"
+#include "smartBuffer.h"
 
 #define EOF_BUF std::char_traits<char>::eof()
 
