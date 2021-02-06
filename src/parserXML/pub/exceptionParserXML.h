@@ -30,9 +30,9 @@ namespace parserXML {
 		ParserXMLException(const std::string &msg) : ExceptionParserXML("ParserXMLException::" + msg) { }
 	};
 	
-	class ElementXMLException : public ExceptionParserXML {
+	class TreeElementXMLException : public ExceptionParserXML {
 	public:
-		ElementXMLException(const std::string &msg) : ExceptionParserXML("ElementXMLException::" + msg) { }
+		TreeElementXMLException(const std::string &msg) : ExceptionParserXML("TreeElementXMLException::" + msg) { }
 	};
 
 }

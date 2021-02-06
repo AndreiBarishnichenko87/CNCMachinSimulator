@@ -23,14 +23,14 @@ namespace parserXML
 		m_BeginChunkBuf = nullptr;
 		m_EndChunkBuf = nullptr;
 	}
-	
+
 	bool SmartBuffer::isInit() const{
 		if(m_Fin.is_open())
 			return true;
 		else
 			return false;
 	}
-	
+
 	bool SmartBuffer::init(const std::string &fileName){
 		reset();
 		m_Fin.open(fileName, std::ios_base::in);

@@ -2,93 +2,115 @@
 #define PARSERXML_H_
 
 #include <string>
+#include <vector>
 #include <utility>
-#include <list>
 #include <memory>
+#include <limits> 
 
 #include "lexerXML.h"
 #include "exceptionParserXML.h"
-#include "symbolTableXML.h"
 
 namespace parserXML{
-
+	
 	class ParserXML;
-
+	
 	class ElementXML {
-	private:
 		friend ParserXML;
-		using pair_attrib = std::pair<size_t, size_t>;
-	protected:
-		long m_NameID;
-		long m_TextID;
-		std::vector<pair_attrib> m_ListAttrib;
-		std::vector<std::shared_ptr<ElementXML> > m_ListElement;
-		SymbolTableXML *m_SymbTable;
 	private:
-		long getExistNumAttrib(const std::string &name) const;
+		class TreeElementXML {
+		public:
+			struct AttributeNode {
+				std::string mNameAttrib;
+				std::string mValueAttrib;
+			};
+			class DataNode {
+			public:
+			private:
+				std::string mName;
+				std::string mValue;
+				std::vector<AttributeNode> mListAttrib;
+			public:
+				void setNodeName(const std::string &nameNode) { mName = nameNode; }
+				void setNodeVal(const std::string &valueNode) { mValue = valueNode; }
+				void addAttribute(const AttributeNode &attribNode) { mListAttrib.push_back(attribNode); }
+				void addAttribWhithSwap(AttributeNode &attribNode);
+				
+				std::string& getNodeNameRef() { return mName; }
+				std::string& getNodeValueRef() { return mValue; }
+				std::vector<AttributeNode>& getListAttrib() { return mListAttrib; }
+			};
+		private:
+			struct DataNodeID {
+				size_t mNameNodeID = std::numeric_limits<size_t>::max();
+				size_t mValueNodeID = std::numeric_limits<size_t>::max();
+				std::vector<std::pair<size_t, size_t> > mListAttribID;
+			};
+			std::vector<std::pair<DataNodeID, std::vector<size_t> > > m_TreeElements;
+			std::vector<std::string> m_ListName;
+			std::vector<std::string> m_ListAttribVal;
+			std::vector<std::string> m_ListVal;
+		
+		private:
+			size_t addName(const std::string &name);
+			size_t addValue(const std::string &value);
+			size_t addAttribValue(const std::string &attribValue);
+		
+		private:
+			TreeElementXML(const TreeElementXML &treeElementXML) = delete;
+			TreeElementXML& operator=(const TreeElementXML &treeElementXML) = delete;
+		// set methods
+		public:
+			TreeElementXML() {}
+			void resetTreeElements();
+			size_t getRootNode() const { return m_TreeElements.empty() ? std::numeric_limits<size_t>::max() : 1; }
+			size_t addNewNode(size_t nodeID);
+			void fillNodeData(size_t nodeID, DataNode &DataNode);
+		// get methods
+		public:
+			std::string& getName(size_t nodeID) { return m_ListName[std::get<0>(m_TreeElements[nodeID]).mNameNodeID]; }
+			size_t countChildsNode(size_t nodeID) { return std::get<1>(m_TreeElements[nodeID]).size(); }
+			size_t getChildNode(size_t nodeID, size_t numChildNode);
+		};
+		
+	private:
+		size_t m_NodeID;
+		std::shared_ptr<TreeElementXML> m_TreeOfElements;
 	public:
-		ElementXML();
-		virtual ~ElementXML() { /*std::cout << "del element" << std::endl;*/ }
+		ElementXML() : m_NodeID(std::numeric_limits<size_t>::max()){ }
+		void reset() { m_NodeID = std::numeric_limits<size_t>::max(); m_TreeOfElements.reset(); }
 	public:
-		std::string attribVal(const std::string &attribName) const;
-		std::string elementName() const { return m_NameID != -1 ? m_SymbTable->getNameByID(m_NameID) : std::string(""); }
-		unsigned int childElementCount() const { return m_ListElement.size(); }
-		ElementXML getChildElement(unsigned int number) const { return (number >= childElementCount()) ? throw ElementXMLException(std::string("out of range childElementCount")) : *(m_ListElement[number]); }
+		std::string& elementName() { return m_TreeOfElements->getName(m_NodeID);}
+		size_t getCountChildElements() const { return m_TreeOfElements->countChildsNode(m_NodeID); }
+		ElementXML getChildElement(size_t num);
+		//std::vector<ElementXML> getAllChildElements();
 	};
-
+	
 	class ParserXML
 	{
 	private:
-		class BuildElementXML : public ElementXML {
-		public:
-			BuildElementXML(SymbolTableXML *symbolTable) { m_NameID = -1; m_TextID = -1; m_SymbTable = symbolTable; }
-			inline void assignNameID(const TokenXML &token) { m_NameID = token.getTokenLexemVal(); }
-			inline void assignTextID(const TokenXML &token) { m_TextID = token.getTokenLexemVal(); }
-			inline void addAttribute(const std::pair<TokenXML, TokenXML> attrib) { m_ListAttrib.push_back(std::make_pair(attrib.first.getTokenLexemVal(), attrib.second.getTokenLexemVal())); }
-			inline void addNewElement(const std::shared_ptr<ElementXML> &element) { m_ListElement.push_back(element); }
-			inline bool nameIsMatch(const TokenXML &token) const { return token.getTokenLexemVal() == m_NameID; }
-			bool nameIsEmpty() const { return m_NameID == -1; }
-		};
-
-	private:
 		using type_token = TokenXML::TokenType;
-		SymbolTableXML m_SymbolTable;
 		LexerXML m_Lexer;
-		std::shared_ptr<ElementXML> m_RootTreeElements;
-
+		std::shared_ptr<ElementXML::TreeElementXML> m_TreeXML;
 	// syntax rule functions
 	private:
-		std::shared_ptr<BuildElementXML> findElement();
-		std::shared_ptr<BuildElementXML> element();
-		void attribute(std::shared_ptr<BuildElementXML> &elementXML);
-		void closeElement(std::shared_ptr<BuildElementXML> &elementXML);
-		void endElement(std::shared_ptr<BuildElementXML> &elementXML);
+		void buildTreeXML();
+		size_t element(size_t elementID);
+		void attribute(ElementXML::TreeElementXML::DataNode &node);
+		void closeElement(size_t elementID, ElementXML::TreeElementXML::DataNode &node);
+		void endElement(size_t elementID, ElementXML::TreeElementXML::DataNode &node);
 		void skipelement();
+	private:
 		void errorHandleParser(const std::string &subMsgExcept);
-
-	// test functions 
-	private:
-		std::ofstream testFile;
-		inline void PRINT_TOKEN() { testFile << token_enum_name(m_Lexer.getCurToken()) << "  [" << m_SymbolTable.getTokenLexemVal(m_Lexer.getCurToken()) << "]" << std::endl; }
-	
-	private:
-		void findElements(std::shared_ptr<ElementXML> element, long tagNameID, std::vector<ElementXML> &vecElement);
-		void findElements(std::shared_ptr<ElementXML> element, std::vector<ElementXML> &vecElement);
 	private:
 		ParserXML(const ParserXML& parserXML) = delete;
 		ParserXML& operator=(const ParserXML& parserXML) = delete;
-		
 	public:
-		ParserXML();
-		ParserXML(const std::string& fileName);
+		ParserXML() { }
+		ParserXML(const std::string& fileName) : m_Lexer(fileName) { }
 		bool bindFile(const std::string &fileName);
 		void unbind();
-		bool isInit() const;
-		bool parse();
-		
-		std::vector<ElementXML> getElementsByTagName(const std::string &tagName);
-		std::vector<ElementXML> getAllElement();
-		ElementXML getRootElement() { return *m_RootTreeElements; }
+		void parse();
+		ElementXML getRootElement() const;
 	};
 
 }

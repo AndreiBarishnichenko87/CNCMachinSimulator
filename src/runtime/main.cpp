@@ -7,7 +7,6 @@
 #include "../parserXML/pub/lexerXML.h"
 #include "../parserXML/pub/parserXML.h"
 #include "../parserXML/pub/exceptionParserXML.h"
-#include "../parserXML/pub/symbolTableXML.h"
 
 using std::cout;
 using std::cin;
@@ -15,83 +14,37 @@ using std::endl;
 
 // MACROS FUNCTIONS
 #define PRINT(p) std::cout << #p << " => " << p
+#define PAUSE_MSG(msg) std::cout << msg << endl; std::cin.get()
 
-void test_smartBuffer() {
-
-	try {
-		parserXML::SmartBuffer buf("e:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
-		std::ofstream fout("e:\\project\\PROJECT\\resourses\\test.xml");
-
-		parserXML::SmartBuffer::IteratorSmartB begLexem = buf.begin();
-		parserXML::SmartBuffer::IteratorSmartB endLexem(begLexem);
-
-		while(*endLexem != std::char_traits<char>::eof()) {
-			++endLexem;
-		}
-		std::string str(begLexem, endLexem);
-		fout << str;
-
-		cout << endl;
-	} catch (parserXML::SmartBufferException& exc) {
-		std::cout << exc.what() << std::endl;
-	}
-
+void test_lexerXML() {
+	std::ofstream fout("e:\\project\\PROJECT\\resourses\\testLexer.xml");
+	parserXML::LexerXML lexer("e:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
+	while(lexer.getNextToken().m_Type != parserXML::TokenXML::TokenType::END_OF_FILE)
+		fout << lexer.getCurToken().m_Lexem << endl;
 }
-
-/*void test_lexer() {
-	std::ofstream foutLexer("e:\\project\\PROJECT\\resourses\\testLexer.xml");
-
-	parserXML::SmartBuffer buf;
-	parserXML::SmartBuffer::IteratorSmartB iter(buf.begin());
-	parserXML::SmartBuffer::IteratorSmartB iter1;
-	iter1 = iter;
-	
-	parserXML::SymbolTableXML *table = new parserXML::SymbolTableXML;
-	parserXML::LexerXML lexer;
-	lexer.init("e:\\project\\PROJECT\\resourses\\NTX1000_original.xml", table);
-	while(lexer.getNextToken().getTokenType() != parserXML::TokenXML::TokenType::END_OF_FILE)
-	{
-		foutLexer << table->getTokenLexemVal(lexer.getCurToken()) << endl;
-	}
-	foutLexer << "============ NEXT FILE ==============\n";
-	cout << "SIZE: " << table->m_StoreNameID.size() << endl;
-	lexer.reset();
-	lexer.init("e:\\project\\PROJECT\\resourses\\NTX1000_original.xml", table);
-	while(lexer.getNextToken().getTokenType() != parserXML::TokenXML::TokenType::END_OF_FILE)
-	{
-		foutLexer << table->getTokenLexemVal(lexer.getCurToken()) << endl;
-	}
-	//std::cin.get();
-}*/
 
 void test_parserXML() {
 
 	std::ofstream fout("e:\\project\\PROJECT\\resourses\\testParser.xml");
-
 	parserXML::ParserXML parser("e:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
-	parser.parse() ? cout << "parse is valid\n" : cout << "parse is invalid\n";
-	auto vecElements = parser.getElementsByTagName(std::string("machine_definition"));
-	//Hermle_C20_U.xml
+	parser.parse();
+	parserXML::ElementXML tree = parser.getRootElement();
+	PRINT(tree.elementName()) << endl;
+	PRINT(tree.getCountChildElements()) << endl;
+	PRINT(tree.getChildElement(29).getCountChildElements()) << endl;
+	PRINT(tree.getChildElement(29).getChildElement(22).getCountChildElements()) << endl;
 
-	std::string val("geometry");
-	for(unsigned int i = 0; i < vecElements[0].childElementCount(); ++i) {
-		if(vecElements[0].getChildElement(i).elementName() == val)
-			cout << "child name: " << vecElements[0].getChildElement(i).attribVal(std::string("geo")) << endl;
-	}
-
-	//std::cin.get();
 }
 
 int main(int argc, char* argv[]) {
 
-	//test_smartBuffer();
-	//test_lexer();
-	try{
+	try {
+		//test_lexerXML();
 		test_parserXML();
 	} catch(parserXML::ExceptionParserXML &except) {
 		cout << except.what() << endl;
 	}
-	//std::cin.get();
+
 	return 0;
 }
 

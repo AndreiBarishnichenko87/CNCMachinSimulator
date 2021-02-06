@@ -4,23 +4,66 @@
 
 namespace parserXML {
 	
+	const char* TokenXML::smTokenEnumName[] = {
+		"UNDEFINE_TOKEN",
+		"OPEN_TAG",         // <
+		"OPEN_CLOSE_TAG",   // </
+		"OPEN_PROLOG_TAG",  // <?
+		"FINAL_CLOSE_TAG",  // />
+		"CLOSE_TAG",        //	>
+		"EQUAL",            //	=
+		"CLOSE_PROLOG_TAG", // ?>
+		"TEXT",             // text
+		"NAME_ID",          //	nameID
+		"ATRIBUTE_VALUE",   // attribValue
+		"END_OF_FILE",      // EOF
+		"OPEN_COMENT_TAG",  // <!--
+		"CLOSE_COMENT_TAG", // -->
+		"CDATA_BEGIN",      // <![CDATA[
+		"CDATA_END",        //	]]>
+		"START_FILE",
+		"DOCTYPE"
+	};
+	const char* TokenXML::smTokenLexem[] = {
+		"UNDEFINE_TOKEN",
+		R"(<)",
+		R"(</)",
+		R"(<?)",
+		R"(/>)",
+		R"(>)",
+		R"(=)",
+		R"(?>)",
+		"TEXT",
+		"NAME_ID",
+		"ATRIBUTE_VALUE",
+		"EOF",
+		R"(<!--)",
+		R"(-->)",
+		R"(<![CDATA[)",
+		R"(]]>)",
+		"START_FILE",
+		R"(<!DOCTYPE)"
+	};
+	
+	std::string token_enum_name(TokenXML token) { return std::string(TokenXML::smTokenEnumName[token.m_Type]); }
+	std::string token_lexem_name(TokenXML token) { return std::string(TokenXML::smTokenLexem[token.m_Type]); }
+	
 	LexerXML::LexerXML()
-		: m_PreviousToken(token_t::END_OF_FILE)
 	{
+		m_PreviousToken.m_Type = token_t::END_OF_FILE;
 		m_CountNewLine = 1;
 	}
 
-	bool LexerXML::init(const std::string &fileName, SymbolTableXML *symbolTable){
-		m_SymbolTable = symbolTable;
-		m_SymbolTable->reset();
-		m_CountNewLine = 1;
+	bool LexerXML::init(const std::string &fileName){
 		if(!m_Buffer.init(fileName)){
+			m_CountNewLine = 1;
 			m_Buffer.reset();
 			m_Forward = m_LexemBegin = m_Buffer.begin();
-			m_PreviousToken = TokenXML(token_t::END_OF_FILE);
+			m_PreviousToken = TokenXML{token_t::END_OF_FILE};
 			return false;
 		}
-		m_PreviousToken = TokenXML(token_t::START_FILE);
+		m_CountNewLine = 1;
+		m_PreviousToken.m_Type = token_t::START_FILE;
 		m_Forward = m_LexemBegin = m_Buffer.begin();
 		return true;
 	}
@@ -29,29 +72,29 @@ namespace parserXML {
 	// this procedure you get unexpected behavior. You must call init(...) function
 	// for using LexerXML 
 	void LexerXML::reset(){
-		m_SymbolTable->reset();
 		m_Buffer.reset();
 		m_Forward = m_LexemBegin = m_Buffer.begin();
 		m_CountNewLine = 1;
-		m_PreviousToken = TokenXML(token_t::END_OF_FILE);
+		m_PreviousToken.m_Type = token_t::END_OF_FILE;
 	}
 	
 	bool LexerXML::isInit() const {
-		if(m_Buffer.isInit() && (m_PreviousToken.getTokenType() != token_t::END_OF_FILE))
+		if(m_Buffer.isInit() && (m_PreviousToken.m_Type != token_t::END_OF_FILE))
 			return true;
 		else 
 			return false;
 	}
 
-	LexerXML::LexerXML(const std::string &fileName, SymbolTableXML *symbolTable)
-		: m_Buffer(fileName), m_SymbolTable(symbolTable), m_PreviousToken(token_t::START_FILE)
+	LexerXML::LexerXML(const std::string &fileName)
+		: m_Buffer(fileName)
 	{
+		m_PreviousToken.m_Type = token_t::START_FILE;
 		m_Forward = m_LexemBegin = m_Buffer.begin(); 
 		m_CountNewLine = 1;
 	}
 
 	TokenXML LexerXML::getCurToken() {
-		if(m_PreviousToken.getTokenType() == token_t::START_FILE){
+		if(m_PreviousToken.m_Type == token_t::START_FILE){
 			return getNextToken();
 		} else {
 			return m_PreviousToken;
@@ -59,7 +102,8 @@ namespace parserXML {
 	}
 
 	void LexerXML::setToken(TokenXML& token, token_t tok_type, const std::string &lexemVal) {
-		token = TokenXML(tok_type, lexemVal, m_SymbolTable);
+		token.m_Type = tok_type;
+		token.m_Lexem = lexemVal;
 		m_PreviousToken = token;
 	}
 
@@ -174,7 +218,7 @@ namespace parserXML {
 	}
 
 	bool LexerXML::defTextToken(TokenXML& token) {
-		switch(m_PreviousToken.getTokenType()) { // "text"
+		switch(m_PreviousToken.m_Type) { // "text"
 			case (token_t::CLOSE_TAG):
 			case (token_t::OPEN_COMENT_TAG):
 			case (token_t::CDATA_BEGIN):
@@ -187,7 +231,7 @@ namespace parserXML {
 		while(*m_Forward != std::char_traits<char>::eof()) {
 			switch(*m_Forward){
 				case '<': // "<"
-					if(m_PreviousToken.getTokenType() == token_t::CLOSE_TAG) {
+					if(m_PreviousToken.m_Type == token_t::CLOSE_TAG) {
 						if(m_Forward != m_LexemBegin){
 							setToken(token, token_t::TEXT, replacePredefXMLEntity(m_LexemBegin, m_Forward));
 							return true;								
@@ -200,7 +244,7 @@ namespace parserXML {
 					break;
 
 				case '-': // "-->"
-					if(m_PreviousToken.getTokenType() == token_t::OPEN_COMENT_TAG){
+					if(m_PreviousToken.m_Type == token_t::OPEN_COMENT_TAG){
 						substring = m_Forward;
 						if(*++substring == '-')
 						if(*++substring == '>') {
@@ -214,7 +258,7 @@ namespace parserXML {
 					break;
 				
 				case ']': // "]]>"
-					if(m_PreviousToken.getTokenType() == token_t::CDATA_BEGIN){
+					if(m_PreviousToken.m_Type == token_t::CDATA_BEGIN){
 						substring = m_Forward;
 						if(*++substring == ']')
 						if(*++substring == '>') {
@@ -228,7 +272,7 @@ namespace parserXML {
 					break;
 				
 				case '>': // ">"
-					if(m_PreviousToken.getTokenType() == token_t::DOCTYPE)
+					if(m_PreviousToken.m_Type == token_t::DOCTYPE)
 					{
 						setToken(token, token_t::TEXT, std::string(m_LexemBegin, m_Forward));
 						return true;
