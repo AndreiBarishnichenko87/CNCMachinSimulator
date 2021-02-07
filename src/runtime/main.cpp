@@ -16,49 +16,40 @@ using std::endl;
 #define PRINT(p) std::cout << #p << " => " << p
 #define PAUSE_MSG(msg) std::cout << msg << endl; std::cin.get()
 
-void test_lexerXML() {
-	std::ofstream fout("e:\\project\\PROJECT\\resourses\\testLexer.xml");
-	parserXML::LexerXML lexer("e:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
-	while(lexer.getNextToken().m_Type != parserXML::TokenXML::TokenType::END_OF_FILE)
-		fout << lexer.getCurToken().m_Lexem << endl;
+void printAllDoc(parserXML::ElementXML element, std::ostream &fout, unsigned int depthTree) {
+	
+	for(int i = 0; i < depthTree; ++i) fout << " ";
+	fout << "<" << element.elementName() << ">";
+	if(element.valueExist())
+		fout << " [" << element.elementValue() << "]" << endl;
+	else
+		fout << endl;
+	if(element.countAttribute() != 0) {
+		for(unsigned int j = 0; j < element.countAttribute(); ++j) {
+			for(int i = 0; i < depthTree + 1; ++i) fout << " ";
+			fout << element.attribNameNum(j) << " = [" << element.attribValueNum(j) << "]" << endl;
+		}
+	}
+	
+	++depthTree;
+	if(element.countChildElements() != 0) {
+		for(unsigned int i = 0; i < element.countChildElements(); ++i) {
+			printAllDoc(element.childElementNum(i), fout, depthTree);
+		}
+	}
 }
 
 void test_parserXML() {
 
 	std::ofstream fout("e:\\project\\PROJECT\\resourses\\testParser.xml");
-	std::ofstream fout1("e:\\project\\PROJECT\\resourses\\testParser1.xml");
-	parserXML::ParserXML parser("e:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
+	parserXML::ParserXML parser("e:\\project\\PROJECT\\resourses\\langs.model.xml");
 	parser.parse();
-	parserXML::ElementXML tree = parser.getRootElement();
-	parser.bindFile("e:\\project\\PROJECT\\resourses\\Hermle_C20_U.xml");
-	parser.parse();
-	parserXML::ElementXML empty = parser.getRootElement();
-	cout << (empty ? "not empty" : "empty") << endl;
-	cout << (tree ? "not empty" : "empty") << endl;
-	for(unsigned int i = 0; i < tree.getCountChildElements(); ++i) {
-		fout << "name[" << i << "]: " << tree.getChildElement(i).elementName() << endl;
-		if(tree.getChildElement(i).getCountAttribute() != 0) {
-			for(unsigned int j = 0; j < tree.getChildElement(i).getCountAttribute(); ++j) {
-				fout << "	" << tree.getChildElement(i).attribNameNum(j)
-					<< " => " << tree.getChildElement(i).attribValueNum(j) << endl;
-			}
-		}
-	}
-	for(unsigned int i = 0; i < empty.getCountChildElements(); ++i) {
-		fout1 << "name[" << i << "]: " << empty.getChildElement(i).elementName() << endl;
-		if(empty.getChildElement(i).getCountAttribute() != 0) {
-			for(unsigned int j = 0; j < empty.getChildElement(i).getCountAttribute(); ++j) {
-				fout1 << "	" << empty.getChildElement(i).attribNameNum(j)
-					<< " => " << empty.getChildElement(i).attribValueNum(j) << endl;
-			}
-		}
-	}
+	printAllDoc(parser.getRootElement(), fout, 0);
 }
 
 int main(int argc, char* argv[]) {
 
 	try {
-		//test_lexerXML();
 		test_parserXML();
 	} catch(parserXML::ExceptionParserXML &except) {
 		cout << except.what() << endl;

@@ -8,7 +8,7 @@ namespace parserXML {
 	
 	// ELEMENTXML METHODS
 
-	ElementXML ElementXML::getChildElement(size_t num) {
+	ElementXML ElementXML::childElementNum(size_t num) {
 		ElementXML element(*this);
 		element.m_NodeID = m_TreeOfElements->getChildNode(m_NodeID, num);
 		return element;
@@ -82,8 +82,12 @@ namespace parserXML {
 	}
 	
 	size_t ElementXML::TreeElementXML::addValue(const std::string &value) {
-		m_ListVal.push_back(value);
-		return m_ListVal.size() - 1;
+		if(value.empty()) {
+			return std::numeric_limits<size_t>::max();
+		} else {
+			m_ListVal.push_back(value);
+			return m_ListVal.size() - 1;			
+		}
 	}
 	
 	size_t ElementXML::TreeElementXML::addAttribValue(const std::string &attribValue) {
@@ -107,7 +111,7 @@ namespace parserXML {
 			}
 		}
 	}
-	
+
 	void ElementXML::TreeElementXML::DataNode::addAttribWhithSwap(AttributeNode &attribNode) {
 		mListAttrib.push_back(AttributeNode());
 		mListAttrib.back().mNameAttrib.swap(attribNode.mNameAttrib);

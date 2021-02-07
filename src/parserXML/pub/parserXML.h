@@ -74,6 +74,10 @@ namespace parserXML{
 			size_t countAttributeNode(size_t nodeID) const;
 			const std::string& getAttribNameNum(size_t nodeID, size_t numAttrib);
 			const std::string& getAttribValNum(size_t nodeID, size_t numAttrib);
+			bool nodeValueExist(size_t nodeID) const { 
+				return (std::get<0>(m_TreeElements[nodeID]).mValueNodeID == std::numeric_limits<size_t>::max()) ? false : true;
+			}
+			const std::string& getNodeValue(size_t nodeID) { return m_ListVal[std::get<0>(m_TreeElements[nodeID]).mValueNodeID]; }
 		};
 	private:
 		size_t m_NodeID;
@@ -85,11 +89,13 @@ namespace parserXML{
 		operator bool() const { return (m_NodeID == std::numeric_limits<size_t>::max() && !m_TreeOfElements) ? false : true; }
 	public:
 		const std::string& elementName() { return m_TreeOfElements->getName(m_NodeID);}
-		size_t getCountChildElements() const { return m_TreeOfElements->countChildNode(m_NodeID); }
-		ElementXML getChildElement(size_t num);
-		size_t getCountAttribute() const { return m_TreeOfElements->countAttributeNode(m_NodeID); }
+		size_t countChildElements() const { return m_TreeOfElements->countChildNode(m_NodeID); }
+		ElementXML childElementNum(size_t num);
+		size_t countAttribute() const { return m_TreeOfElements->countAttributeNode(m_NodeID); }
 		const std::string& attribNameNum(size_t numAttribute) const { return m_TreeOfElements->getAttribNameNum(m_NodeID ,numAttribute); }
 		const std::string& attribValueNum(size_t numAttribute) const { return m_TreeOfElements->getAttribValNum(m_NodeID ,numAttribute); }
+		bool valueExist() const { return m_TreeOfElements->nodeValueExist(m_NodeID); }
+		const std::string& elementValue() { return m_TreeOfElements->getNodeValue(m_NodeID); }
 	};
 	
 	class ParserXML

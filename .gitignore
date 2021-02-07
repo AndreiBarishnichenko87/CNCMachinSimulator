@@ -1,4 +1,5 @@
 # ignore generated exe files
 *.exe
 # Untracked entire folder whith all include directories:
-build/
+**/build/
+**/resourses/
