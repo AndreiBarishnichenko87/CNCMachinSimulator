@@ -54,35 +54,42 @@ namespace parserXML{
 			size_t addName(const std::string &name);
 			size_t addValue(const std::string &value);
 			size_t addAttribValue(const std::string &attribValue);
-		
 		private:
 			TreeElementXML(const TreeElementXML &treeElementXML) = delete;
 			TreeElementXML& operator=(const TreeElementXML &treeElementXML) = delete;
-		// set methods
 		public:
 			TreeElementXML() {}
 			void resetTreeElements();
+			
+		// set methods
+		public:
 			size_t getRootNode() const { return m_TreeElements.empty() ? std::numeric_limits<size_t>::max() : 1; }
 			size_t addNewNode(size_t nodeID);
 			void fillNodeData(size_t nodeID, DataNode &DataNode);
 		// get methods
 		public:
 			std::string& getName(size_t nodeID) { return m_ListName[std::get<0>(m_TreeElements[nodeID]).mNameNodeID]; }
-			size_t countChildsNode(size_t nodeID) { return std::get<1>(m_TreeElements[nodeID]).size(); }
+			size_t countChildNode(size_t nodeID) { return std::get<1>(m_TreeElements[nodeID]).size(); }
 			size_t getChildNode(size_t nodeID, size_t numChildNode);
+			size_t countAttributeNode(size_t nodeID) const;
+			const std::string& getAttribNameNum(size_t nodeID, size_t numAttrib);
+			const std::string& getAttribValNum(size_t nodeID, size_t numAttrib);
 		};
-		
 	private:
 		size_t m_NodeID;
 		std::shared_ptr<TreeElementXML> m_TreeOfElements;
 	public:
 		ElementXML() : m_NodeID(std::numeric_limits<size_t>::max()){ }
+		ElementXML getRootElement() const { ElementXML element(*this); element.m_NodeID = 0; return element; }
 		void reset() { m_NodeID = std::numeric_limits<size_t>::max(); m_TreeOfElements.reset(); }
+		operator bool() const { return (m_NodeID == std::numeric_limits<size_t>::max() && !m_TreeOfElements) ? false : true; }
 	public:
-		std::string& elementName() { return m_TreeOfElements->getName(m_NodeID);}
-		size_t getCountChildElements() const { return m_TreeOfElements->countChildsNode(m_NodeID); }
+		const std::string& elementName() { return m_TreeOfElements->getName(m_NodeID);}
+		size_t getCountChildElements() const { return m_TreeOfElements->countChildNode(m_NodeID); }
 		ElementXML getChildElement(size_t num);
-		//std::vector<ElementXML> getAllChildElements();
+		size_t getCountAttribute() const { return m_TreeOfElements->countAttributeNode(m_NodeID); }
+		const std::string& attribNameNum(size_t numAttribute) const { return m_TreeOfElements->getAttribNameNum(m_NodeID ,numAttribute); }
+		const std::string& attribValueNum(size_t numAttribute) const { return m_TreeOfElements->getAttribValNum(m_NodeID ,numAttribute); }
 	};
 	
 	class ParserXML
@@ -91,7 +98,6 @@ namespace parserXML{
 		using type_token = TokenXML::TokenType;
 		LexerXML m_Lexer;
 		std::shared_ptr<ElementXML::TreeElementXML> m_TreeXML;
-	// syntax rule functions
 	private:
 		void buildTreeXML();
 		size_t element(size_t elementID);
@@ -107,12 +113,11 @@ namespace parserXML{
 	public:
 		ParserXML() { }
 		ParserXML(const std::string& fileName) : m_Lexer(fileName) { }
-		bool bindFile(const std::string &fileName);
-		void unbind();
+		bool bindFile(const std::string &fileName) { unbindFile(); return m_Lexer.init(fileName) ? true : false; }
+		void unbindFile() { m_Lexer.reset(); m_TreeXML.reset(); }
 		void parse();
 		ElementXML getRootElement() const;
 	};
-
 }
 
 #endif //PARSERXML_H_

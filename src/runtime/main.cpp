@@ -26,14 +26,33 @@ void test_lexerXML() {
 void test_parserXML() {
 
 	std::ofstream fout("e:\\project\\PROJECT\\resourses\\testParser.xml");
+	std::ofstream fout1("e:\\project\\PROJECT\\resourses\\testParser1.xml");
 	parserXML::ParserXML parser("e:\\project\\PROJECT\\resourses\\NTX1000_original.xml");
 	parser.parse();
 	parserXML::ElementXML tree = parser.getRootElement();
-	PRINT(tree.elementName()) << endl;
-	PRINT(tree.getCountChildElements()) << endl;
-	PRINT(tree.getChildElement(29).getCountChildElements()) << endl;
-	PRINT(tree.getChildElement(29).getChildElement(22).getCountChildElements()) << endl;
-
+	parser.bindFile("e:\\project\\PROJECT\\resourses\\Hermle_C20_U.xml");
+	parser.parse();
+	parserXML::ElementXML empty = parser.getRootElement();
+	cout << (empty ? "not empty" : "empty") << endl;
+	cout << (tree ? "not empty" : "empty") << endl;
+	for(unsigned int i = 0; i < tree.getCountChildElements(); ++i) {
+		fout << "name[" << i << "]: " << tree.getChildElement(i).elementName() << endl;
+		if(tree.getChildElement(i).getCountAttribute() != 0) {
+			for(unsigned int j = 0; j < tree.getChildElement(i).getCountAttribute(); ++j) {
+				fout << "	" << tree.getChildElement(i).attribNameNum(j)
+					<< " => " << tree.getChildElement(i).attribValueNum(j) << endl;
+			}
+		}
+	}
+	for(unsigned int i = 0; i < empty.getCountChildElements(); ++i) {
+		fout1 << "name[" << i << "]: " << empty.getChildElement(i).elementName() << endl;
+		if(empty.getChildElement(i).getCountAttribute() != 0) {
+			for(unsigned int j = 0; j < empty.getChildElement(i).getCountAttribute(); ++j) {
+				fout1 << "	" << empty.getChildElement(i).attribNameNum(j)
+					<< " => " << empty.getChildElement(i).attribValueNum(j) << endl;
+			}
+		}
+	}
 }
 
 int main(int argc, char* argv[]) {

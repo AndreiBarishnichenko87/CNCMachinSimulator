@@ -6,25 +6,42 @@
 
 namespace parserXML {
 	
-	size_t ElementXML::TreeElementXML::getChildNode(size_t nodeID, size_t numChildNode) {
-		if(numChildNode <= (countChildsNode(nodeID) - 1))
-			return std::get<1>(m_TreeElements[nodeID])[numChildNode];
-		else
-			throw TreeElementXMLException(std::string("out of range getChildNode(...)"));
-	}
-	
+	// ELEMENTXML METHODS
+
 	ElementXML ElementXML::getChildElement(size_t num) {
 		ElementXML element(*this);
 		element.m_NodeID = m_TreeOfElements->getChildNode(m_NodeID, num);
 		return element;
 	}
 	
+	// TREEELEMENTXML METHODS
 	
-	ElementXML ParserXML::getRootElement() const {
-		ElementXML rootTree;
-		rootTree.m_NodeID = 0;
-		rootTree.m_TreeOfElements = m_TreeXML;
-		return rootTree;
+	size_t ElementXML::TreeElementXML::getChildNode(size_t nodeID, size_t numChildNode) {
+		if(numChildNode < countChildNode(nodeID)){
+			return std::get<1>(m_TreeElements[nodeID])[numChildNode];
+		}
+		else
+			throw TreeElementXMLException(std::string("out of range getChildNode(...)"));
+	}
+	
+	size_t ElementXML::TreeElementXML::countAttributeNode(size_t nodeID) const {
+		return std::get<0>(m_TreeElements[nodeID]).mListAttribID.size();
+	}
+	
+	const std::string& ElementXML::TreeElementXML::getAttribNameNum(size_t nodeID, size_t numAttrib) {
+		if(numAttrib < countAttributeNode(nodeID)){
+			return m_ListName[std::get<0>(std::get<0>(m_TreeElements[nodeID]).mListAttribID[numAttrib])];
+		}
+		else 
+			throw TreeElementXMLException(std::string("out of range getAttribNameNum(...)"));
+	}
+	
+	const std::string& ElementXML::TreeElementXML::getAttribValNum(size_t nodeID, size_t numAttrib) {
+		if(numAttrib < countAttributeNode(nodeID)){
+			return m_ListAttribVal[std::get<1>(std::get<0>(m_TreeElements[nodeID]).mListAttribID[numAttrib])];
+		}
+		else 
+			throw TreeElementXMLException(std::string("out of range getAttribValNum(...)"));
 	}
 	
 	void ElementXML::TreeElementXML::resetTreeElements() {
@@ -32,12 +49,6 @@ namespace parserXML {
 		std::vector<std::string>().swap(m_ListName);
 		std::vector<std::string>().swap(m_ListAttribVal);
 		std::vector<std::string>().swap(m_ListVal);
-	}
-	
-	void ElementXML::TreeElementXML::DataNode::addAttribWhithSwap(AttributeNode &attribNode) {
-		mListAttrib.push_back(AttributeNode());
-		mListAttrib.back().mNameAttrib.swap(attribNode.mNameAttrib);
-		mListAttrib.back().mValueAttrib.swap(attribNode.mValueAttrib);
 	}
 
 	size_t ElementXML::TreeElementXML::addNewNode(size_t nodeID) {
@@ -96,20 +107,22 @@ namespace parserXML {
 			}
 		}
 	}
-
-	bool ParserXML::bindFile(const std::string &fileName){
-		unbind();
-		if(m_Lexer.init(fileName)){
-			return true;
-		}
-		return false;
-	}
-
-	void ParserXML::unbind(){
-		m_Lexer.reset();
-		m_TreeXML.reset();
+	
+	void ElementXML::TreeElementXML::DataNode::addAttribWhithSwap(AttributeNode &attribNode) {
+		mListAttrib.push_back(AttributeNode());
+		mListAttrib.back().mNameAttrib.swap(attribNode.mNameAttrib);
+		mListAttrib.back().mValueAttrib.swap(attribNode.mValueAttrib);
 	}
 	
+	// PARSERXML METHODS
+	
+	ElementXML ParserXML::getRootElement() const {
+		ElementXML rootTree;
+		rootTree.m_NodeID = 0;
+		rootTree.m_TreeOfElements = m_TreeXML;
+		return rootTree;
+	}
+
 	void ParserXML::errorHandleParser(const std::string &subMsgExcept){
 		std::ostringstream msgExcept;
 		msgExcept << "\nexpext token in proc " << subMsgExcept << std::endl;
