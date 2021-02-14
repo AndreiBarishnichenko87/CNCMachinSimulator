@@ -2,7 +2,7 @@
 #include <memory>
 #include <sstream>
 
-#include "pub/parserXML.h"
+#include "../parserXML.h"
 
 namespace parserXML {
 	
