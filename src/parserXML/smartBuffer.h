@@ -19,16 +19,15 @@ namespace parserXML {
 			class IteratorSmartB;
 			enum {CHUNK_SIZE = 4096};
 		private:
-			struct Chunk 
+			struct Chunk
 			{
 				char mBuffer[CHUNK_SIZE];
-				unsigned int mCountUsersChank; 
+				unsigned int mCountUsersChank;
 			};
 			std::ifstream m_Fin;
 			std::list<Chunk*> m_ListOfChunks;
 			std::list<Chunk*>::iterator m_ChunkBuf;
 			char *m_BeginChunkBuf, *m_EndChunkBuf;
-			
 		private:
 			void updateCurChunkPtr(const std::list<Chunk*>::iterator &iter, unsigned int countRead);
 			bool addNewChunk();
@@ -44,7 +43,7 @@ namespace parserXML {
 			explicit SmartBuffer(const std::string fileName);
 			SmartBuffer();
 			~SmartBuffer();
-		public:									
+		public:
 			bool init(const std::string &fileName);
 			void reset();
 			bool isInit() const;

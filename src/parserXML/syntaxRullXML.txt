@@ -15,17 +15,14 @@
 			CDATA_BEGIN				: <![CDATA[
 			CDATA_END					:	]]>
 
-						 <!-- coments -- >
-		 <![CDATA[ any_symbol ]] >
-
-	<element 									 />
+	<element/>
 	<element attribName="text" />
-	<element 										> text 		</element>
-	<element attribName="text"  > text 		</element>
-	<element attribName="text"  > 				</element>
-	<element attribName="text"  > element </element>
-	<!-- 		 			text				-->
-	<![CDATA[			text			 ]] >
+	<element>text</element>
+	<element attribName="text">text</element>
+	<element attribName="text"></element>
+	<element attribName="text">element</element>
+	<!--text-->
+	<![CDATA[text]] >
 
 	Syntaxis XML Ruls:
 	

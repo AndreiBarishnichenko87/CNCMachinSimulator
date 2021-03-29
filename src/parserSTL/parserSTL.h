@@ -2,36 +2,41 @@
 #define _STL_PARSER_H
 
 #define GLM_FORCE_RADIANS
-
-#include <string>
-#include <vector>
-#include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace graphics {
+#include <fstream>
+#include <string>
+#include <cstdint> 
+#include <exception>
 
-	struct dataStructSTL {
-		glm::vec3 vertexPos;
-		glm::vec3 normalVec;
-	};
-	
+#include "../graphics/dataStructure.h"
+
+namespace parserSTL {
+
 	class ParserSTL {
 	private:
-		std::vector<dataStructSTL> modelMesh;
+		enum FieldInByte {HEADER = 80, NUMBER_OF_TRIANGELS = 4, NORMAL_VECTOR = 12, VERTEX_COORD_3 = 36, SKEEP = 2};
 	private:
-		void readSTL(const std::string &fileName);
+		std::fstream mBindFile;
+		graphics::TriangleData mTriangle;
+		std::uint32_t mCountTriangles;
+		std::uint32_t mRestTriangles;
 	public:
-		using typeElementSTL = dataStructSTL;
-		ParserSTL(const std::string& fileName);
+		class BadParserSTL : public std::logic_error {
+		public:
+			BadParserSTL(const std::string &msg) : logic_error("BadParserSTL::" + msg) {}
+		};
+	public:
+		ParserSTL() : mCountTriangles(0), mRestTriangles(0) { }
+		explicit ParserSTL(const std::string& fileName);
 		
-		size_t sizeElement() const { return sizeof(typeElementSTL); }
-		size_t countElement() const { return modelMesh.size(); }
-		size_t sizeMashBuffer() const { return modelMesh.size() * sizeof(typeElementSTL); }
+		std::uint32_t countTriangles() const { return mCountTriangles; }
+		std::uint32_t restTriangles() const { return mRestTriangles; }
 		
-		bool mashIsEmpty() const { return modelMesh.empty(); }
+		const graphics::TriangleData& nextTriangle();
+		const graphics::TriangleData& curTriangle();
 		
-		const void* getVoidPtr() { return static_cast<void*>(modelMesh.data()); }
-		void readFile(const std::string &fileName);
+		explicit operator bool() const noexcept { return static_cast<bool>(mBindFile); }
 	};
 }
 
