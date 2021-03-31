@@ -21,7 +21,7 @@
 #include "graphics/shader/shader.h"
 #include "graphics/stb/stb_image.h"
 #include "parserSTL/parserSTL.h"
-#include "camera/camera.h"
+#include "camera/cameraGame.h"
 
 #include "graphics/imGui/imgui.h"
 #include "graphics/imGui/imgui_impl_glfw.h"
@@ -131,12 +131,14 @@ std::string shaderPath("e:\\project\\MyProject\\resourses\\graphics\\shaders\\")
 std::string Model3DPath("e:\\project\\MyProject\\resourses\\graphics\\3Dmodel\\");
 
 // ============= TESTING SOMTHING =================
-	camera::CameraGame gameCam(glm::vec3(30.0f, 30.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	camera::CameraGame::UpAxis axisType = camera::CameraGame::UpAxis::X;
+	camera::CameraGame gameCam(glm::vec3(50.0f, 0.0f, 25.0f), axisType, glm::vec3(20.0f, 15.0f, 0.0f));
+	camera::CameraGame cameraModel(glm::vec3(150.0f, 100.0f, 150.0f), axisType, glm::vec3(20.0f, 15.0f, 0.0f));
 // ================================================
 
 int main(int argc, char* argv[]) {
 
-	gameCam.setMoveSpeed(10.0f);
+	gameCam.setMoveSpeed(15.0f);
 	gameCam.setMouseSpeed(0.3f);
 	// glfw: initialize and configure
     // ------------------------------
@@ -185,9 +187,12 @@ int main(int argc, char* argv[]) {
 	// some 3D model
 	// --------------
 	graphics::Shader shader(shaderPath + "shader.vs", shaderPath + "shader.fs");
+	graphics::Shader lightShader(shaderPath + "lightSource.vs", shaderPath + "lightSource.fs");
 	std::shared_ptr<graphics::BaseShape> object1(ShapeFactory::instance().createShapeSTL(Model3DPath + "CROSS.STL"));
+	std::shared_ptr<graphics::BaseShape> cameraSimulation(ShapeFactory::instance().createShapeSTL(Model3DPath + "Camera.STL"));
+	std::shared_ptr<graphics::BaseShape> lighter(ShapeFactory::instance().createShapeSTL(Model3DPath + "sphere.STL"));
 
-	glm::vec3 lightColor = glm::vec3(1.0f);
+	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 modelColor = glm::vec3(1.0f, 0.5f, 0.31f);
 	
 	// GENERETE LINE 
@@ -233,11 +238,11 @@ int main(int argc, char* argv[]) {
 		// prerenderer setting 
 		// -------------------
 		//const float radius = 30.0f;
-		float lightPosX = -10.0f;//sin(glfwGetTime()) * radius;
-		float lightPosY = 30.0f;//sin(glfwGetTime() * 1.2f) * radius;
-		float lightPosZ = -5.0f;//cos(glfwGetTime()) * radius;
+		float lightPosX = 0.0f;//sin(glfwGetTime()) * radius;
+		float lightPosY = 0.0f;//sin(glfwGetTime() * 1.2f) * radius;
+		float lightPosZ = 75.0f;//cos(glfwGetTime()) * radius;
 		glm::vec3 lightPos = glm::vec3(lightPosX, lightPosY, lightPosZ);
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 300.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 700.0f);
 
 //#define CAMERA_CAD
 #ifdef CAMERA_CAD
@@ -248,7 +253,6 @@ int main(int argc, char* argv[]) {
 #else
 		// camera game
 		glm::vec3 viewPos = gameCam.position();
-		glm::vec3 frontDirection = gameCam.frontDir();
 		glm::mat4 view = gameCam.getLookAtMatrix();
 #endif
 		// CALCULATE RAY DIRECTION FROM CAMERA
@@ -281,6 +285,7 @@ int main(int argc, char* argv[]) {
 		// draw 3d Model
 		// ---------
 		shader.use();
+		view = cameraModel.getLookAtMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
 		shader.setMat4f("model", model);
 		shader.setMat4f("view", view);
@@ -290,6 +295,14 @@ int main(int argc, char* argv[]) {
 		shader.setVec3f("lightPos", lightPos);
 		shader.setVec3f("viewPos", viewPos);
 		object1->draw();
+		shader.setMat4f("model", gameCam.getTransformMatrix());
+		cameraSimulation->draw();
+		
+		lightShader.use();
+		lightShader.setMat4f("model", glm::translate(glm::mat4(1.0f), lightPos));
+		lightShader.setMat4f("view", view);
+		lightShader.setMat4f("projection", projection);
+		lighter->draw();
 		
 		// draw line 
 		// ---------
