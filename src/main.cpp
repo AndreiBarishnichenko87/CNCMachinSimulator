@@ -22,6 +22,8 @@
 #include "graphics/stb/stb_image.h"
 #include "parserSTL/parserSTL.h"
 #include "camera/cameraGame.h"
+#include "camera/cameraCAD.h"
+#include "graphics/shapeManipulators/rotateShape3D.h"
 
 #include "graphics/imGui/imgui.h"
 #include "graphics/imGui/imgui_impl_glfw.h"
@@ -103,8 +105,6 @@ unsigned int SCR_HEIGHT = 600;
 //////////////////////////////////////////////
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
-glm::vec3 cameraFront  = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 // LINE PRINMITIVE
 struct Line {
@@ -113,27 +113,20 @@ struct Line {
 };
 std::vector<Line> rays;
 
-// KEYS MOVEMANT
-float camYawDigree = 0.0f;
-float camPitchDigree = 90.0f;
-float camRadius = 80.0f;
-
 // MOUSE MOVEMANT
 glm::vec4 ray_clip = glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
 float lastX = 400, lastY = 300;
-float yaw = -90.0f, pitch = 0.0f;
-
-// state button 
-bool mousMidleButton = false;
 
 // PATH TO PROJECT
 std::string shaderPath("e:\\project\\MyProject\\resourses\\graphics\\shaders\\");
 std::string Model3DPath("e:\\project\\MyProject\\resourses\\graphics\\3Dmodel\\");
 
 // ============= TESTING SOMTHING =================
-	camera::CameraGame::UpAxis axisType = camera::CameraGame::UpAxis::X;
-	camera::CameraGame gameCam(glm::vec3(50.0f, 0.0f, 25.0f), axisType, glm::vec3(20.0f, 15.0f, 0.0f));
-	camera::CameraGame cameraModel(glm::vec3(150.0f, 100.0f, 150.0f), axisType, glm::vec3(20.0f, 15.0f, 0.0f));
+	camera::CameraGame::UpAxis axisType = camera::CameraGame::UpAxis::Z;
+	camera::CameraGame gameCam(glm::vec3(50.0f, 50.0f, 20.0f), axisType, glm::vec3(20.0f, 15.0f, 0.0f));
+	//camera::CameraCAD CADCam(glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f)), glm::radians(50.0f), 150.0f);
+	camera::CameraCAD CADCam;
+	graphics::RotateShape3D rotateObject;
 // ================================================
 
 int main(int argc, char* argv[]) {
@@ -189,7 +182,7 @@ int main(int argc, char* argv[]) {
 	graphics::Shader shader(shaderPath + "shader.vs", shaderPath + "shader.fs");
 	graphics::Shader lightShader(shaderPath + "lightSource.vs", shaderPath + "lightSource.fs");
 	std::shared_ptr<graphics::BaseShape> object1(ShapeFactory::instance().createShapeSTL(Model3DPath + "CROSS.STL"));
-	std::shared_ptr<graphics::BaseShape> cameraSimulation(ShapeFactory::instance().createShapeSTL(Model3DPath + "Camera.STL"));
+	std::shared_ptr<graphics::BaseShape> testQuat(ShapeFactory::instance().createShapeSTL(Model3DPath + "systemCoord.STL"));
 	std::shared_ptr<graphics::BaseShape> lighter(ShapeFactory::instance().createShapeSTL(Model3DPath + "sphere.STL"));
 
 	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -218,11 +211,27 @@ int main(int argc, char* argv[]) {
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	ImGui::StyleColorsDark();
 	
+	// FPS counter
+	// -----------
+	double startPoint = glfwGetTime();
+	double step = 0.1;
+	unsigned long frameCountPerStep = 0;
+	double FPS = 0.0;
+	
 	// renderer loop 
 	// -------------
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     while (!glfwWindowShouldClose(window))
     {
+		if ((startPoint + step) > glfwGetTime()) {
+			++frameCountPerStep;
+		} else {
+			
+			FPS = frameCountPerStep * (1.0 / (glfwGetTime() - startPoint));
+			startPoint = glfwGetTime();
+			frameCountPerStep = 0;
+		}
+		
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
@@ -234,7 +243,7 @@ int main(int argc, char* argv[]) {
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+		 
 		// prerenderer setting 
 		// -------------------
 		//const float radius = 30.0f;
@@ -244,19 +253,19 @@ int main(int argc, char* argv[]) {
 		glm::vec3 lightPos = glm::vec3(lightPosX, lightPosY, lightPosZ);
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 700.0f);
 
-//#define CAMERA_CAD
-#ifdef CAMERA_CAD
-		// camera cad/cam
-		glm::vec3 viewPos = pointOnSphear(camRadius, camYawDigree, camPitchDigree);
-		glm::vec3 frontDirection = glm::normalize(glm::vec3(0.0f, 0.0f, 0.0f) - viewPos);
-		glm::mat4 view = glm::lookAt(viewPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+#define CAMERA_CAD
+#ifdef CAMERA_CAD 
+		glm::mat4 view = CADCam.getLookAtMatrix();
+		glm::vec3 viewPos = CADCam.cameraPos();
+		
 #else
 		// camera game
 		glm::vec3 viewPos = gameCam.position();
+		//gameCam.setNewPos(gameCam.position() + gameCam.frontDir() * 0.1f);
 		glm::mat4 view = gameCam.getLookAtMatrix();
 #endif
 		// CALCULATE RAY DIRECTION FROM CAMERA
-		// ------------------------
+		// ------------------------ 
 		glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
 		ray_eye.z = -1.0f;
 		ray_eye.w = 0.0f;
@@ -278,14 +287,15 @@ int main(int argc, char* argv[]) {
 			static glm::vec4 rayColor = glm::vec4{0.941f, 0.0, 1.0, 1.0f};
 			ImGui::ColorEdit3("color 3D model", color);
 			ImGui::ColorEdit3("color ray", &rayColor.x);
+			ImGui::Text("FPS: %f", FPS);
 			ImGui::End();
 	
+
 		// RENDERING OBJECTS
 		// -----------------
 		// draw 3d Model
 		// ---------
 		shader.use();
-		view = cameraModel.getLookAtMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
 		shader.setMat4f("model", model);
 		shader.setMat4f("view", view);
@@ -295,14 +305,12 @@ int main(int argc, char* argv[]) {
 		shader.setVec3f("lightPos", lightPos);
 		shader.setVec3f("viewPos", viewPos);
 		object1->draw();
-		shader.setMat4f("model", gameCam.getTransformMatrix());
-		cameraSimulation->draw();
 		
-		lightShader.use();
-		lightShader.setMat4f("model", glm::translate(glm::mat4(1.0f), lightPos));
-		lightShader.setMat4f("view", view);
-		lightShader.setMat4f("projection", projection);
-		lighter->draw();
+		// TESTING QUATERNION 
+		// ------------------
+		shader.setMat4f("model", rotateObject.getMat4());
+		shader.setVec3f("modelColor", glm::vec3(1.0f, 0.0f, 0.0f));
+		testQuat->draw();
 		
 		// draw line 
 		// ---------
@@ -315,7 +323,7 @@ int main(int argc, char* argv[]) {
 		rays[rays.size() - 1].endLine = endRayPos;
 		glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
 		glBufferData(GL_ARRAY_BUFFER, rays.size() * sizeof(Line), static_cast<void*>(rays.data()), GL_DYNAMIC_DRAW);
-		
+
 		primitiveShader.use();
 		primitiveShader.setMat4f("model", glm::mat4(1.0f));
 		primitiveShader.setMat4f("view", view);
@@ -324,11 +332,17 @@ int main(int argc, char* argv[]) {
 		glDrawArrays(GL_LINES, 0, rays.size() * 2);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
+		// draw lighter sphere
+		lightShader.use();
+		lightShader.setMat4f("model", glm::translate(glm::mat4(1.0f), lightPos));
+		lightShader.setMat4f("view", view);
+		lightShader.setMat4f("projection", projection);
+		lighter->draw();
 		// ShowDemoWindow draw exemple
 			//ImGui::ShowDemoWindow();
 		// Render dear imgui into screen
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -362,26 +376,19 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	lastX = xpos;
 	lastY = ypos;
 
-	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE);
-	if (state != GLFW_PRESS)
-		return;
-		
-	gameCam.turn(xoffset, yoffset);
-
-	const float sensitivity = 0.3f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-	
-	camYawDigree -= xoffset;
-	camPitchDigree += yoffset;
-	if(camPitchDigree < 0.0f) camPitchDigree = 1.0f;
-	if(camPitchDigree > 180.0f) camPitchDigree = 179.0f;
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+		gameCam.turn(xoffset, yoffset);
+		CADCam.turn(xoffset, yoffset);
+	}
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
+		#define cameraDef CADCam
+		rotateObject.rotate(xoffset, yoffset, cameraDef.frontDir(), cameraDef.rightDir(), cameraDef.upDir());
+	}
 
 }
 
 void processInput(GLFWwindow *window)
 {
-	const float cameraSpeed = 10.0f * deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 		
@@ -397,28 +404,6 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		gameCam.move(camera::CameraGame::MoveDirection::RIGHT, deltaTime);
 	}
-	
-	// find angel on the spher
-	const float sensitivity = 10.0f;
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) 
-		camYawDigree += cameraSpeed * sensitivity;
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		camYawDigree -= cameraSpeed * sensitivity;	
-	
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)  {
-		camPitchDigree += (cameraSpeed * sensitivity);
-		if(camPitchDigree > 180.0f) camPitchDigree = 179.9f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)  {
-		camPitchDigree -= (cameraSpeed * sensitivity);
-		if(camPitchDigree < 0.0f) camPitchDigree = 0.1f;
-	}
-	
-	if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
-		camRadius += cameraSpeed * sensitivity;
-	if (glfwGetKey(window, GLFW_KEY_KP_ADD ) == GLFW_PRESS)
-		camRadius -= cameraSpeed * sensitivity;
-		
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -435,10 +420,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camRadius -= (float)yoffset * 10.0f;
-	if(camRadius < 0)
-		camRadius = 0.1f;
-    
+
 }
 
 //////////////////////////////////////////////
