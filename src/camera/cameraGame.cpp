@@ -8,7 +8,7 @@
 namespace camera {
 
 	CameraGame::CameraGame(glm::vec3 cameraPos, UpAxis upAxis, glm::vec3 cameraTarget)
-		: m_Pos(cameraPos)
+		: BaseCamera(BaseCamera::CameraType::GAME), m_Pos(cameraPos)
 	{
 		if (cameraPos.x == cameraTarget.x && cameraPos.y == cameraTarget.y && cameraPos.z == cameraTarget.z)
 			throw BadCameraException("constructor::target_is_equvalent_cameraPos");
@@ -31,7 +31,7 @@ namespace camera {
 			m_Pitch = calculatePitchWorldZ();
 			calculateFront = &CameraGame::calcFrontWorldZ;
 		} else {
-			throw BadCameraException("type of upAxis is undefine");
+			throw BaseCamera::BadCameraException("type of upAxis is undefine");
 		}
 		updateCameraVectors();
 	}

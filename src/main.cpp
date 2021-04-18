@@ -21,9 +21,11 @@
 #include "graphics/shader/shader.h"
 #include "graphics/stb/stb_image.h"
 #include "parserSTL/parserSTL.h"
+#include "camera/baseCamera.h"
 #include "camera/cameraGame.h"
 #include "camera/cameraCAD.h"
 #include "graphics/shapeManipulators/rotateShape3D.h"
+#include "application/window/window.h"
 
 #include "graphics/imGui/imgui.h"
 #include "graphics/imGui/imgui_impl_glfw.h"
@@ -124,41 +126,34 @@ std::string Model3DPath("e:\\project\\MyProject\\resourses\\graphics\\3Dmodel\\"
 // ============= TESTING SOMTHING =================
 	camera::CameraGame::UpAxis axisType = camera::CameraGame::UpAxis::Z;
 	camera::CameraGame gameCam(glm::vec3(50.0f, 50.0f, 20.0f), axisType, glm::vec3(20.0f, 15.0f, 0.0f));
-	//camera::CameraCAD CADCam(glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f)), glm::radians(50.0f), 150.0f);
-	camera::CameraCAD CADCam;
+	camera::CameraCAD CADCam(glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f)), glm::radians(50.0f), 150.0f, 0.3f);
 	graphics::RotateShape3D rotateObject;
 // ================================================
 
 int main(int argc, char* argv[]) {
-
+	
+	camera::BaseCamera *camera = &CADCam;
+	
+	if(camera->getCameraType() == camera::BaseCamera::CameraType::CAD) {
+		cout << "camera type is CAD" << std::endl;
+	} else if (camera->getCameraType() == camera::BaseCamera::CameraType::GAME) {
+		cout << "camera type is GAME" << std::endl;
+	}
+	
 	gameCam.setMoveSpeed(15.0f);
 	gameCam.setMouseSpeed(0.3f);
-	// glfw: initialize and configure
-    // ------------------------------
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-    // glfw window creation
-    // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
 	// SET WINDOW CONTEXT
 	// ------------------
-	glfwMakeContextCurrent(window);
+	application::Window window("LearnOpenGL", SCR_WIDTH, SCR_HEIGHT);
+	glfwMakeContextCurrent(window.getWindow());
 	
 	// CALLBACK FUNCTIONS
 	// ------------------
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+    glfwSetFramebufferSizeCallback(window.getWindow(), framebuffer_size_callback);
+	glfwSetCursorPosCallback(window.getWindow(), mouse_callback);
+	glfwSetMouseButtonCallback(window.getWindow(), mouse_button_callback);
+	glfwSetScrollCallback(window.getWindow(), scroll_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -207,7 +202,7 @@ int main(int argc, char* argv[]) {
 	const char* glsl_version = "#version 430";
 	//IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplGlfw_InitForOpenGL(window.getWindow(), true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	ImGui::StyleColorsDark();
 	
@@ -221,7 +216,7 @@ int main(int argc, char* argv[]) {
 	// renderer loop 
 	// -------------
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window.getWindow()))
     {
 		if ((startPoint + step) > glfwGetTime()) {
 			++frameCountPerStep;
@@ -238,7 +233,7 @@ int main(int argc, char* argv[]) {
         
 		// input
         // -----
-        processInput(window);
+        processInput(window.getWindow());
 		
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -253,16 +248,16 @@ int main(int argc, char* argv[]) {
 		glm::vec3 lightPos = glm::vec3(lightPosX, lightPosY, lightPosZ);
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 700.0f);
 
-#define CAMERA_CAD
+//#define CAMERA_CAD
 #ifdef CAMERA_CAD 
 		glm::mat4 view = CADCam.getLookAtMatrix();
 		glm::vec3 viewPos = CADCam.cameraPos();
 		
 #else
 		// camera game
-		glm::vec3 viewPos = gameCam.position();
-		//gameCam.setNewPos(gameCam.position() + gameCam.frontDir() * 0.1f);
+		//gameCam.setNewPos(gameCam.cameraPos() + gameCam.frontDir() * 0.01f);
 		glm::mat4 view = gameCam.getLookAtMatrix();
+		glm::vec3 viewPos = gameCam.cameraPos();
 #endif
 		// CALCULATE RAY DIRECTION FROM CAMERA
 		// ------------------------ 
@@ -317,7 +312,7 @@ int main(int argc, char* argv[]) {
 		glBindVertexArray(lineVAO);
 		float lengthRay = 10.0f;
 		glm::vec3 endRayPos =  viewPos + ray_wor * lengthRay;
-		if (pickWhenReleaseButton(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS))
+		if (pickWhenReleaseButton(glfwGetMouseButton(window.getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS))
 			rays.push_back(Line{viewPos, endRayPos});
 		rays[rays.size() - 1].beginLine = viewPos;
 		rays[rays.size() - 1].endLine = endRayPos;
@@ -347,7 +342,7 @@ int main(int argc, char* argv[]) {
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwPollEvents();
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window.getWindow());
     }
 
 	ImGui_ImplOpenGL3_Shutdown();
@@ -381,7 +376,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 		CADCam.turn(xoffset, yoffset);
 	}
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
-		#define cameraDef CADCam
+		#define cameraDef gameCam
 		rotateObject.rotate(xoffset, yoffset, cameraDef.frontDir(), cameraDef.rightDir(), cameraDef.upDir());
 	}
 

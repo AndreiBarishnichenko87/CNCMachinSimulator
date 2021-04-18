@@ -2,7 +2,7 @@
 #define CAMERA_GAME_H
 
 #include <glm/glm.hpp>
-#include <exception>
+#include "baseCamera.h"
 
 namespace camera {
 	
@@ -13,12 +13,7 @@ namespace camera {
 	
 	inline float radianToDegree(float radian) { return (180.0f * radian) / MY_PI; }
 	
-	class CameraGame {
-	public:
-		class BadCameraException : std::logic_error {
-		public:
-			BadCameraException(const std::string &msg) : logic_error("BadCameraException::" + msg) {}
-		};
+	class CameraGame : public BaseCamera {
 	public:
 		enum UpAxis{X, Y, Z};
 		enum MoveDirection {FORWARD, BACK, LEFT, RIGHT};
@@ -49,28 +44,27 @@ namespace camera {
 		CameraGame() = delete;
 		CameraGame(const CameraGame&) = delete;
 		CameraGame& operator=(const CameraGame&) = delete;
+	public:
 		explicit CameraGame(glm::vec3 cameraPos, UpAxis upAxis, glm::vec3 cameraTarget = glm::vec3(0.0f));
 	public:
 		void move(MoveDirection moveType, float offset);
 		void turn(float xOffset, float yOffset);
 
-		glm::vec3 position() const { return m_Pos; }
-		glm::vec3 frontDir() const { return m_Front; }
-		glm::vec3 upDir() const { return m_Up; }
-		glm::vec3 rightDir() const { return m_Right; }
-
 		inline void setMoveSpeed(float sensitivity) { m_MoveSpeed = sensitivity; }
 		inline void setMouseSpeed(float sensitivity) { m_MouseSens = sensitivity; }
 		inline float getMoveSpeed() { return m_MoveSpeed; }
 		inline float getMouseSpeed() { return m_MouseSens; }
-		
 		inline void setNewPos(glm::vec3 newPositionCamera) { m_Pos = newPositionCamera; }
 		
-		glm::mat4 getLookAtMatrix() const;
-		glm::mat4 getTransformMatrix() const;
-		~CameraGame() {}
-	};
+		glm::vec3 cameraPos() const override { return m_Pos; }
+		glm::vec3 frontDir() const override { return m_Front; }
+		glm::vec3 upDir() const override { return m_Up; }
+		glm::vec3 rightDir() const override  { return m_Right; }
+		glm::mat4 getLookAtMatrix() const override ;
 
+		glm::mat4 getTransformMatrix() const;
+		virtual ~CameraGame() {}
+	};
 }
 
 #endif //CAMERA_GAME_H

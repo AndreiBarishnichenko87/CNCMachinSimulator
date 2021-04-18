@@ -7,29 +7,33 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "baseCamera.h"
+
 namespace camera {
 	
-	class CameraCAD {
+	class CameraCAD : public BaseCamera {
 	private:
 		glm::quat m_Quat;
 		float m_DistanceToCenter;
+		float m_Sensitivity;
 	public:
 		CameraCAD(const CameraCAD&) = delete;
 		CameraCAD& operator=(const CameraCAD&) = delete;
 	public:
-		CameraCAD() : m_DistanceToCenter(100.0f) {}
-		CameraCAD(const glm::vec3 &rotateAxis, float rotateAngle, float distance);
+		CameraCAD() : BaseCamera(BaseCamera::CameraType::CAD), m_DistanceToCenter(100.0f), m_Sensitivity(1.0f) {}
+		CameraCAD(const glm::vec3 &rotateAxis, float rotateAngle, float distance, float sensitivity = 1.0f);
 	public:
 		void turn(float xoffset, float yoffset);
-	public:
-		glm::vec3 cameraPos() const;
-		glm::vec3 frontDir() const;
-		glm::vec3 upDir() const;
-		glm::vec3 rightDir() const;
 		
-		glm::mat4 getLookAtMatrix() const;
+		glm::vec3 cameraPos() const override;
+		glm::vec3 frontDir() const override;
+		glm::vec3 upDir() const override;
+		glm::vec3 rightDir() const override;
+
+		glm::mat4 getLookAtMatrix() const override;
+		glm::mat4 getTransformMatrix() const;
 	public:
-		~CameraCAD() {}
+		virtual ~CameraCAD() {}
 	};
 	
 }

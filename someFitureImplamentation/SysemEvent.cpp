@@ -72,7 +72,7 @@ protected:
 	}
 public:
 	void operator() (TParams... params) {
-		for(TEventHandler *oneHandler :m_handlers)
+		for(TEventHandler *oneHandler : m_handlers)
 			oneHandler->call(params...);
 	}
 private:
@@ -107,7 +107,7 @@ private:
 };
 
 template<class TObject, class ...TParams>
-AbstractEventHandler<TParams...> &createMethodEventHandler(TObject& object, void(TObject::*method)(TParams...)) {
+AbstractEventHandler<TParams...>& createMethodEventHandler(TObject& object, void(TObject::*method)(TParams...)) {
 	return *new MethodEventHandler<TObject, TParams...> (object, method);
 }
 
