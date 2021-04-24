@@ -2,6 +2,7 @@
 #define WINDOW_EVENT_COLLECTION_H
 
 #include <list>
+#include <memory>
 #include "mouseEvent.h"
 
 namespace systemEvent {
@@ -10,16 +11,13 @@ namespace systemEvent {
 	
 	class WindowEventCollection {
 	public:
-		WindowEventCollection(EventDispatcher *dispatcher);
+		void mouseMoveHandle(double x, double y);
 	public:
-		void callMouseMoveEvent(double x, double y);
-		bool operator==(const WindowEventCollection& windowCollection) const;
-		bool operator!=(const WindowEventCollection& windowCollection) const { return !(*this == windowCollection); }
-	public:
-		void connectEventHandler(MouseMoveHandler *handler);
+		bool empty();
+		void addEventHandler(const std::shared_ptr<MouseMoveHandler> &handler);
+		void deleteEventHandler(const std::shared_ptr<MouseMoveHandler> &handler);
 	private:
-		EventDispatcher* m_Dispatcher;
-		std::list<MouseMoveHandler*> m_ListMouseMoveHandler;
+		std::list<std::shared_ptr<MouseMoveHandler> > m_ListMouseMoveHandler;
 	};
 	
 }

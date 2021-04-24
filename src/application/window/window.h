@@ -28,10 +28,9 @@ namespace application {
 	public:
 		explicit Window(const std::string &titleName, int width, int heigth);
 		Window() {}
-		~Window() { glfwDestroyWindow(m_Window); }
-	private:
-		static void initGLFW();
+		~Window();
 	public:
+		void activateContextWindow() { glfwMakeContextCurrent(m_Window); }
 		GLFWwindow* getWindow() const { return m_Window; }
 		explicit operator bool() const noexcept { return m_Window == nullptr ? false : true; }
 
@@ -39,11 +38,13 @@ namespace application {
 	public:
 		static void callbackMousePosition(GLFWwindow *window, double xpos, double ypos);
 	private:
+		void mousePosEventCall(double xpos, double ypos);
+	private:
+		static void initGLFW();
+	private:
 		std::string m_WindowTitle;
 		GLFWwindow *m_Window = nullptr;
-		
 		systemEvent::WindowEventCollection *m_WindowCollectionEvent = nullptr;
-		systemEvent::EventDispatcher* m_DispatcherEvent = nullptr;
 	};
 	
 }

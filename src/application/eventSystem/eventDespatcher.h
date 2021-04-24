@@ -19,27 +19,31 @@ namespace systemEvent {
 	class MouseMoveHandler;
 	
 	class EventDispatcher {
+	public:
+		static EventDispatcher* instance();
 	private:
 		EventDispatcher() {}
 		EventDispatcher(const EventDispatcher&) = delete;
 		EventDispatcher& operator=(const EventDispatcher&) = delete;
 	private:
-		WindowEventCollection* addWindowCollection(application::Window &window);
+		WindowEventCollection* registerEventCollection(application::Window &window);
+		WindowEventCollection* getEventCollection(application::Window &window);
+	
+	// method event handler managemant method
 	public:
-		bool bindHandler(application::Window &window, MouseMoveHandler *handler);
+		bool bindHandler(application::Window &window, std::shared_ptr<MouseMoveHandler> handler);
+		void unbindHandler(application::Window &window, std::shared_ptr<MouseMoveHandler> handler);
+		void removeEventCollection(application::Window &window);
+	
+	// Event manipulator method
 	public:
-		void addEvent(Event* event) { m_EventQueue.push(event); }
-		void popFrontEvent() { return m_EventQueue.pop(); }
-		Event* getFrontEvent() { return m_EventQueue.empty() ? nullptr : m_EventQueue.front(); }
-	public:
-		bool isEmpty() const { return m_EventQueue.empty(); }
-		int countUnprocessEvent() const { return m_EventQueue.size(); }
 		void handleAllEvents();
+		void addEvent(std::shared_ptr<Event> &&event) { m_EventQueue.push(event); }
+		bool isExistEventForProcess() const { return !m_EventQueue.empty(); }
+		int countUnprocessEvent() const { return m_EventQueue.size(); }
 	private:
-		std::list<WindowEventCollection*> m_ProducersEvent;
-		std::queue<Event*> m_EventQueue;
-	public:
-		static EventDispatcher* instance();
+		std::list<WindowEventCollection*> m_ListOfWindowCollection;
+		std::queue<std::shared_ptr<Event> > m_EventQueue;
 	};
 
 }

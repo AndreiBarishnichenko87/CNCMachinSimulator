@@ -26,10 +26,13 @@
 #include "camera/cameraCAD.h"
 #include "graphics/shapeManipulators/rotateShape3D.h"
 #include "application/window/window.h"
+#include "application/eventSystem/eventDespatcher.h"
+#include "application/eventSystem/windowEvents/mouseEvent.h"
 
 #include "graphics/imGui/imgui.h"
 #include "graphics/imGui/imgui_impl_glfw.h"
 #include "graphics/imGui/imgui_impl_opengl3.h"
+
 
 using std::cout;
 using std::cin;
@@ -41,7 +44,6 @@ using graphics::ShapeFactory;
 #define PAUSE_MSG(msg) std::cout << msg << endl; std::cin.get()
 #define PRINTVEC4(vec4) cout << "vec4 => x:" << vec4.x << " y:" << vec4.y << " z:" << vec4.z << " w:" << vec4.w << endl
 #define PRINTVEC3(vec3) cout << "vec3 => x:" << vec3.x << " y:" << vec3.y << " z:" << vec3.z << endl
-
 
 void printAllDoc(parserXML::ElementXML element, std::ostream &fout, unsigned int depthTree) {
 	
@@ -128,10 +130,92 @@ std::string Model3DPath("e:\\project\\MyProject\\resourses\\graphics\\3Dmodel\\"
 	camera::CameraGame gameCam(glm::vec3(50.0f, 50.0f, 20.0f), axisType, glm::vec3(20.0f, 15.0f, 0.0f));
 	camera::CameraCAD CADCam(glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f)), glm::radians(50.0f), 150.0f, 0.3f);
 	graphics::RotateShape3D rotateObject;
+	
+	// Functional object testing
+	// -------------------------
+	#include <memory>
+	#include <functional>
+	
+	class A {
+	public:
+		virtual ~A() {}
+	public:
+		void fun1(int i, int j) const {
+			cout << i << " " << j << endl;
+		}
+		void fun2(int i, int j) const {
+			cout << i << " " << j << endl;
+		}
+		void fun3(int i, int j) {
+			cout << i << " " << j << endl;
+		}
+	};
+	
+	class B : public A {
+	public:
+		void fooB() {
+			cout << "B::foo" << endl;
+		}
+	};
+	
+	class C : public A {
+	public:
+		void fooC() {
+			cout << "C::foo" << endl;
+		}
+	};
+
+	
+	void functional_obj_test() {
+		cout << "test functional " << endl;
+		
+		std::cout << std::boolalpha;
+		A a;
+		B b;
+		C c;
+		A *aptr = new A;
+		A *bptr = new B;
+		A *cptr = new C;
+		
+		void *vptr1 = &a;
+		void *vptr2 = &b;
+		
+		cout << "is equal void pointer" << std::endl;
+		if (vptr1 == vptr2) {
+			cout << "true" << endl;
+		} else {
+			cout << "false" << endl;
+		}
+
+		PRINT(dynamic_cast<A*>(cptr)) << endl;
+		dynamic_cast<B*>(bptr)->fooB();
+		PRINT(dynamic_cast<B*>(bptr)) << endl;
+		PRINT(dynamic_cast<C*>(cptr)) << endl;
+		PRINT(dynamic_cast<C*>(bptr)) << endl;
+		
+		if(dynamic_cast<C*>(bptr) == nullptr) {
+			cout << "NULL PTR DYNAMIC_CAST" << endl;
+		}
+		
+	}
+	
 // ================================================
+
+class PosMouse {
+public:
+	explicit PosMouse(int i) : number(i) {}
+	void mouseShowPos(double x, double y) {
+		cout << "window #" << number << " : " << x << " " << y << endl;
+	}
+private:
+	int number;
+};
 
 int main(int argc, char* argv[]) {
 	
+	//functional_obj_test();
+	
+	systemEvent::EventDispatcher *dispatchEvent = systemEvent::EventDispatcher::instance();
 	camera::BaseCamera *camera = &CADCam;
 	
 	if(camera->getCameraType() == camera::BaseCamera::CameraType::CAD) {
@@ -148,10 +232,19 @@ int main(int argc, char* argv[]) {
 	application::Window window("LearnOpenGL", SCR_WIDTH, SCR_HEIGHT);
 	glfwMakeContextCurrent(window.getWindow());
 	
+	application::Window window2("Test Window", SCR_WIDTH / 2, SCR_HEIGHT / 2);
+	
+	window.activateContextWindow();
+	
+	PosMouse showPos(1);
+	PosMouse showPos2(2);
+	dispatchEvent->bindHandler(window, systemEvent::makeMouseMoveHandler(showPos, PosMouse::mouseShowPos));
+	dispatchEvent->bindHandler(window2, systemEvent::makeMouseMoveHandler(showPos2, PosMouse::mouseShowPos));
+	
 	// CALLBACK FUNCTIONS
 	// ------------------
     glfwSetFramebufferSizeCallback(window.getWindow(), framebuffer_size_callback);
-	glfwSetCursorPosCallback(window.getWindow(), mouse_callback);
+	//glfwSetCursorPosCallback(window.getWindow(), mouse_callback);
 	glfwSetMouseButtonCallback(window.getWindow(), mouse_button_callback);
 	glfwSetScrollCallback(window.getWindow(), scroll_callback);
 

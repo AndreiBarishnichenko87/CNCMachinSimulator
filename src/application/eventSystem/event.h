@@ -13,6 +13,7 @@ namespace systemEvent {
 	class Event {
 	protected:
 		Event(EventType typeEvent = EventType::None) : m_TypeEvent(typeEvent) { }
+	public:
 		virtual ~Event() { }
 	public:
 		virtual void call() const = 0;

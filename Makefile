@@ -65,7 +65,7 @@ makeFolders:
 clear:
 	del $(OBJ_DIR)\*.o
 	del $(BIN_DIR)\*.exe 
-	del *.exe 
+	del *.exe
 	
 print:
 	@echo SRC_DIRS: $(SRC_DIRS)

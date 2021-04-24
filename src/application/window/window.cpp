@@ -3,8 +3,14 @@
 #include <iostream>
 
 #include "../eventSystem/eventDespatcher.h"
+#include "../eventSystem/windowEvents/windowEventCollection.h"
 
 namespace application {
+	
+	Window::~Window() {
+		glfwDestroyWindow(m_Window);
+		systemEvent::EventDispatcher::instance()->removeEventCollection(*this);
+	}
 	
 	void Window::initGLFW() {
 		static bool glfwIsInit = false;
@@ -18,7 +24,7 @@ namespace application {
 	}
 
 	Window::Window(const std::string &titleName, int width, int heigth)
-		: m_WindowTitle(titleName), m_DispatcherEvent(systemEvent::EventDispatcher::instance())
+		: m_WindowTitle(titleName)
 	{
 		Window::initGLFW();
 		m_Window = glfwCreateWindow(width, heigth, m_WindowTitle.c_str(), NULL, NULL);
@@ -34,8 +40,16 @@ namespace application {
 		// set callback function handler
 		glfwSetCursorPosCallback(m_Window, callbackMousePosition);
 	}
-
+	
+	void Window::mousePosEventCall(double xpos, double ypos) {
+		m_WindowCollectionEvent->mouseMoveHandle(xpos, ypos);
+		systemEvent::EventDispatcher::instance()->handleAllEvents();
+	}
+	
 	void Window::callbackMousePosition(GLFWwindow *window, double xpos, double ypos) {
 		Window *myWindowHandler =  reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if(myWindowHandler->m_WindowCollectionEvent != nullptr) {
+			myWindowHandler->mousePosEventCall(xpos, ypos);
+		}
 	}
 }

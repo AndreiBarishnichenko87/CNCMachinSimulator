@@ -1,19 +1,55 @@
 #ifndef MOUSE_EVENT_H
 #define MOUSE_EVENT_H
+
+#include <memory>
+#include <functional>
+
 #include "../event.h"
 
 namespace systemEvent {
-
+	
 	class MouseMoveHandler {
 	public:
-		bool operator==(const MouseMoveHandler &handler) const { return is_equal(handler); }
-		bool operator!=(const MouseMoveHandler &handler) const { return !(*this == handler); }
+		virtual ~MouseMoveHandler() {}
+	public:
+		bool operator==(MouseMoveHandler &handler) const { return is_equal(handler); }
+		bool operator!=(MouseMoveHandler &handler) const { return !(*this == handler); }
 	private:
-		virtual is_equal(const MouseMoveHandler &handler) const = 0;
+		virtual bool is_equal(MouseMoveHandler &handler) const = 0;
 	public:
 		virtual void handle(double xpos, double ypos) const = 0;
 	};
 	
+	
+	// Make adapter for mouseMoveHandler base class
+	// --------------------------------------------
+	template<typename T>
+	std::shared_ptr<MouseMoveHandler> makeMouseMoveHandler (T &object, void(T::*function)(double, double)) {
+		
+		class Adapter : public MouseMoveHandler {
+		public:
+			typedef void(T::*myFunPtr)(double, double);
+		public:
+			Adapter(T &obj, myFunPtr function) : m_Object(&obj), m_FunPtr(function) { }
+		public:
+			virtual void handle(double xpos, double ypos) const {
+				(m_Object->*m_FunPtr)(xpos, ypos);
+			}
+		private:
+			bool is_equal(MouseMoveHandler &handler) const override {
+				Adapter *adapterPtr = dynamic_cast<Adapter*>(&handler);
+				if(adapterPtr == nullptr) {
+					return false;
+				}
+				return (m_Object == adapterPtr->m_Object) && (m_FunPtr == adapterPtr->m_FunPtr) ? true : false;
+			}
+		private:
+			T *m_Object;
+			myFunPtr m_FunPtr;
+		};
+		return std::shared_ptr<MouseMoveHandler>(new Adapter(object, function));
+	}
+
 	class MouseMoveEvent : public Event {
 	public:
 		MouseMoveEvent(double xpos, double ypos, MouseMoveHandler *handler)
@@ -21,12 +57,12 @@ namespace systemEvent {
 				m_Handler(handler)
 		{ }
 	public:
-		void call() const { m_Handler->handle(m_Xpos, m_Ypos); }
+		void call() const override { m_Handler->handle(m_Xpos, m_Ypos); }
 	private:
 		double m_Xpos, m_Ypos;
 		MouseMoveHandler *m_Handler;
 	};
-
+	
 }
 
 #endif //MOUSE_EVENT_H
