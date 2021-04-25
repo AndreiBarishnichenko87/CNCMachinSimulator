@@ -7,7 +7,9 @@ namespace systemEvent {
 	
 	enum EventType : uint8_t {
 		None = 0,
-		MouseMove
+		MouseMove, 
+		MouseButton,
+		MouseScroll
 	};
 
 	class Event {
@@ -17,6 +19,7 @@ namespace systemEvent {
 		virtual ~Event() { }
 	public:
 		virtual void call() const = 0;
+		EventType getTypeEvent() const { return m_TypeEvent; }
 	private:
 		EventType m_TypeEvent;
 	};

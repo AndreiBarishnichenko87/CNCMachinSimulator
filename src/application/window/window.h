@@ -9,7 +9,7 @@
 
 namespace systemEvent {
 	class EventDispatcher;
-	class WindowEventCollection;
+	class WindowEventHandlersStore;
 }
 
 namespace application {
@@ -30,21 +30,28 @@ namespace application {
 		Window() {}
 		~Window();
 	public:
+		const std::string& getWindowName() const { return m_WindowTitle; }
 		void activateContextWindow() { glfwMakeContextCurrent(m_Window); }
 		GLFWwindow* getWindow() const { return m_Window; }
 		explicit operator bool() const noexcept { return m_Window == nullptr ? false : true; }
 
 	// callback function
 	public:
+		static void initGLFW();
 		static void callbackMousePosition(GLFWwindow *window, double xpos, double ypos);
+		static void callbackMouseButton(GLFWwindow *window, int button, int action, int mods);
+		static void callbackMouseScroll(GLFWwindow *window, double xoffset, double yoffset);
 	private:
 		void mousePosEventCall(double xpos, double ypos);
+		void mouseButtonEventCall(int button, int action, int mods);
+		void mouseScrollEventCall(double yoffset);
 	private:
-		static void initGLFW();
+		systemEvent::WindowEventHandlersStore* getHandlerStore() { return m_WindowHandlerStore; }
+		void setHandlerStore(systemEvent::WindowEventHandlersStore *windowHandlStore) { m_WindowHandlerStore = windowHandlStore; }
 	private:
 		std::string m_WindowTitle;
 		GLFWwindow *m_Window = nullptr;
-		systemEvent::WindowEventCollection *m_WindowCollectionEvent = nullptr;
+		systemEvent::WindowEventHandlersStore *m_WindowHandlerStore = nullptr;
 	};
 	
 }

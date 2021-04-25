@@ -1,15 +1,13 @@
 #include "window.h"
 
-#include <iostream>
-
 #include "../eventSystem/eventDespatcher.h"
-#include "../eventSystem/windowEvents/windowEventCollection.h"
+#include "../eventSystem/windowEvents/windowHandlersStore.h"
 
 namespace application {
 	
 	Window::~Window() {
 		glfwDestroyWindow(m_Window);
-		systemEvent::EventDispatcher::instance()->removeEventCollection(*this);
+		systemEvent::EventDispatcher::instance()->removeEventHandlerStore(*this);
 	}
 	
 	void Window::initGLFW() {
@@ -39,17 +37,45 @@ namespace application {
 		
 		// set callback function handler
 		glfwSetCursorPosCallback(m_Window, callbackMousePosition);
+		glfwSetMouseButtonCallback(m_Window, callbackMouseButton);
+		glfwSetScrollCallback(m_Window, callbackMouseScroll);
 	}
 	
-	void Window::mousePosEventCall(double xpos, double ypos) {
-		m_WindowCollectionEvent->mouseMoveHandle(xpos, ypos);
-		systemEvent::EventDispatcher::instance()->handleAllEvents();
-	}
 	
 	void Window::callbackMousePosition(GLFWwindow *window, double xpos, double ypos) {
 		Window *myWindowHandler =  reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-		if(myWindowHandler->m_WindowCollectionEvent != nullptr) {
+		if(myWindowHandler->m_WindowHandlerStore != nullptr) {
 			myWindowHandler->mousePosEventCall(xpos, ypos);
 		}
 	}
+	
+	void Window::callbackMouseButton(GLFWwindow *window, int button, int action, int mods) {
+		Window *myWindowHandler =  reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if(myWindowHandler->m_WindowHandlerStore != nullptr) {
+			myWindowHandler->mouseButtonEventCall(button, action, mods);
+		}
+	}
+	
+	void Window::callbackMouseScroll(GLFWwindow *window, double xoffset, double yoffset) {
+		Window *myWindowHandler =  reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if(myWindowHandler->m_WindowHandlerStore != nullptr) {
+			myWindowHandler->mouseScrollEventCall(yoffset);
+		}
+	}
+	
+	void Window::mouseScrollEventCall(double yoffset) {
+		m_WindowHandlerStore->mouseScrollHandle(yoffset);
+		systemEvent::EventDispatcher::instance()->handleAllEvents();
+	}
+	
+	void Window::mousePosEventCall(double xpos, double ypos) {
+		m_WindowHandlerStore->mouseMoveHandle(xpos, ypos);
+		systemEvent::EventDispatcher::instance()->handleAllEvents();
+	}
+	
+	void Window::mouseButtonEventCall(int button, int action, int mods) {
+		m_WindowHandlerStore->mouseButtonHandle(button, action, mods);
+		systemEvent::EventDispatcher::instance()->handleAllEvents();
+	}
+	
 }

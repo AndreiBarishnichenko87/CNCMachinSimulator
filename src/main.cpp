@@ -26,13 +26,15 @@
 #include "camera/cameraCAD.h"
 #include "graphics/shapeManipulators/rotateShape3D.h"
 #include "application/window/window.h"
+
 #include "application/eventSystem/eventDespatcher.h"
-#include "application/eventSystem/windowEvents/mouseEvent.h"
+#include "application/eventSystem/windowEvents/mouseMoveEvent.h"
+#include "application/eventSystem/windowEvents/mouseButtonEvent.h"
+#include "application/eventSystem/windowEvents/mouseScrollEvent.h"
 
 #include "graphics/imGui/imgui.h"
 #include "graphics/imGui/imgui_impl_glfw.h"
 #include "graphics/imGui/imgui_impl_opengl3.h"
-
 
 using std::cout;
 using std::cin;
@@ -122,8 +124,8 @@ glm::vec4 ray_clip = glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
 float lastX = 400, lastY = 300;
 
 // PATH TO PROJECT
-std::string shaderPath("e:\\project\\MyProject\\resourses\\graphics\\shaders\\");
-std::string Model3DPath("e:\\project\\MyProject\\resourses\\graphics\\3Dmodel\\");
+std::string shaderPath("resourses\\graphics\\shaders\\");
+std::string Model3DPath("resourses\\graphics\\3Dmodel\\");
 
 // ============= TESTING SOMTHING =================
 	camera::CameraGame::UpAxis axisType = camera::CameraGame::UpAxis::Z;
@@ -133,87 +135,68 @@ std::string Model3DPath("e:\\project\\MyProject\\resourses\\graphics\\3Dmodel\\"
 	
 	// Functional object testing
 	// -------------------------
-	#include <memory>
-	#include <functional>
 	
-	class A {
-	public:
-		virtual ~A() {}
-	public:
-		void fun1(int i, int j) const {
-			cout << i << " " << j << endl;
-		}
-		void fun2(int i, int j) const {
-			cout << i << " " << j << endl;
-		}
-		void fun3(int i, int j) {
-			cout << i << " " << j << endl;
-		}
-	};
-	
-	class B : public A {
-	public:
-		void fooB() {
-			cout << "B::foo" << endl;
-		}
-	};
-	
-	class C : public A {
-	public:
-		void fooC() {
-			cout << "C::foo" << endl;
-		}
-	};
-
+	template<typename T>
+	void fun(int i, T t) {
+		cout << "template:\n";
+		cout << "int: " << i << endl;
+		cout << "T: " << t << endl;
+	}
+	void fun(int i, int k) {
+		fun<>(i, k);
+		cout << "not template:\n";
+		cout << "int: " << i << endl;
+		cout << "int: " << k << endl;
+	}
 	
 	void functional_obj_test() {
-		cout << "test functional " << endl;
-		
-		std::cout << std::boolalpha;
-		A a;
-		B b;
-		C c;
-		A *aptr = new A;
-		A *bptr = new B;
-		A *cptr = new C;
-		
-		void *vptr1 = &a;
-		void *vptr2 = &b;
-		
-		cout << "is equal void pointer" << std::endl;
-		if (vptr1 == vptr2) {
-			cout << "true" << endl;
-		} else {
-			cout << "false" << endl;
-		}
-
-		PRINT(dynamic_cast<A*>(cptr)) << endl;
-		dynamic_cast<B*>(bptr)->fooB();
-		PRINT(dynamic_cast<B*>(bptr)) << endl;
-		PRINT(dynamic_cast<C*>(cptr)) << endl;
-		PRINT(dynamic_cast<C*>(bptr)) << endl;
-		
-		if(dynamic_cast<C*>(bptr) == nullptr) {
-			cout << "NULL PTR DYNAMIC_CAST" << endl;
-		}
-		
+		int f, j;
+		double d;
+		fun(f, j);
+		fun(f, d);
 	}
 	
 // ================================================
-
-class PosMouse {
+class TestWindowEvent {
 public:
-	explicit PosMouse(int i) : number(i) {}
-	void mouseShowPos(double x, double y) {
-		cout << "window #" << number << " : " << x << " " << y << endl;
-	}
+	TestWindowEvent(std::string name) : m_Name(name) {}
+	const std::string& nameWindow() const { return m_Name; }
 private:
-	int number;
+	std::string m_Name;
 };
+
+class ScrollMouse : public TestWindowEvent {
+public:
+	ScrollMouse(std::string name) : TestWindowEvent(name) {}
+	void scroll(double yoffset) {
+		cout << nameWindow() << " >> scroll: " << yoffset << endl;
+	}
+};
+
+class PosMouse : public TestWindowEvent {
+public:
+	explicit PosMouse(std::string name) : TestWindowEvent(name) {}
+	void mouseShowPos(double x, double y) {
+		cout << nameWindow() << " >> X" << x << " Y" << y << endl;
+	}
+};
+
+class ButtonMouse : public TestWindowEvent {
+public:
+	explicit ButtonMouse(std::string name) : TestWindowEvent(name) {}
+	void button(int button, int action, int mods) {
+		cout << nameWindow() << " >> button: " << button << " " << "action: " << action << "mods: " << mods << endl;
+	}
+};
+
+void pos(int button, int action, int mods) {
+	cout << "button: " << button << " " << "action: " << action << "mods: " << mods << endl;
+}
 
 int main(int argc, char* argv[]) {
 	
 	//functional_obj_test();
+	//return 0;
 	
 	systemEvent::EventDispatcher *dispatchEvent = systemEvent::EventDispatcher::instance();
 	camera::BaseCamera *camera = &CADCam;
@@ -235,18 +218,28 @@ int main(int argc, char* argv[]) {
 	application::Window window2("Test Window", SCR_WIDTH / 2, SCR_HEIGHT / 2);
 	
 	window.activateContextWindow();
-	
-	PosMouse showPos(1);
-	PosMouse showPos2(2);
+
+	PosMouse showPos(window.getWindowName());
+	PosMouse showPos2(window2.getWindowName());
 	dispatchEvent->bindHandler(window, systemEvent::makeMouseMoveHandler(showPos, PosMouse::mouseShowPos));
 	dispatchEvent->bindHandler(window2, systemEvent::makeMouseMoveHandler(showPos2, PosMouse::mouseShowPos));
 	
+	ButtonMouse button(window.getWindowName());
+	ButtonMouse button2(window2.getWindowName());
+	dispatchEvent->bindHandler(window, systemEvent::makeMouseButtonHandler(button, ButtonMouse::button));
+	dispatchEvent->bindHandler(window2, systemEvent::makeMouseButtonHandler(button2, ButtonMouse::button));
+	
+	ScrollMouse scroll(window.getWindowName());
+	ScrollMouse scroll2(window2.getWindowName());
+	dispatchEvent->bindHandler(window, systemEvent::makeMouseScrollHandler(scroll, ScrollMouse::scroll));
+	dispatchEvent->bindHandler(window2, systemEvent::makeMouseScrollHandler(scroll2, ScrollMouse::scroll));
+
 	// CALLBACK FUNCTIONS
 	// ------------------
     glfwSetFramebufferSizeCallback(window.getWindow(), framebuffer_size_callback);
 	//glfwSetCursorPosCallback(window.getWindow(), mouse_callback);
-	glfwSetMouseButtonCallback(window.getWindow(), mouse_button_callback);
-	glfwSetScrollCallback(window.getWindow(), scroll_callback);
+	//glfwSetMouseButtonCallback(window.getWindow(), mouse_button_callback);
+	//glfwSetScrollCallback(window.getWindow(), scroll_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------

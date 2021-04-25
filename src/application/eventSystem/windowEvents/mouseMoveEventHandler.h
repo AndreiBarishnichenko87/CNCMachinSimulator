@@ -1,10 +1,7 @@
-#ifndef MOUSE_EVENT_H
-#define MOUSE_EVENT_H
+#ifndef MOUSE_MOVE_EVENT_HANDLERS_H
+#define MOUSE_MOVE_EVENT_HANDLERS_H
 
 #include <memory>
-#include <functional>
-
-#include "../event.h"
 
 namespace systemEvent {
 	
@@ -23,8 +20,10 @@ namespace systemEvent {
 	
 	// Make adapter for mouseMoveHandler base class
 	// --------------------------------------------
+	std::shared_ptr<MouseMoveHandler> makeMouseMoveHandler(void(*function)(double, double));
+	
 	template<typename T>
-	std::shared_ptr<MouseMoveHandler> makeMouseMoveHandler (T &object, void(T::*function)(double, double)) {
+	std::shared_ptr<MouseMoveHandler> makeMouseMoveHandler(T &object, void(T::*function)(double, double)) {
 		
 		class Adapter : public MouseMoveHandler {
 		public:
@@ -50,19 +49,7 @@ namespace systemEvent {
 		return std::shared_ptr<MouseMoveHandler>(new Adapter(object, function));
 	}
 
-	class MouseMoveEvent : public Event {
-	public:
-		MouseMoveEvent(double xpos, double ypos, MouseMoveHandler *handler)
-			: Event(EventType::MouseMove), m_Xpos(xpos), m_Ypos(ypos),
-				m_Handler(handler)
-		{ }
-	public:
-		void call() const override { m_Handler->handle(m_Xpos, m_Ypos); }
-	private:
-		double m_Xpos, m_Ypos;
-		MouseMoveHandler *m_Handler;
-	};
 	
 }
 
-#endif //MOUSE_EVENT_H
+#endif //MOUSE_MOVE_EVENT_HANDLERS_H
