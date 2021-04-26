@@ -4,6 +4,7 @@
 #include <iostream>
 #include <typeinfo>
 
+#include <cassert>
 #include <list>
 #include <queue>
 #include <memory>
@@ -32,63 +33,18 @@ namespace systemEvent {
 		EventDispatcher& operator=(const EventDispatcher&) = delete;
 	private:
 		template<typename EvStore, typename T, typename H>
-		void addHandler(std::list<EvStore*> &container, T &eventGenerator, std::shared_ptr<H> handler) {
-			if (eventGenerator.getHandlerStore() == nullptr) {
-				container.push_back(new EvStore);
-				eventGenerator.setHandlerStore(container.back());
-			}
-			eventGenerator.getHandlerStore()->addEventHandler(handler);
-		}
-		
+		void addHandler(std::list<EvStore*> &container, T &eventGenerator, std::shared_ptr<H> handler);
 		template<typename EvStore, typename T, typename H>
-		void deleteHandler(std::list<EvStore*> &container, T &eventGenerator, std::shared_ptr<H> handler) {
-			if(eventGenerator.getHandlerStore() == nullptr)
-				return;
-			eventGenerator.getHandlerStore()->deleteEventHandler(handler);
-			if (eventGenerator.getHandlerStore()->empty())
-				removeHandlerStore(container, eventGenerator);
-		}
-		
+		void deleteHandler(std::list<EvStore*> &container, T &eventGenerator, std::shared_ptr<H> handler);
 		template<typename EvStore, typename T>
-		void removeHandlerStore(std::list<EvStore*> &container, T &eventGenerator) {
-			EvStore* eventStore = eventGenerator.getHandlerStore();
-			auto iter = std::find(container.begin(), container.end(), eventStore);
-			if (iter != container.end()) {
-				delete *iter;
-				container.erase(iter);
-				eventGenerator.setHandlerStore(nullptr);
-			}
-		}
-		
-		// for debuging
-		// ------------
-		void add(int &i) { ++i; }
-		void sub(int &i) { --i; }
-		
-		template<typename T>
-		int& typeCounterShowDebug() {
-			static int i = 0;
-			std::cout << typeid(T).name() << " : " << i << std::endl;
-			return i;
-		}
-		// end debuging
-		// ------------
-
+		void removeHandlerStore(std::list<EvStore*> &container, T &eventGenerator);
 	public:
-		void removeEventHandlerStore(application::Window &window);
-		
 		template<typename T>
-		void bindHandler(application::Window &window, std::shared_ptr<T> handler) {
-			add(typeCounterShowDebug<T>());
-			addHandler(m_ListWindowHandlersStore, window, handler); 
-		}
-		
+		friend void bindHandler(application::Window &window, std::shared_ptr<T> handler);
 		template<typename T>
-		void unbindHandler(application::Window &window, std::shared_ptr<T> handler) {
-			sub(typeCounterShowDebug<T>());
-			deleteHandler(m_ListWindowHandlersStore, window, handler);
-		}
-		
+		friend void unbindHandler(application::Window &window, std::shared_ptr<T> handler);
+	public:
+		void removeEventHandlerStore(application::Window &window);	
 	public:
 		void handleAllEvents();
 		void addEvent(std::shared_ptr<Event> &&event) { m_EventQueue.push(event); }
@@ -96,6 +52,35 @@ namespace systemEvent {
 		std::list<WindowEventHandlersStore*> m_ListWindowHandlersStore;
 		std::queue<std::shared_ptr<Event> > m_EventQueue;
 	};
+	
+	// for debuging
+	// ------------
+	inline void add(int &i) { ++i; }
+	inline void sub(int &i) { --i; }
+	
+	template<typename T>
+	int& typeCounterShowDebug() {
+		static int i = 0;
+		assert(i >= 0 && "eventDispatcher:: handler is removed greater than created");
+		std::cout << typeid(T).name() << " : " << i << std::endl;
+		return i;
+	}
+	// end debuging
+	// ------------
+	
+	template<typename T>
+	void bindHandler(application::Window &window, std::shared_ptr<T> handler) {
+		EventDispatcher *dispatcher = EventDispatcher::instance();
+		add(typeCounterShowDebug<T>());
+		dispatcher->addHandler(dispatcher->m_ListWindowHandlersStore, window, handler); 
+	}
+	
+	template<typename T>
+	void unbindHandler(application::Window &window, std::shared_ptr<T> handler) {
+		EventDispatcher *dispatcher = EventDispatcher::instance();
+		sub(typeCounterShowDebug<T>());
+		dispatcher->deleteHandler(dispatcher->m_ListWindowHandlersStore, window, handler);
+	}
 
 }
 

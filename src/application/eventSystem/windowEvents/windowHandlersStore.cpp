@@ -9,27 +9,21 @@
 namespace systemEvent {
 
 	void WindowEventHandlersStore::mouseMoveHandle(double x, double y) {
-		if(m_ListMouseMoveHandler.empty())
-			return;
-		for( auto& i : m_ListMouseMoveHandler ) {
-			EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseMoveEvent(x, y, i.get())));
-		}
+		if(!m_ListMouseMoveHandler.empty()) 
+			for( auto& i : m_ListMouseMoveHandler )
+				EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseMoveEvent(x, y, i.get())));
 	}
 	
 	void WindowEventHandlersStore::mouseButtonHandle(int button, int action, int mods) {
-		if(m_ListMouseButtonHandler.empty())
-			return;
-		for( auto& i : m_ListMouseButtonHandler ) {
-			EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, i.get())));
-		}
+		if(!m_ListMouseButtonHandler.empty())
+			for( auto& i : m_ListMouseButtonHandler )
+				EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, i.get())));
 	}
 	
 	void WindowEventHandlersStore::mouseScrollHandle(double yoffset) {
-		if(m_ListMouseScrollHandler.empty())
-			return;
-		for( auto& i : m_ListMouseScrollHandler ) {
-			EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseScrollEvent(yoffset, i.get())));
-		}
+		if(!m_ListMouseScrollHandler.empty())
+			for( auto& i : m_ListMouseScrollHandler )
+				EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseScrollEvent(yoffset, i.get())));
 	}
 
 	void WindowEventHandlersStore::addEventHandler(const std::shared_ptr<MouseMoveHandler> &handler) {	

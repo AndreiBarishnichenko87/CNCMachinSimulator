@@ -221,18 +221,19 @@ int main(int argc, char* argv[]) {
 
 	PosMouse showPos(window.getWindowName());
 	PosMouse showPos2(window2.getWindowName());
-	dispatchEvent->bindHandler(window, systemEvent::makeMouseMoveHandler(showPos, PosMouse::mouseShowPos));
-	dispatchEvent->bindHandler(window2, systemEvent::makeMouseMoveHandler(showPos2, PosMouse::mouseShowPos));
+	systemEvent::bindHandler(window, systemEvent::makeMouseMoveHandler(showPos, PosMouse::mouseShowPos));
+	systemEvent::bindHandler(window2, systemEvent::makeMouseMoveHandler(showPos2, PosMouse::mouseShowPos));
 	
 	ButtonMouse button(window.getWindowName());
 	ButtonMouse button2(window2.getWindowName());
-	dispatchEvent->bindHandler(window, systemEvent::makeMouseButtonHandler(button, ButtonMouse::button));
-	dispatchEvent->bindHandler(window2, systemEvent::makeMouseButtonHandler(button2, ButtonMouse::button));
+	systemEvent::bindHandler(window, systemEvent::makeMouseButtonHandler(button, ButtonMouse::button));
+	systemEvent::bindHandler(window2, systemEvent::makeMouseButtonHandler(button2, ButtonMouse::button));
 	
 	ScrollMouse scroll(window.getWindowName());
 	ScrollMouse scroll2(window2.getWindowName());
-	dispatchEvent->bindHandler(window, systemEvent::makeMouseScrollHandler(scroll, ScrollMouse::scroll));
-	dispatchEvent->bindHandler(window2, systemEvent::makeMouseScrollHandler(scroll2, ScrollMouse::scroll));
+	systemEvent::bindHandler(window, systemEvent::makeMouseScrollHandler(scroll, ScrollMouse::scroll));
+	systemEvent::bindHandler(window2, systemEvent::makeMouseScrollHandler(scroll2, ScrollMouse::scroll));
+
 
 	// CALLBACK FUNCTIONS
 	// ------------------
