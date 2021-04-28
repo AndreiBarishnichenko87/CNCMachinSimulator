@@ -10,12 +10,14 @@ namespace systemEvent {
 	class MouseMoveHandler;
 	class MouseButtonHandler;
 	class MouseScrollHandler;
+	class KeyboardHandler;
 	
 	class WindowEventHandlersStore {
 	public:
 		void mouseMoveHandle(double x, double y);
 		void mouseButtonHandle(int button, int action, int mods);
 		void mouseScrollHandle(double yoffset);
+		void keyboardHandle(int key, int scancode, int action, int mods);
 		
 	private:
 		// test template addEventHandler 
@@ -54,10 +56,14 @@ namespace systemEvent {
 		
 		void addEventHandler(const std::shared_ptr<MouseScrollHandler> &handler);
 		void deleteEventHandler(const std::shared_ptr<MouseScrollHandler> &handler);
+		
+		void addEventHandler(const std::shared_ptr<KeyboardHandler> &handler);
+		void deleteEventHandler(const std::shared_ptr<KeyboardHandler> &handler);
 	private:
 		std::list<std::shared_ptr<MouseMoveHandler> > m_ListMouseMoveHandler;
 		std::list<std::shared_ptr<MouseButtonHandler> > m_ListMouseButtonHandler;
 		std::list<std::shared_ptr<MouseScrollHandler> > m_ListMouseScrollHandler;
+		std::list<std::shared_ptr<KeyboardHandler> > m_ListKeyboardHandler;
 	};
 	
 }

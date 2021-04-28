@@ -41,10 +41,12 @@ namespace application {
 		static void callbackMousePosition(GLFWwindow *window, double xpos, double ypos);
 		static void callbackMouseButton(GLFWwindow *window, int button, int action, int mods);
 		static void callbackMouseScroll(GLFWwindow *window, double xoffset, double yoffset);
+		static void callbackKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods);
 	private:
 		void mousePosEventCall(double xpos, double ypos);
 		void mouseButtonEventCall(int button, int action, int mods);
 		void mouseScrollEventCall(double yoffset);
+		void keyboardEventCall(int key, int scancode, int action, int mods);
 	private:
 		systemEvent::WindowEventHandlersStore* getHandlerStore() { return m_WindowHandlerStore; }
 		void setHandlerStore(systemEvent::WindowEventHandlersStore *windowHandlStore) { m_WindowHandlerStore = windowHandlStore; }

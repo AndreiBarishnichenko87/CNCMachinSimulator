@@ -23,6 +23,7 @@ namespace systemEvent {
 	class MouseMoveHandler;
 	class MouseButtonHandler;
 	class MouseScrollHandler;
+	class KeyboardHandler;
 	
 	class EventDispatcher {
 	public:
@@ -44,10 +45,9 @@ namespace systemEvent {
 		template<typename T>
 		friend void unbindHandler(application::Window &window, std::shared_ptr<T> handler);
 	public:
-		void removeEventHandlerStore(application::Window &window);	
-	public:
 		void handleAllEvents();
 		void addEvent(std::shared_ptr<Event> &&event) { m_EventQueue.push(event); }
+		void removeEventHandlerStore(application::Window &window);	
 	private:
 		std::list<WindowEventHandlersStore*> m_ListWindowHandlersStore;
 		std::queue<std::shared_ptr<Event> > m_EventQueue;

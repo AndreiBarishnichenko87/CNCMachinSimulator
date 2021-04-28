@@ -9,7 +9,8 @@ namespace systemEvent {
 		None = 0,
 		MouseMove, 
 		MouseButton,
-		MouseScroll
+		MouseScroll, 
+		KeyboardPush
 	};
 
 	class Event {

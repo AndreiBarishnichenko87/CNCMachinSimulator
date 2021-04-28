@@ -39,6 +39,8 @@ namespace application {
 		glfwSetCursorPosCallback(m_Window, callbackMousePosition);
 		glfwSetMouseButtonCallback(m_Window, callbackMouseButton);
 		glfwSetScrollCallback(m_Window, callbackMouseScroll);
+		glfwSetKeyCallback(m_Window, callbackKeyboard);
+		glfwSetInputMode(m_Window, GLFW_STICKY_KEYS, GLFW_TRUE);
 	}
 	
 	
@@ -48,12 +50,20 @@ namespace application {
 			myWindowHandler->mousePosEventCall(xpos, ypos);
 		}
 	}
+	void Window::mousePosEventCall(double xpos, double ypos) {
+		m_WindowHandlerStore->mouseMoveHandle(xpos, ypos);
+		systemEvent::EventDispatcher::instance()->handleAllEvents();
+	}
 	
 	void Window::callbackMouseButton(GLFWwindow *window, int button, int action, int mods) {
 		Window *myWindowHandler =  reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 		if(myWindowHandler->m_WindowHandlerStore != nullptr) {
 			myWindowHandler->mouseButtonEventCall(button, action, mods);
 		}
+	}
+	void Window::mouseButtonEventCall(int button, int action, int mods) {
+		m_WindowHandlerStore->mouseButtonHandle(button, action, mods);
+		systemEvent::EventDispatcher::instance()->handleAllEvents();
 	}
 	
 	void Window::callbackMouseScroll(GLFWwindow *window, double xoffset, double yoffset) {
@@ -62,20 +72,23 @@ namespace application {
 			myWindowHandler->mouseScrollEventCall(yoffset);
 		}
 	}
-	
 	void Window::mouseScrollEventCall(double yoffset) {
 		m_WindowHandlerStore->mouseScrollHandle(yoffset);
 		systemEvent::EventDispatcher::instance()->handleAllEvents();
 	}
 	
-	void Window::mousePosEventCall(double xpos, double ypos) {
-		m_WindowHandlerStore->mouseMoveHandle(xpos, ypos);
+	void Window::callbackKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods) {
+		Window *myWindowHandler =  reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if(myWindowHandler->m_WindowHandlerStore != nullptr) {
+			myWindowHandler->keyboardEventCall(key, scancode, action, mods);
+		}
+	}
+	void Window::keyboardEventCall(int key, int scancode, int action, int mods) {
+		m_WindowHandlerStore->keyboardHandle(key, scancode, action, mods);
 		systemEvent::EventDispatcher::instance()->handleAllEvents();
 	}
 	
-	void Window::mouseButtonEventCall(int button, int action, int mods) {
-		m_WindowHandlerStore->mouseButtonHandle(button, action, mods);
-		systemEvent::EventDispatcher::instance()->handleAllEvents();
-	}
+	
+	
 	
 }

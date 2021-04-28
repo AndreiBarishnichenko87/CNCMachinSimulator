@@ -31,6 +31,7 @@
 #include "application/eventSystem/windowEvents/mouseMoveEvent.h"
 #include "application/eventSystem/windowEvents/mouseButtonEvent.h"
 #include "application/eventSystem/windowEvents/mouseScrollEvent.h"
+#include "application/eventSystem/windowEvents/keyboardEvent.h"
 
 #include "graphics/imGui/imgui.h"
 #include "graphics/imGui/imgui_impl_glfw.h"
@@ -160,33 +161,30 @@ std::string Model3DPath("resourses\\graphics\\3Dmodel\\");
 class TestWindowEvent {
 public:
 	TestWindowEvent(std::string name) : m_Name(name) {}
-	const std::string& nameWindow() const { return m_Name; }
+public:
+	void scroll(double yoffset) {
+		cout << m_Name << " >> scroll: " << yoffset << endl;
+	}
+	void mouseShowPos(double x, double y) {
+		cout << m_Name << " >> X" << x << " Y" << y << endl;
+	}
+	void button(int button, int action, int mods) {
+		cout << m_Name << " >> button: " << button << " " << "action: " << action << "mods: " << mods << endl;
+	}
+	void buttonPush(int button, int mods) {
+		cout << m_Name << " >> button push: " << button << " mods: " << mods << endl;
+	}
+	void buttonRelese(int button, int mods) {
+		cout << m_Name << " >> button relese: " << button << " mods: " << mods << endl;
+	}
+	void keyboardPush(int key, int scancode, int mods) {
+		cout << m_Name << " >> key push: " << static_cast<char>(key) << " scancode: " << scancode <<  " mods: " << mods << endl;
+	}
+	void keyboardRelese(int key, int scancode, int mods) {
+		cout << m_Name << " >> key relese: " << static_cast<char>(key) << " scancode: " << scancode <<  " mods: " << mods << endl;
+	}
 private:
 	std::string m_Name;
-};
-
-class ScrollMouse : public TestWindowEvent {
-public:
-	ScrollMouse(std::string name) : TestWindowEvent(name) {}
-	void scroll(double yoffset) {
-		cout << nameWindow() << " >> scroll: " << yoffset << endl;
-	}
-};
-
-class PosMouse : public TestWindowEvent {
-public:
-	explicit PosMouse(std::string name) : TestWindowEvent(name) {}
-	void mouseShowPos(double x, double y) {
-		cout << nameWindow() << " >> X" << x << " Y" << y << endl;
-	}
-};
-
-class ButtonMouse : public TestWindowEvent {
-public:
-	explicit ButtonMouse(std::string name) : TestWindowEvent(name) {}
-	void button(int button, int action, int mods) {
-		cout << nameWindow() << " >> button: " << button << " " << "action: " << action << "mods: " << mods << endl;
-	}
 };
 
 void pos(int button, int action, int mods) {
@@ -219,21 +217,25 @@ int main(int argc, char* argv[]) {
 	
 	window.activateContextWindow();
 
-	PosMouse showPos(window.getWindowName());
-	PosMouse showPos2(window2.getWindowName());
-	systemEvent::bindHandler(window, systemEvent::makeMouseMoveHandler(showPos, PosMouse::mouseShowPos));
-	systemEvent::bindHandler(window2, systemEvent::makeMouseMoveHandler(showPos2, PosMouse::mouseShowPos));
-	
-	ButtonMouse button(window.getWindowName());
-	ButtonMouse button2(window2.getWindowName());
-	systemEvent::bindHandler(window, systemEvent::makeMouseButtonHandler(button, ButtonMouse::button));
-	systemEvent::bindHandler(window2, systemEvent::makeMouseButtonHandler(button2, ButtonMouse::button));
-	
-	ScrollMouse scroll(window.getWindowName());
-	ScrollMouse scroll2(window2.getWindowName());
-	systemEvent::bindHandler(window, systemEvent::makeMouseScrollHandler(scroll, ScrollMouse::scroll));
-	systemEvent::bindHandler(window2, systemEvent::makeMouseScrollHandler(scroll2, ScrollMouse::scroll));
+	TestWindowEvent windowEvent1(window.getWindowName());
+	TestWindowEvent windowEvent2(window2.getWindowName());
+	systemEvent::bindHandler(window, systemEvent::makeMouseMoveHandler(windowEvent1, TestWindowEvent::mouseShowPos));
+	systemEvent::bindHandler(window2, systemEvent::makeMouseMoveHandler(windowEvent2, TestWindowEvent::mouseShowPos));
 
+	systemEvent::bindHandler(window, systemEvent::makeMouseButtonPushHandler(windowEvent1, TestWindowEvent::buttonPush));
+	systemEvent::bindHandler(window, systemEvent::makeMouseButtonReleseHandler(windowEvent1, TestWindowEvent::buttonRelese));
+
+	systemEvent::bindHandler(window2, systemEvent::makeMouseButtonPushHandler(windowEvent2, TestWindowEvent::buttonPush));
+	systemEvent::bindHandler(window2, systemEvent::makeMouseButtonReleseHandler(windowEvent2, TestWindowEvent::buttonRelese));
+
+	systemEvent::bindHandler(window, systemEvent::makeMouseScrollHandler(windowEvent1, TestWindowEvent::scroll));
+	systemEvent::bindHandler(window2, systemEvent::makeMouseScrollHandler(windowEvent2, TestWindowEvent::scroll));
+	
+	systemEvent::bindHandler(window, systemEvent::makeKeyboardPushHandler(windowEvent1, TestWindowEvent::keyboardPush));
+	systemEvent::bindHandler(window, systemEvent::makeKeyboardReleseHandler(windowEvent1, TestWindowEvent::keyboardRelese));
+	systemEvent::bindHandler(window2, systemEvent::makeKeyboardPushHandler(windowEvent2, TestWindowEvent::keyboardPush));
+	systemEvent::bindHandler(window2, systemEvent::makeKeyboardReleseHandler(windowEvent2, TestWindowEvent::keyboardRelese));
+	
 
 	// CALLBACK FUNCTIONS
 	// ------------------

@@ -15,6 +15,7 @@ namespace systemEvent {
 	template void EventDispatcher::addHandler<WindowEventHandlersStore, application::Window, MouseMoveHandler>(std::list<WindowEventHandlersStore*> &container, application::Window &eventGenerator, std::shared_ptr<MouseMoveHandler> handler);
 	template void EventDispatcher::addHandler<WindowEventHandlersStore, application::Window, MouseButtonHandler>(std::list<WindowEventHandlersStore*> &container, application::Window &eventGenerator, std::shared_ptr<MouseButtonHandler> handler);
 	template void EventDispatcher::addHandler<WindowEventHandlersStore, application::Window, MouseScrollHandler>(std::list<WindowEventHandlersStore*> &container, application::Window &eventGenerator, std::shared_ptr<MouseScrollHandler> handler);
+	template void EventDispatcher::addHandler<WindowEventHandlersStore, application::Window, KeyboardHandler>(std::list<WindowEventHandlersStore*> &container, application::Window &eventGenerator, std::shared_ptr<KeyboardHandler> handler);
 	
 	template<typename EvStore, typename T, typename H>
 	void EventDispatcher::deleteHandler(std::list<EvStore*> &container, T &eventGenerator, std::shared_ptr<H> handler) {
@@ -27,6 +28,7 @@ namespace systemEvent {
 	template void EventDispatcher::deleteHandler<WindowEventHandlersStore, application::Window, MouseMoveHandler>(std::list<WindowEventHandlersStore*> &container, application::Window &eventGenerator, std::shared_ptr<MouseMoveHandler> handler);
 	template void EventDispatcher::deleteHandler<WindowEventHandlersStore, application::Window, MouseButtonHandler>(std::list<WindowEventHandlersStore*> &container, application::Window &eventGenerator, std::shared_ptr<MouseButtonHandler> handler);
 	template void EventDispatcher::deleteHandler<WindowEventHandlersStore, application::Window, MouseScrollHandler>(std::list<WindowEventHandlersStore*> &container, application::Window &eventGenerator, std::shared_ptr<MouseScrollHandler> handler);
+	template void EventDispatcher::deleteHandler<WindowEventHandlersStore, application::Window, KeyboardHandler>(std::list<WindowEventHandlersStore*> &container, application::Window &eventGenerator, std::shared_ptr<KeyboardHandler> handler);
 	
 	template<typename EvStore, typename T>
 	void EventDispatcher::removeHandlerStore(std::list<EvStore*> &container, T &eventGenerator) {
