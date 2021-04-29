@@ -8,37 +8,48 @@ namespace systemEvent {
 	
 	// EVENT HANDLER
 	// -------------
-	class MouseMoveHandler {
+	class MouseMoveHandler : public EventHandler {
 	public:
-		virtual ~MouseMoveHandler() {}
-	public:
-		bool operator==(MouseMoveHandler &handler) const { return is_equal(handler); }
-		bool operator!=(MouseMoveHandler &handler) const { return !(*this == handler); }
-	private:
-		virtual bool is_equal(MouseMoveHandler &handler) const = 0;
+		MouseMoveHandler(EventType typeEvent, EventHandlingMode handlingMode) : EventHandler(typeEvent, handlingMode) { }
 	public:
 		virtual void handle(double xpos, double ypos) const = 0;
+	public:
+		virtual ~MouseMoveHandler() {}
 	};
 	
+	// EVENT 
+	// -----
+	class MouseMoveEvent : public Event {
+	public:
+		MouseMoveEvent(double xpos, double ypos, MouseMoveHandler *handler, EventType typeEvent)
+			: Event(typeEvent), m_Xpos(xpos), m_Ypos(ypos),
+				m_Handler(handler)
+		{ }
+	public:
+		void call() const override { m_Handler->handle(m_Xpos, m_Ypos); }
+	private:
+		double m_Xpos, m_Ypos;
+		MouseMoveHandler *m_Handler;
+	};
 	
 	// MAKE ADAPTER FOR EVENT HANDLER
 	// ------------------------------
-	std::shared_ptr<MouseMoveHandler> makeMouseMoveHandler(void(*function)(double, double));
+	std::shared_ptr<MouseMoveHandler> makeMouseMoveHandler(void(*function)(double, double), EventHandlingMode handlingMode = EventHandlingMode::Immediately);
 	
 	template<typename T>
-	std::shared_ptr<MouseMoveHandler> makeMouseMoveHandler(T &object, void(T::*function)(double, double)) {
+	std::shared_ptr<MouseMoveHandler> makeMouseMoveHandler(T &object, void(T::*function)(double, double), EventHandlingMode handlingMode = EventHandlingMode::Immediately) {
 		
 		class Adapter : public MouseMoveHandler {
 		public:
 			typedef void(T::*myFunPtr)(double, double);
 		public:
-			Adapter(T &obj, myFunPtr function) : m_Object(&obj), m_FunPtr(function) { }
+			Adapter(T &obj, myFunPtr function, EventHandlingMode handlingMode) : MouseMoveHandler(EventType::MouseScroll, handlingMode), m_Object(&obj), m_FunPtr(function) { }
 		public:
 			virtual void handle(double xpos, double ypos) const {
 				(m_Object->*m_FunPtr)(xpos, ypos);
 			}
 		private:
-			bool is_equal(MouseMoveHandler &handler) const override {
+			bool is_equal(EventHandler &handler) const override {
 				Adapter *adapterPtr = dynamic_cast<Adapter*>(&handler);
 				if(adapterPtr == nullptr) {
 					return false;
@@ -49,23 +60,9 @@ namespace systemEvent {
 			T *m_Object;
 			myFunPtr m_FunPtr;
 		};
-		return std::shared_ptr<MouseMoveHandler>(new Adapter(object, function));
+		return std::shared_ptr<MouseMoveHandler>(new Adapter(object, function, handlingMode));
 	}
 	
-	// EVENT 
-	// -----
-	class MouseMoveEvent : public Event {
-	public:
-		MouseMoveEvent(double xpos, double ypos, MouseMoveHandler *handler)
-			: Event(EventType::MouseMove), m_Xpos(xpos), m_Ypos(ypos),
-				m_Handler(handler)
-		{ }
-	public:
-		void call() const override { m_Handler->handle(m_Xpos, m_Ypos); }
-	private:
-		double m_Xpos, m_Ypos;
-		MouseMoveHandler *m_Handler;
-	};
 	
 }
 

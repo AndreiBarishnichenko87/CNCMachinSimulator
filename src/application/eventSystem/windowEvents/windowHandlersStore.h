@@ -18,9 +18,7 @@ namespace systemEvent {
 		void mouseButtonHandle(int button, int action, int mods);
 		void mouseScrollHandle(double yoffset);
 		void keyboardHandle(int key, int scancode, int action, int mods);
-		
 	private:
-		// test template addEventHandler 
 		template<typename T>
 		void addHandler(std::list<std::shared_ptr<T> > &container, const std::shared_ptr<T> &handler) {
 			if(container.empty()) {
@@ -33,7 +31,7 @@ namespace systemEvent {
 				}				
 			}
 		}
-		
+
 		template<typename T>
 		void deleteHandler(std::list<std::shared_ptr<T> > &container, const std::shared_ptr<T> &handler) {
 			if(container.empty()) {

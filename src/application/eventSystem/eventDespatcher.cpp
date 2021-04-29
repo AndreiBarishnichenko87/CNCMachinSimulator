@@ -1,5 +1,5 @@
-#include "eventDespatcher.h"
 #include "event.h"
+#include "eventDespatcher.h"
 #include "../window/window.h"
 
 namespace systemEvent {

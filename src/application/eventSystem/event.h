@@ -9,22 +9,46 @@ namespace systemEvent {
 		None = 0,
 		MouseMove, 
 		MouseButton,
+		MouseButtonPush,
+		MouseButtonRelese,
 		MouseScroll, 
-		KeyboardPush
+		KeyPush,
+		KeyRelese
 	};
-
+	
+	enum EventHandlingMode : uint8_t { 
+		Default = 0, 
+		Immediately 
+	};
+	
 	class Event {
 	protected:
-		Event(EventType typeEvent = EventType::None) : m_TypeEvent(typeEvent) { }
-	public:
-		virtual ~Event() { }
+		explicit Event(EventType typeEvent = EventType::None) : m_TypeEvent(typeEvent) { }
 	public:
 		virtual void call() const = 0;
-		EventType getTypeEvent() const { return m_TypeEvent; }
+		EventType getEventType() const { return m_TypeEvent; }
+	public:
+		virtual ~Event() { }
 	private:
 		EventType m_TypeEvent;
 	};
-
+	
+	class EventHandler {
+	protected:
+		EventHandler(EventType typeEvent, EventHandlingMode handlingMode) : m_TypeEvent(typeEvent), m_HandlingMode(handlingMode) {}
+	private:
+		virtual bool is_equal(EventHandler &handler) const = 0;
+	public:
+		EventHandlingMode getHandlerMode() const { return m_HandlingMode; }
+		EventType getEventType() const { return m_TypeEvent; }
+		bool operator==(EventHandler &handler) const { return is_equal(handler); }
+		bool operator!=(EventHandler &handler) const { return !(*this == handler); }
+	public:
+		virtual ~EventHandler() { }
+	private:
+		EventType m_TypeEvent;
+		EventHandlingMode m_HandlingMode;
+	};
 
 }
 

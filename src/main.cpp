@@ -27,11 +27,7 @@
 #include "graphics/shapeManipulators/rotateShape3D.h"
 #include "application/window/window.h"
 
-#include "application/eventSystem/eventDespatcher.h"
-#include "application/eventSystem/windowEvents/mouseMoveEvent.h"
-#include "application/eventSystem/windowEvents/mouseButtonEvent.h"
-#include "application/eventSystem/windowEvents/mouseScrollEvent.h"
-#include "application/eventSystem/windowEvents/keyboardEvent.h"
+#include "application/eventSystem/eventSystem.h"
 
 #include "graphics/imGui/imgui.h"
 #include "graphics/imGui/imgui_impl_glfw.h"

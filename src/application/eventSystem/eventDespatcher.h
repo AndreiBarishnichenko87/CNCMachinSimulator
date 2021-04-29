@@ -35,13 +35,16 @@ namespace systemEvent {
 	private:
 		template<typename EvStore, typename T, typename H>
 		void addHandler(std::list<EvStore*> &container, T &eventGenerator, std::shared_ptr<H> handler);
+		
 		template<typename EvStore, typename T, typename H>
 		void deleteHandler(std::list<EvStore*> &container, T &eventGenerator, std::shared_ptr<H> handler);
+		
 		template<typename EvStore, typename T>
 		void removeHandlerStore(std::list<EvStore*> &container, T &eventGenerator);
 	public:
 		template<typename T>
 		friend void bindHandler(application::Window &window, std::shared_ptr<T> handler);
+		
 		template<typename T>
 		friend void unbindHandler(application::Window &window, std::shared_ptr<T> handler);
 	public:

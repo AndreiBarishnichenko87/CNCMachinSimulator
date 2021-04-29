@@ -1,3 +1,5 @@
+#include <GLFW/glfw3.h>
+
 #include "../eventDespatcher.h"
 #include "windowHandlersStore.h"
 #include "mouseMoveEvent.h"
@@ -12,25 +14,34 @@ namespace systemEvent {
 
 	void WindowEventHandlersStore::mouseMoveHandle(double x, double y) {
 		if(!m_ListMouseMoveHandler.empty()) 
-			for( auto& i : m_ListMouseMoveHandler )
-				EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseMoveEvent(x, y, i.get())));
+			for( auto& i : m_ListMouseMoveHandler ) {
+				i->getHandlerMode() == EventHandlingMode::Immediately ?
+					MouseMoveEvent(x, y, i.get(), i->getEventType()).call() :
+					EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseMoveEvent(x, y, i.get(), i->getEventType())));
+			}
 	}
 
 	void WindowEventHandlersStore::mouseButtonHandle(int button, int action, int mods) {
 		if(!m_ListMouseButtonHandler.empty())
 			std::for_each(m_ListMouseButtonHandler.begin(), m_ListMouseButtonHandler.end(), 
 			[button, action, mods](std::shared_ptr<MouseButtonHandler> &handler) {
-				switch(handler->getType()) {
-					case MouseButtonHandler::TypeHandler::MOUSE_BUT_PUSH:
-						if(action == 1)
-							EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, handler.get())));
+				switch(handler->getEventType()) {
+					case EventType::MouseButtonPush:
+						if(action == GLFW_PRESS)
+							handler->getHandlerMode() == EventHandlingMode::Immediately ?
+								MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType()).call() :
+								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType())));
 						break;
-					case MouseButtonHandler::TypeHandler::MOUSE_BUT_RELESE:
-						if(action == 0)
-							EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, handler.get())));
+					case EventType::MouseButtonRelese:
+						if(action == GLFW_RELEASE)
+							handler->getHandlerMode() == EventHandlingMode::Immediately ?
+								MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType()).call() :
+								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType())));
 						break;
-					case MouseButtonHandler::TypeHandler::MOUSE_BUT_GENERAL:
-						EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, handler.get())));
+					case EventType::MouseButton:
+							handler->getHandlerMode() == EventHandlingMode::Immediately ?
+								MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType()).call() :
+								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType())));
 						break;
 				}
 			});
@@ -41,37 +52,34 @@ namespace systemEvent {
 			std::for_each(m_ListKeyboardHandler.begin(), m_ListKeyboardHandler.end(), 
 			[key, scancode, action, mods](std::shared_ptr<KeyboardHandler> &handler) {
 				switch(action) {
-					case 1:
-						if(handler->getType() == KeyboardHandler::TypeHandler::KEY_PUSH)
-							EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get())));
+					case GLFW_PRESS:
+						if(handler->getEventType() == EventType::KeyPush)
+							handler->getHandlerMode() == EventHandlingMode::Immediately ?
+								KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType()).call() :
+								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType())));
 						break;
-					case 0:
-						if(handler->getType() == KeyboardHandler::TypeHandler::KEY_RELESE)
-							EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get())));
+					case GLFW_RELEASE:
+						if(handler->getEventType() == EventType::KeyRelese)
+							handler->getHandlerMode() == EventHandlingMode::Immediately ?
+								KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType()).call() :
+								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType())));
 						break;
-					case 2:
-						if(handler->getType() == KeyboardHandler::TypeHandler::KEY_PUSH)
-							EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get())));
+					case GLFW_REPEAT:
+						if(handler->getEventType() == EventType::KeyPush)
+							handler->getHandlerMode() == EventHandlingMode::Immediately ?
+								KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType()).call() :
+								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType())));
 						break;
 				}
-				
-				//switch(handler->getType()) {
-				//	case KeyboardHandler::TypeHandler::KEY_PUSH:
-				//		if(action == 1)
-				//			EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get())));
-				//		break;
-				//	case KeyboardHandler::TypeHandler::KEY_RELESE:
-				//		if(action == 0)
-				//			EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get())));
-				//		break;
-				//}
 			});
 	}
 	
 	void WindowEventHandlersStore::mouseScrollHandle(double yoffset) {
 		if(!m_ListMouseScrollHandler.empty())
 			for( auto& i : m_ListMouseScrollHandler )
-				EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseScrollEvent(yoffset, i.get())));
+				i->getHandlerMode() == EventHandlingMode::Immediately ? 
+					MouseScrollEvent(yoffset, i.get(), i->getEventType()).call() :
+					EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseScrollEvent(yoffset, i.get(), i->getEventType())));
 	}
 
 	void WindowEventHandlersStore::addEventHandler(const std::shared_ptr<MouseMoveHandler> &handler) {	
