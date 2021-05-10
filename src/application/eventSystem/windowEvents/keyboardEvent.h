@@ -36,6 +36,7 @@ namespace systemEvent {
 	// ------------------------------
 	std::shared_ptr<KeyboardHandler> makeKeyboardPushHandler(void(*function)(int, int, int), EventHandlingMode handlingMode = EventHandlingMode::Immediately);
 	std::shared_ptr<KeyboardHandler> makeKeyboardReleseHandler(void(*function)(int, int, int), EventHandlingMode handlingMode = EventHandlingMode::Immediately);
+	std::shared_ptr<KeyboardHandler> makeKeyboardRepeatHandler(void(*function)(int, int, int), EventHandlingMode handlingMode = EventHandlingMode::Immediately);
 
 	template<typename T>
 	std::shared_ptr<KeyboardHandler> makeKeyboardPushHandler(T &object, void(T::*function)(int, int, int), EventHandlingMode handlingMode = EventHandlingMode::Immediately) {
@@ -72,6 +73,33 @@ namespace systemEvent {
 			typedef void(T::*myFunPtr)(int, int, int);
 		public:
 			Adapter(T &obj, myFunPtr function, EventHandlingMode handlingMode) : KeyboardHandler(EventType::KeyRelese, handlingMode), m_Object(&obj), m_FunPtr(function) { }
+		public:
+			virtual void handle(int key, int scancode, int mods) const {
+				(m_Object->*m_FunPtr)(key, scancode, mods);
+			}
+		private:
+			bool is_equal(EventHandler &handler) const override {
+				Adapter *adapterPtr = dynamic_cast<Adapter*>(&handler);
+				if(adapterPtr == nullptr) {
+					return false;
+				}
+				return (m_Object == adapterPtr->m_Object) && (m_FunPtr == adapterPtr->m_FunPtr) ? true : false;
+			}
+		private:
+			T *m_Object;
+			myFunPtr m_FunPtr;
+		};
+		return std::shared_ptr<KeyboardHandler>(new Adapter(object, function, handlingMode));
+	}
+	
+	template<typename T>
+	std::shared_ptr<KeyboardHandler> makeKeyboardRepeatHandler(T &object, void(T::*function)(int, int, int), EventHandlingMode handlingMode = EventHandlingMode::Immediately) {
+		
+		class Adapter : public KeyboardHandler {
+		public:
+			typedef void(T::*myFunPtr)(int, int, int);
+		public:
+			Adapter(T &obj, myFunPtr function, EventHandlingMode handlingMode) : KeyboardHandler(EventType::KeyRepeat, handlingMode), m_Object(&obj), m_FunPtr(function) { }
 		public:
 			virtual void handle(int key, int scancode, int mods) const {
 				(m_Object->*m_FunPtr)(key, scancode, mods);

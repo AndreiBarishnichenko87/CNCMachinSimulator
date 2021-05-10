@@ -10,7 +10,7 @@
 #include <memory>
 #include <algorithm>
 
-#include "windowEvents/windowHandlersStore.h"
+#include "windowEvents/windowEvent.h"
 
 namespace application {
 	class Window;
@@ -20,10 +20,6 @@ namespace systemEvent {
 	
 	class Event;
 	class WindowEventHandlersStore;
-	class MouseMoveHandler;
-	class MouseButtonHandler;
-	class MouseScrollHandler;
-	class KeyboardHandler;
 	
 	class EventDispatcher {
 	public:

@@ -1,11 +1,9 @@
 #include <GLFW/glfw3.h>
 
-#include "../eventDespatcher.h"
+#include "eventDespatcher.h"
+
 #include "windowHandlersStore.h"
-#include "mouseMoveEvent.h"
-#include "mouseButtonEvent.h"
-#include "mouseScrollEvent.h"
-#include "keyboardEvent.h"
+#include "windowEvents/windowEvent.h"
 
 #include <iostream>
 #include <algorithm>
@@ -20,10 +18,19 @@ namespace systemEvent {
 					EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseMoveEvent(x, y, i.get(), i->getEventType())));
 			}
 	}
-
+	
+	void WindowEventHandlersStore::windowSizeHandle(int width, int heigth) {
+		if(!m_ListWindowSizeHandler.empty()) 
+			for( auto& i : m_ListWindowSizeHandler ) {
+				i->getHandlerMode() == EventHandlingMode::Immediately ?
+					WindowSizeEvent(width, heigth, i.get(), i->getEventType()).call() :
+					EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new WindowSizeEvent(width, heigth, i.get(), i->getEventType())));
+			}
+	}
+	
 	void WindowEventHandlersStore::mouseButtonHandle(int button, int action, int mods) {
 		if(!m_ListMouseButtonHandler.empty())
-			std::for_each(m_ListMouseButtonHandler.begin(), m_ListMouseButtonHandler.end(), 
+			std::for_each(m_ListMouseButtonHandler.begin(), m_ListMouseButtonHandler.end(),
 			[button, action, mods](std::shared_ptr<MouseButtonHandler> &handler) {
 				switch(handler->getEventType()) {
 					case EventType::MouseButtonPush:
@@ -34,11 +41,6 @@ namespace systemEvent {
 						break;
 					case EventType::MouseButtonRelese:
 						if(action == GLFW_RELEASE)
-							handler->getHandlerMode() == EventHandlingMode::Immediately ?
-								MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType()).call() :
-								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType())));
-						break;
-					case EventType::MouseButton:
 							handler->getHandlerMode() == EventHandlingMode::Immediately ?
 								MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType()).call() :
 								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new MouseButtonEvent(button, action, mods, handler.get(), handler->getEventType())));
@@ -65,7 +67,7 @@ namespace systemEvent {
 								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType())));
 						break;
 					case GLFW_REPEAT:
-						if(handler->getEventType() == EventType::KeyPush)
+						if(handler->getEventType() == EventType::KeyRepeat)
 							handler->getHandlerMode() == EventHandlingMode::Immediately ?
 								KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType()).call() :
 								EventDispatcher::instance()->addEvent(std::shared_ptr<Event>(new KeyboardEvent(key, scancode, mods, handler.get(), handler->getEventType())));
@@ -98,6 +100,10 @@ namespace systemEvent {
 		addHandler(m_ListKeyboardHandler, handler); }
 	void WindowEventHandlersStore::deleteEventHandler(const std::shared_ptr<KeyboardHandler> &handler) {
 		deleteHandler(m_ListKeyboardHandler, handler); }
+	void WindowEventHandlersStore::addEventHandler(const std::shared_ptr<WindowSizeHandler> &handler) {
+		addHandler(m_ListWindowSizeHandler, handler); }
+	void WindowEventHandlersStore::deleteEventHandler(const std::shared_ptr<WindowSizeHandler> &handler) {
+		deleteHandler(m_ListWindowSizeHandler, handler); }
 	
 	bool WindowEventHandlersStore::empty() {
 		unsigned int empty = 0;
@@ -105,6 +111,7 @@ namespace systemEvent {
 		empty += !(m_ListMouseButtonHandler.empty());
 		empty += !(m_ListMouseScrollHandler.empty());
 		empty += !(m_ListKeyboardHandler.empty());
+		empty += !(m_ListWindowSizeHandler.empty());
 		
 		return !empty;
 	}

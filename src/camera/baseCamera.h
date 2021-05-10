@@ -6,7 +6,7 @@
 #include <string>
 
 namespace camera {
-	
+
 	class BaseCamera {
 	public:
 		class BadCameraException : public std::logic_error {

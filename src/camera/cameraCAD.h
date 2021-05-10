@@ -10,7 +10,7 @@
 #include "baseCamera.h"
 
 namespace camera {
-	
+
 	class CameraCAD : public BaseCamera {
 	private:
 		glm::quat m_Quat;

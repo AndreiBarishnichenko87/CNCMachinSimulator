@@ -12,6 +12,7 @@
 #include <memory>
 #include <cmath>
 
+
 #include "graphics/shapes/shapeFactory.h"
 #include "graphics/dataStructure.h"
 #include "parserXML/smartBuffer.h"
@@ -22,12 +23,11 @@
 #include "graphics/stb/stb_image.h"
 #include "parserSTL/parserSTL.h"
 #include "camera/baseCamera.h"
-#include "camera/cameraGame.h"
 #include "camera/cameraCAD.h"
 #include "graphics/shapeManipulators/rotateShape3D.h"
 #include "application/window/window.h"
 
-#include "application/eventSystem/eventSystem.h"
+#include "application/eventSystem/eventDespatcher.h"
 
 #include "graphics/imGui/imgui.h"
 #include "graphics/imGui/imgui_impl_glfw.h"
@@ -125,33 +125,90 @@ std::string shaderPath("resourses\\graphics\\shaders\\");
 std::string Model3DPath("resourses\\graphics\\3Dmodel\\");
 
 // ============= TESTING SOMTHING =================
-	camera::CameraGame::UpAxis axisType = camera::CameraGame::UpAxis::Z;
-	camera::CameraGame gameCam(glm::vec3(50.0f, 50.0f, 20.0f), axisType, glm::vec3(20.0f, 15.0f, 0.0f));
-	camera::CameraCAD CADCam(glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f)), glm::radians(50.0f), 150.0f, 0.3f);
 	graphics::RotateShape3D rotateObject;
 	
 	// Functional object testing
 	// -------------------------
 	
-	template<typename T>
-	void fun(int i, T t) {
-		cout << "template:\n";
-		cout << "int: " << i << endl;
-		cout << "T: " << t << endl;
-	}
-	void fun(int i, int k) {
-		fun<>(i, k);
-		cout << "not template:\n";
-		cout << "int: " << i << endl;
-		cout << "int: " << k << endl;
+	#include "camera/camera.h"
+	#include "camera/cameraManipulator.h"
+	
+	glm::mat4 getLookAtMatrix(camera::CameraGeometryData* camera) {
+		return glm::lookAt(camera->getPos(), camera->getPos() + camera->getFrontDir(), camera->getUpDir());
 	}
 	
-	void functional_obj_test() {
-		int f, j;
-		double d;
-		fun(f, j);
-		fun(f, d);
-	}
+	#define STEP_MOVE 0.5f
+	#define ROTE_SENS 0.1f
+	
+	class TestRotManip {
+	public:
+		TestRotManip(camera::CameraGeometryData *camera, camera::CameraRotateManipulator *manipulator)
+			: m_Camera(camera), m_Manipulator(manipulator) { }
+	public:
+		void mouseMove(double x, double y) {
+			static float prevX = x;
+			static float prevy = y;
+			float xoffset = x - prevX; float yoffset = prevy - y;
+			if(yoffset > 0.0) {
+				m_Manipulator->rotateUp(m_Camera, yoffset * ROTE_SENS);
+				m_Manipulator->rotateClockWise(m_Camera, yoffset * ROTE_SENS);
+			}
+			if(yoffset < 0.0) {
+				m_Manipulator->rotateDown(m_Camera, abs(yoffset) * ROTE_SENS);
+				m_Manipulator->rotatecounterClockWise(m_Camera, abs(yoffset) * ROTE_SENS);
+			}
+			if(xoffset > 0.0) {
+				m_Manipulator->rotateRight(m_Camera, xoffset * ROTE_SENS);
+			}
+			if(xoffset < 0.0) {
+				m_Manipulator->rotateLeft(m_Camera, abs(xoffset) * ROTE_SENS);
+			}
+			prevX = x; prevy = y;
+		}
+	private:
+		camera::CameraGeometryData *m_Camera;
+		camera::CameraRotateManipulator *m_Manipulator;
+	};
+
+	class TestCameraManip {
+	public:
+		TestCameraManip(camera::CameraGeometryData *camera, camera::CameraMoveManipulator *manipulator, int frontKey, int backKey, int leftKey, int rightKey)
+			: 	m_Camera(camera), m_ManipulatorMove(manipulator), m_KeyFront(frontKey), m_KeyBack(backKey), m_KeyLeft(leftKey), m_KeyRight(rightKey) { }
+	public:
+		void keyboardPush(int key, int scancode, int mods) {
+			cout << "Manipulator >> key push: " << static_cast<char>(key) << " scancode: " << scancode <<  " mods: " << mods << endl;
+			if(key == m_KeyFront) {
+				m_ManipulatorMove->moveFront(m_Camera, STEP_MOVE);
+			} else if(key == m_KeyBack) {
+				m_ManipulatorMove->moveBack(m_Camera, STEP_MOVE);
+			} else if(key == m_KeyLeft) {
+				m_ManipulatorMove->moveLeft(m_Camera, STEP_MOVE);
+			} else if(key == m_KeyRight) {
+				m_ManipulatorMove->moveRight(m_Camera, STEP_MOVE);
+			}
+		}
+
+		void updateCamera(GLFWwindow *window) {
+			if(GLFW_PRESS == glfwGetKey(window, m_KeyFront)) {
+				m_ManipulatorMove->moveFront(m_Camera, STEP_MOVE); } 
+			if(GLFW_PRESS == glfwGetKey(window, m_KeyBack)) {
+				m_ManipulatorMove->moveBack(m_Camera, STEP_MOVE); }
+			if(GLFW_PRESS == glfwGetKey(window, m_KeyLeft)) {
+				m_ManipulatorMove->moveLeft(m_Camera, STEP_MOVE); }
+			if(GLFW_PRESS == glfwGetKey(window, m_KeyRight)) {
+				m_ManipulatorMove->moveRight(m_Camera, STEP_MOVE); }
+		}
+	public:
+		camera::CameraGeometryData* getCameraPtr() { return m_Camera; }
+		void changeManipulator(camera::CameraMoveManipulator *manipulator) { m_ManipulatorMove = manipulator; }
+	private:
+		camera::CameraGeometryData *m_Camera;
+		camera::CameraMoveManipulator *m_ManipulatorMove;
+		int m_KeyFront = -1; 
+		int m_KeyBack = -1; 
+		int m_KeyLeft = -1; 
+		int m_KeyRight = -1;
+	};
 	
 // ================================================
 class TestWindowEvent {
@@ -179,45 +236,61 @@ public:
 	void keyboardRelese(int key, int scancode, int mods) {
 		cout << m_Name << " >> key relese: " << static_cast<char>(key) << " scancode: " << scancode <<  " mods: " << mods << endl;
 	}
+	void keyboardRepeat(int key, int scancode, int mods) {
+		cout << m_Name << " >> key repeat: " << static_cast<char>(key) << " scancode: " << scancode <<  " mods: " << mods << endl;
+	}
+	void windowResize(int width, int height) {
+		cout << m_Name << " width: " << width <<  " height: " << height << endl;
+	}
 private:
 	std::string m_Name;
 };
-
-void pos(int button, int action, int mods) {
-	cout << "button: " << button << " " << "action: " << action << "mods: " << mods << endl;
-}
 
 int main(int argc, char* argv[]) {
 	
 	//functional_obj_test();
 	//return 0;
-	
-	systemEvent::EventDispatcher *dispatchEvent = systemEvent::EventDispatcher::instance();
-	camera::BaseCamera *camera = &CADCam;
-	
-	if(camera->getCameraType() == camera::BaseCamera::CameraType::CAD) {
-		cout << "camera type is CAD" << std::endl;
-	} else if (camera->getCameraType() == camera::BaseCamera::CameraType::GAME) {
-		cout << "camera type is GAME" << std::endl;
-	}
-	
-	gameCam.setMoveSpeed(15.0f);
-	gameCam.setMouseSpeed(0.3f);
-	
+
 	// SET WINDOW CONTEXT
 	// ------------------
 	application::Window window("LearnOpenGL", SCR_WIDTH, SCR_HEIGHT);
+	//application::Window window2("Test Window", SCR_WIDTH / 2, SCR_HEIGHT / 2);
+	
 	glfwMakeContextCurrent(window.getWindow());
-	
-	application::Window window2("Test Window", SCR_WIDTH / 2, SCR_HEIGHT / 2);
-	
 	window.activateContextWindow();
+	glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// Testing manipualtor CameraGeometryData
+	// --------------------------
 
-	TestWindowEvent windowEvent1(window.getWindowName());
+		glm::vec3 camPosition(0.0f, 0.0f, 0.0f);
+		camera::CameraGeometryData cam(camPosition, camera::WorldUpVector::Z);
+		
+		camera::CameraMoveManipulator *manipulatorCamMove = new camera::MoveAlongCameraAxis;
+		TestCameraManip testCamManipulators(&cam, manipulatorCamMove, int('W'), int('S'), int('A'), int('D'));
+		
+		//camera::CameraMoveManipulator *manipulatorCamUpWorld = new camera::MoveInCameraUpWorld;
+		//TestCameraManip testCamManipulators(&cam, manipulatorCamUpWorld, int('W'), int('S'), int('A'), int('D'));
+		
+		camera::CameraRotateGameWay rotCamGame(95.0f);
+		TestRotManip testRoteManipulator(&cam, &rotCamGame);
+		
+		//camera::CameraRotateCADWay rotateCAD(cam.getUpWorldVec_t());
+		//camera::RotateDecoratorCAD moveRoteCAD(rotateCAD, glm::vec3(0.0f, 0.0f, 0.0f));
+		//TestRotManip testRoteManipulator(&cam, &moveRoteCAD);
+		
+		systemEvent::bindHandler(window, systemEvent::makeMouseMoveHandler(testRoteManipulator, TestRotManip::mouseMove));
+		//systemEvent::bindHandler(window, systemEvent::makeKeyboardPushHandler(testCamManipulators, TestCameraManip::keyboardPush));
+		//systemEvent::bindHandler(window, systemEvent::makeKeyboardRepeatHandler(testCamManipulators, TestCameraManip::keyboardPush));
+		
+	//-------------------------------
+	// End testing manipulator CameraGeometryData
+	
+	
+	/*TestWindowEvent windowEvent1(window.getWindowName());
 	TestWindowEvent windowEvent2(window2.getWindowName());
 	systemEvent::bindHandler(window, systemEvent::makeMouseMoveHandler(windowEvent1, TestWindowEvent::mouseShowPos));
 	systemEvent::bindHandler(window2, systemEvent::makeMouseMoveHandler(windowEvent2, TestWindowEvent::mouseShowPos));
-
+	
 	systemEvent::bindHandler(window, systemEvent::makeMouseButtonPushHandler(windowEvent1, TestWindowEvent::buttonPush));
 	systemEvent::bindHandler(window, systemEvent::makeMouseButtonReleseHandler(windowEvent1, TestWindowEvent::buttonRelese));
 
@@ -229,13 +302,17 @@ int main(int argc, char* argv[]) {
 	
 	systemEvent::bindHandler(window, systemEvent::makeKeyboardPushHandler(windowEvent1, TestWindowEvent::keyboardPush));
 	systemEvent::bindHandler(window, systemEvent::makeKeyboardReleseHandler(windowEvent1, TestWindowEvent::keyboardRelese));
+	systemEvent::bindHandler(window, systemEvent::makeKeyboardRepeatHandler(windowEvent1, TestWindowEvent::keyboardRepeat));
 	systemEvent::bindHandler(window2, systemEvent::makeKeyboardPushHandler(windowEvent2, TestWindowEvent::keyboardPush));
 	systemEvent::bindHandler(window2, systemEvent::makeKeyboardReleseHandler(windowEvent2, TestWindowEvent::keyboardRelese));
+	systemEvent::bindHandler(window2, systemEvent::makeKeyboardRepeatHandler(windowEvent2, TestWindowEvent::keyboardRepeat));
 	
-
+	systemEvent::bindHandler(window, systemEvent::makeWindowSizeHandler(windowEvent2, TestWindowEvent::windowResize));
+	*/
+	
 	// CALLBACK FUNCTIONS
 	// ------------------
-    glfwSetFramebufferSizeCallback(window.getWindow(), framebuffer_size_callback);
+    //glfwSetFramebufferSizeCallback(window.getWindow(), framebuffer_size_callback);
 	//glfwSetCursorPosCallback(window.getWindow(), mouse_callback);
 	//glfwSetMouseButtonCallback(window.getWindow(), mouse_button_callback);
 	//glfwSetScrollCallback(window.getWindow(), scroll_callback);
@@ -333,17 +410,12 @@ int main(int argc, char* argv[]) {
 		glm::vec3 lightPos = glm::vec3(lightPosX, lightPosY, lightPosZ);
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 700.0f);
 
-//#define CAMERA_CAD
-#ifdef CAMERA_CAD 
-		glm::mat4 view = CADCam.getLookAtMatrix();
-		glm::vec3 viewPos = CADCam.cameraPos();
-		
-#else
-		// camera game
-		//gameCam.setNewPos(gameCam.cameraPos() + gameCam.frontDir() * 0.01f);
-		glm::mat4 view = gameCam.getLookAtMatrix();
-		glm::vec3 viewPos = gameCam.cameraPos();
-#endif
+
+	// Camera data LookAtMatrix
+		testCamManipulators.updateCamera(window.getWindow());
+		glm::vec3 viewPos = cam.getPos();
+		glm::mat4 view = getLookAtMatrix(&cam);
+			
 		// CALCULATE RAY DIRECTION FROM CAMERA
 		// ------------------------ 
 		glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
@@ -440,50 +512,10 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-//////////////////////////////////////////////
-
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-	
-}
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	
-	ray_clip.x = (2 * xpos - SCR_WIDTH) / (float)SCR_WIDTH;
-	ray_clip.y = -(2 * ypos - SCR_HEIGHT) / (float)SCR_HEIGHT;
-
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top
-	lastX = xpos;
-	lastY = ypos;
-
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		gameCam.turn(xoffset, yoffset);
-		CADCam.turn(xoffset, yoffset);
-	}
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
-		#define cameraDef gameCam
-		rotateObject.rotate(xoffset, yoffset, cameraDef.frontDir(), cameraDef.rightDir(), cameraDef.upDir());
-	}
-
-}
-
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-		
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		gameCam.move(camera::CameraGame::MoveDirection::FORWARD, deltaTime);
-	}
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		gameCam.move(camera::CameraGame::MoveDirection::BACK, deltaTime);
-	}
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		gameCam.move(camera::CameraGame::MoveDirection::LEFT, deltaTime);
-	}
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		gameCam.move(camera::CameraGame::MoveDirection::RIGHT, deltaTime);
-	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -497,10 +529,3 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 
 }
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-
-}
-
-//////////////////////////////////////////////

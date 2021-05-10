@@ -8,12 +8,13 @@ namespace systemEvent {
 	enum EventType : uint8_t {
 		None = 0,
 		MouseMove, 
-		MouseButton,
 		MouseButtonPush,
 		MouseButtonRelese,
 		MouseScroll, 
 		KeyPush,
-		KeyRelese
+		KeyRelese,
+		KeyRepeat,
+		WindowSize
 	};
 	
 	enum EventHandlingMode : uint8_t { 

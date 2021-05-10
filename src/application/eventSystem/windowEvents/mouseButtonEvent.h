@@ -34,36 +34,7 @@ namespace systemEvent {
 	
 	// MAKE ADAPTER FOR EVENT HANDLER
 	// ------------------------------
-	
-	// General button
-	// --------------
-	std::shared_ptr<MouseButtonHandler> makeMouseButtonHandler(void(*function)(int, int, int), EventHandlingMode handlingMode = EventHandlingMode::Immediately);
-	template<typename T>
-	std::shared_ptr<MouseButtonHandler> makeMouseButtonHandler(T &object, void(T::*function)(int, int, int), EventHandlingMode handlingMode = EventHandlingMode::Immediately) {
-		
-		class Adapter : public MouseButtonHandler {
-		public:
-			typedef void(T::*myFunPtr)(int, int, int);
-		public:
-			Adapter(T &obj, myFunPtr function, EventHandlingMode handlingMode) : MouseButtonHandler(EventType::MouseButton, handlingMode), m_Object(&obj), m_FunPtr(function) { }
-		public:
-			virtual void handle(int button, int action, int mods) const {
-				(m_Object->*m_FunPtr)(button, action, mods);
-			}
-		private:
-			bool is_equal(EventHandler &handler) const override {
-				Adapter *adapterPtr = dynamic_cast<Adapter*>(&handler);
-				if(adapterPtr == nullptr) {
-					return false;
-				}
-				return (m_Object == adapterPtr->m_Object) && (m_FunPtr == adapterPtr->m_FunPtr) ? true : false;
-			}
-		private:
-			T *m_Object;
-			myFunPtr m_FunPtr;
-		};
-		return std::shared_ptr<MouseButtonHandler>(new Adapter(object, function, handlingMode));
-	}
+
 	
 	// Push button 
 	// -----------

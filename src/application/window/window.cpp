@@ -1,13 +1,20 @@
 #include "window.h"
 
 #include "../eventSystem/eventDespatcher.h"
-#include "../eventSystem/windowEvents/windowHandlersStore.h"
+#include "../eventSystem/windowHandlersStore.h"
 
 namespace application {
 	
 	Window::~Window() {
 		glfwDestroyWindow(m_Window);
 		systemEvent::EventDispatcher::instance()->removeEventHandlerStore(*this);
+	}
+	
+	std::pair<int, int> Window::getWindowSize() const {
+		// pair int_width int_heigth
+		std::pair<int, int> sizeWindow; 
+		glfwGetWindowSize(m_Window, &std::get<0>(sizeWindow), &std::get<1>(sizeWindow));
+		return sizeWindow;
 	}
 	
 	void Window::initGLFW() {
@@ -40,6 +47,7 @@ namespace application {
 		glfwSetMouseButtonCallback(m_Window, callbackMouseButton);
 		glfwSetScrollCallback(m_Window, callbackMouseScroll);
 		glfwSetKeyCallback(m_Window, callbackKeyboard);
+		glfwSetWindowSizeCallback(m_Window, callbackWindoowSize);
 		glfwSetInputMode(m_Window, GLFW_STICKY_KEYS, GLFW_TRUE);
 	}
 	
@@ -52,7 +60,6 @@ namespace application {
 	}
 	void Window::mousePosEventCall(double xpos, double ypos) {
 		m_WindowHandlerStore->mouseMoveHandle(xpos, ypos);
-		systemEvent::EventDispatcher::instance()->handleAllEvents();
 	}
 	
 	void Window::callbackMouseButton(GLFWwindow *window, int button, int action, int mods) {
@@ -63,7 +70,6 @@ namespace application {
 	}
 	void Window::mouseButtonEventCall(int button, int action, int mods) {
 		m_WindowHandlerStore->mouseButtonHandle(button, action, mods);
-		systemEvent::EventDispatcher::instance()->handleAllEvents();
 	}
 	
 	void Window::callbackMouseScroll(GLFWwindow *window, double xoffset, double yoffset) {
@@ -74,7 +80,6 @@ namespace application {
 	}
 	void Window::mouseScrollEventCall(double yoffset) {
 		m_WindowHandlerStore->mouseScrollHandle(yoffset);
-		systemEvent::EventDispatcher::instance()->handleAllEvents();
 	}
 	
 	void Window::callbackKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -85,9 +90,18 @@ namespace application {
 	}
 	void Window::keyboardEventCall(int key, int scancode, int action, int mods) {
 		m_WindowHandlerStore->keyboardHandle(key, scancode, action, mods);
-		systemEvent::EventDispatcher::instance()->handleAllEvents();
 	}
 	
+	void Window::callbackWindoowSize(GLFWwindow *window, int width, int height) {
+		Window *myWindowHandler =  reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if(myWindowHandler->m_WindowHandlerStore != nullptr) {
+			myWindowHandler->windowSizeEventCall(width, height);
+		}
+	}
+	
+	void Window::windowSizeEventCall(int width, int height) {
+		m_WindowHandlerStore->windowSizeHandle(width, height);
+	}
 	
 	
 	

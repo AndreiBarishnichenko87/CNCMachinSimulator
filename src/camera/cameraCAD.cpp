@@ -10,7 +10,7 @@ namespace camera {
 		glm::quat qRightRot = glm::angleAxis(glm::radians(yoffset) * m_Sensitivity, rightDir());
 		m_Quat = qRightRot * qUpRot * m_Quat;
 	}
-	
+
 	glm::vec3 CameraCAD::cameraPos() const {
 		return frontDir() * (-m_DistanceToCenter);
 	}
