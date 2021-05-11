@@ -22,8 +22,6 @@
 #include "graphics/shader/shader.h"
 #include "graphics/stb/stb_image.h"
 #include "parserSTL/parserSTL.h"
-#include "camera/baseCamera.h"
-#include "camera/cameraCAD.h"
 #include "graphics/shapeManipulators/rotateShape3D.h"
 #include "application/window/window.h"
 
