@@ -271,12 +271,12 @@ int main(int argc, char* argv[]) {
 		//camera::CameraMoveManipulator *manipulatorCamUpWorld = new camera::MoveInCameraUpWorld;
 		//TestCameraManip testCamManipulators(&cam, manipulatorCamUpWorld, int('W'), int('S'), int('A'), int('D'));
 		
-		camera::CameraRotateGameWay rotCamGame(95.0f);
-		TestRotManip testRoteManipulator(&cam, &rotCamGame);
+		//camera::CameraRotateGameWay rotCamGame(95.0f);
+		//TestRotManip testRoteManipulator(&cam, &rotCamGame);
 		
-		//camera::CameraRotateCADWay rotateCAD(cam.getUpWorldVec_t());
-		//camera::RotateDecoratorCAD moveRoteCAD(rotateCAD, glm::vec3(0.0f, 0.0f, 0.0f));
-		//TestRotManip testRoteManipulator(&cam, &moveRoteCAD);
+		camera::CameraRotateCADWay rotateCAD(cam.getUpWorldVec_t());
+		camera::RotateDecoratorCAD moveRoteCAD(rotateCAD, glm::vec3(0.0f, 0.0f, 0.0f));
+		TestRotManip testRoteManipulator(&cam, &moveRoteCAD);
 		
 		systemEvent::bindHandler(window, systemEvent::makeMouseMoveHandler(testRoteManipulator, TestRotManip::mouseMove));
 		//systemEvent::bindHandler(window, systemEvent::makeKeyboardPushHandler(testCamManipulators, TestCameraManip::keyboardPush));

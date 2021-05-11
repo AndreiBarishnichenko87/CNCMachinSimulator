@@ -119,11 +119,10 @@ namespace camera {
 	public:
 		void rotateRight(CameraGeometryData *camera, float offset) override;
 		void rotateLeft(CameraGeometryData *camera, float offset) override;
-		void rotateUp(CameraGeometryData *camera, float offset) override {}
-		void rotateDown(CameraGeometryData *camera, float offset) override {}
+		void rotateUp(CameraGeometryData *camera, float offset) override;
+		void rotateDown(CameraGeometryData *camera, float offset) override;
 	private:
-		float calcStepInDirection(glm::vec3 vec1, glm::vec3 vec2) const;
-		void calculateStepDir(CameraGeometryData *camera);
+		bool calculateStepDir(CameraGeometryData *camera);
 		void updateCameraPos(CameraGeometryData *camera);
 	private:
 		CameraRotateManipulator &m_DecoratedObj;

@@ -11,45 +11,58 @@ namespace camera {
 	
 	// CAMERA MOVE AROUND CENTER
 	// -------------------------
-	float RotateDecoratorCAD::calcStepInDirection(glm::vec3 vec1, glm::vec3 vec2) const {
-		return 90.0f - glm::dot(vec1, vec2) * 90.0f;
-	}
-
-	void RotateDecoratorCAD::calculateStepDir(CameraGeometryData *camera) { 
+	
+	
+	// Fixed bug(somtimes cmaera get invisible and fly to somwere!!!!!!)
+	bool RotateDecoratorCAD::calculateStepDir(CameraGeometryData *camera) { 
 		glm::vec3 vecFromCamPosToCentrRot = m_CenterOfRot - camera->getPos();
 		float distFromCamToCenterRot = glm::length(vecFromCamPosToCentrRot);
+		if(distFromCamToCenterRot == 0) return true;
+		
 		vecFromCamPosToCentrRot = glm::normalize(vecFromCamPosToCentrRot);
 		
-		float angleFront = calcStepInDirection(camera->getFrontDir(), vecFromCamPosToCentrRot);
-		m_StepFront = distFromCamToCenterRot * cos(glm::radians(angleFront));
+		float angleFront = radToDeg(std::acos(glm::dot(camera->getFrontDir(), vecFromCamPosToCentrRot)));
+		if(angleFront == 0.0f) return true;
+		m_StepFront = distFromCamToCenterRot * std::cos(glm::radians(angleFront));
+
+		float angleRight = radToDeg(std::acos(glm::dot(camera->getRightDir(), vecFromCamPosToCentrRot)));
+		m_StepRight = distFromCamToCenterRot * std::cos(glm::radians(angleRight));
+
+		float angleUp = radToDeg(std::acos(glm::dot(camera->getUpDir(), vecFromCamPosToCentrRot)));
+		m_StepUp = distFromCamToCenterRot * std::cos(glm::radians(angleUp));
 		
-		float angleRight = calcStepInDirection(camera->getRightDir(), vecFromCamPosToCentrRot);
-		m_StepRight = distFromCamToCenterRot * cos(glm::radians(angleRight));
-		
-		float angleUp = calcStepInDirection(camera->getUpDir(), vecFromCamPosToCentrRot);
-		m_StepUp = distFromCamToCenterRot * cos(glm::radians(angleUp));
-		
-		std::cout << "angels => front: " << angleFront << " right: " << angleRight  << " up: " << angleUp << std::endl;
-		std::cout << "steps  => front: " << m_StepFront << " right: " << m_StepRight  << " up: " << m_StepUp << std::endl;
+		return false;
 	}
 	
 	void RotateDecoratorCAD::updateCameraPos(CameraGeometryData *camera) {
 		glm::vec3 camPos = m_CenterOfRot;
-		camPos += camera->getFrontDir() * m_StepFront;
-		camPos += camera->getRightDir() * m_StepRight;
-		//camPos += camera->getUpDir() * m_StepUp;
+		camPos -= camera->getFrontDir() * m_StepFront;
+		camPos -= camera->getRightDir() * m_StepRight;
+		camPos -= camera->getUpDir() * m_StepUp;
 		camera->setPos(camPos);
 	}
 	
 	void RotateDecoratorCAD::rotateRight(CameraGeometryData *camera, float offset) {
-		calculateStepDir(camera);
+		bool cameraInCenterCoordSys = calculateStepDir(camera);
 		m_DecoratedObj.rotateRight(camera, offset);
-		updateCameraPos(camera);
+		if(!cameraInCenterCoordSys) updateCameraPos(camera);
 	}
 	
 	void RotateDecoratorCAD::rotateLeft(CameraGeometryData *camera, float offset) {
-		calculateStepDir(camera);
+		bool cameraInCenterCoordSys = calculateStepDir(camera);
 		m_DecoratedObj.rotateLeft(camera, offset);
+		if(!cameraInCenterCoordSys) updateCameraPos(camera);
+	}
+	
+	void RotateDecoratorCAD::rotateUp(CameraGeometryData *camera, float offset) {
+		bool cameraInCenterCoordSys = calculateStepDir(camera);
+		m_DecoratedObj.rotateUp(camera, offset);
+		if(!cameraInCenterCoordSys) updateCameraPos(camera);
+	}
+	
+	void RotateDecoratorCAD::rotateDown(CameraGeometryData *camera, float offset) {
+		calculateStepDir(camera);
+		m_DecoratedObj.rotateDown(camera, offset);
 		updateCameraPos(camera);
 	}
 	// CAMERA ROTATE GAME WAY
