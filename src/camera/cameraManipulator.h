@@ -114,7 +114,7 @@ namespace camera {
 	
 	class RotateDecoratorCAD : public CameraRotateManipulator {
 	public:
-		RotateDecoratorCAD(CameraRotateManipulator &decoretedObj, glm::vec3 centerOfRotation) : 
+		RotateDecoratorCAD(CameraRotateManipulator &decoretedObj, glm::vec3 centerOfRotation = glm::vec3(0.0f)) : 
 			m_DecoratedObj(decoretedObj), m_CenterOfRot(centerOfRotation) { }
 	public:
 		void rotateRight(CameraGeometryData *camera, float offset) override;
@@ -122,7 +122,7 @@ namespace camera {
 		void rotateUp(CameraGeometryData *camera, float offset) override;
 		void rotateDown(CameraGeometryData *camera, float offset) override;
 	private:
-		bool calculateStepDir(CameraGeometryData *camera);
+		void calculateStepDir(CameraGeometryData *camera);
 		void updateCameraPos(CameraGeometryData *camera);
 	private:
 		CameraRotateManipulator &m_DecoratedObj;

@@ -11,27 +11,15 @@ namespace camera {
 	
 	// CAMERA MOVE AROUND CENTER
 	// -------------------------
-	
-	
-	// Fixed bug(somtimes cmaera get invisible and fly to somwere!!!!!!)
-	bool RotateDecoratorCAD::calculateStepDir(CameraGeometryData *camera) { 
+	void RotateDecoratorCAD::calculateStepDir(CameraGeometryData *camera) { 
 		glm::vec3 vecFromCamPosToCentrRot = m_CenterOfRot - camera->getPos();
 		float distFromCamToCenterRot = glm::length(vecFromCamPosToCentrRot);
-		if(distFromCamToCenterRot == 0) return true;
-		
-		vecFromCamPosToCentrRot = glm::normalize(vecFromCamPosToCentrRot);
-		
-		float angleFront = radToDeg(std::acos(glm::dot(camera->getFrontDir(), vecFromCamPosToCentrRot)));
-		if(angleFront == 0.0f) return true;
-		m_StepFront = distFromCamToCenterRot * std::cos(glm::radians(angleFront));
 
-		float angleRight = radToDeg(std::acos(glm::dot(camera->getRightDir(), vecFromCamPosToCentrRot)));
-		m_StepRight = distFromCamToCenterRot * std::cos(glm::radians(angleRight));
+		if(distFromCamToCenterRot != 0)	{ vecFromCamPosToCentrRot = glm::normalize(vecFromCamPosToCentrRot); }
 
-		float angleUp = radToDeg(std::acos(glm::dot(camera->getUpDir(), vecFromCamPosToCentrRot)));
-		m_StepUp = distFromCamToCenterRot * std::cos(glm::radians(angleUp));
-		
-		return false;
+		m_StepFront = distFromCamToCenterRot * glm::dot(camera->getFrontDir(), vecFromCamPosToCentrRot);
+		m_StepRight = distFromCamToCenterRot * glm::dot(camera->getRightDir(), vecFromCamPosToCentrRot);
+		m_StepUp = distFromCamToCenterRot * glm::dot(camera->getUpDir(), vecFromCamPosToCentrRot);
 	}
 	
 	void RotateDecoratorCAD::updateCameraPos(CameraGeometryData *camera) {
@@ -43,21 +31,21 @@ namespace camera {
 	}
 	
 	void RotateDecoratorCAD::rotateRight(CameraGeometryData *camera, float offset) {
-		bool cameraInCenterCoordSys = calculateStepDir(camera);
+		calculateStepDir(camera);
 		m_DecoratedObj.rotateRight(camera, offset);
-		if(!cameraInCenterCoordSys) updateCameraPos(camera);
+		updateCameraPos(camera);
 	}
 	
 	void RotateDecoratorCAD::rotateLeft(CameraGeometryData *camera, float offset) {
-		bool cameraInCenterCoordSys = calculateStepDir(camera);
+		calculateStepDir(camera);
 		m_DecoratedObj.rotateLeft(camera, offset);
-		if(!cameraInCenterCoordSys) updateCameraPos(camera);
+		updateCameraPos(camera);
 	}
 	
 	void RotateDecoratorCAD::rotateUp(CameraGeometryData *camera, float offset) {
-		bool cameraInCenterCoordSys = calculateStepDir(camera);
+		calculateStepDir(camera);
 		m_DecoratedObj.rotateUp(camera, offset);
-		if(!cameraInCenterCoordSys) updateCameraPos(camera);
+		updateCameraPos(camera);
 	}
 	
 	void RotateDecoratorCAD::rotateDown(CameraGeometryData *camera, float offset) {
