@@ -12,7 +12,6 @@
 #include <memory>
 #include <cmath>
 
-
 #include "graphics/shapes/shapeFactory.h"
 #include "graphics/dataStructure.h"
 #include "parserXML/smartBuffer.h"
@@ -71,14 +70,6 @@ void test_parserXML() {
 	printAllDoc(parser.getRootElement(), fout, 0);
 }
 
-glm::vec3 pointOnSphear(float radius, float angle_XY, float angle_VecZ) {
-	glm::vec3 spherPos;
-	spherPos.x = radius * sin(glm::radians(angle_XY)) * sin(glm::radians(angle_VecZ));
-	spherPos.y = radius * cos(glm::radians(angle_VecZ));
-	spherPos.z = radius * cos(glm::radians(angle_XY)) * sin(glm::radians(angle_VecZ));
-	return spherPos;
-}
-
 //////////////////////////////////////////////
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -103,10 +94,6 @@ bool pickWhenReleaseButton(unsigned int isPress) {
 unsigned int SCR_WIDTH = 800;
 unsigned int SCR_HEIGHT = 600;
 
-//////////////////////////////////////////////
-float deltaTime = 0.0f;	// Time between current frame and last frame
-float lastFrame = 0.0f; // Time of last frame
-
 // LINE PRINMITIVE
 struct Line {
 	glm::vec3 beginLine;
@@ -116,7 +103,6 @@ std::vector<Line> rays;
 
 // MOUSE MOVEMANT
 glm::vec4 ray_clip = glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
-float lastX = 400, lastY = 300;
 
 // PATH TO PROJECT
 std::string shaderPath("resourses\\graphics\\shaders\\");
@@ -124,10 +110,10 @@ std::string Model3DPath("resourses\\graphics\\3Dmodel\\");
 
 // ============= TESTING SOMTHING =================
 	graphics::RotateShape3D rotateObject;
-	
+
 	// Functional object testing
 	// -------------------------
-	
+
 	#include "camera/camera.h"
 	#include "camera/cameraManipulator.h"
 	
@@ -208,45 +194,10 @@ std::string Model3DPath("resourses\\graphics\\3Dmodel\\");
 		int m_KeyRight = -1;
 	};
 	
-// ================================================
-class TestWindowEvent {
-public:
-	TestWindowEvent(std::string name) : m_Name(name) {}
-public:
-	void scroll(double yoffset) {
-		cout << m_Name << " >> scroll: " << yoffset << endl;
-	}
-	void mouseShowPos(double x, double y) {
-		cout << m_Name << " >> X" << x << " Y" << y << endl;
-	}
-	void button(int button, int action, int mods) {
-		cout << m_Name << " >> button: " << button << " " << "action: " << action << "mods: " << mods << endl;
-	}
-	void buttonPush(int button, int mods) {
-		cout << m_Name << " >> button push: " << button << " mods: " << mods << endl;
-	}
-	void buttonRelese(int button, int mods) {
-		cout << m_Name << " >> button relese: " << button << " mods: " << mods << endl;
-	}
-	void keyboardPush(int key, int scancode, int mods) {
-		cout << m_Name << " >> key push: " << static_cast<char>(key) << " scancode: " << scancode <<  " mods: " << mods << endl;
-	}
-	void keyboardRelese(int key, int scancode, int mods) {
-		cout << m_Name << " >> key relese: " << static_cast<char>(key) << " scancode: " << scancode <<  " mods: " << mods << endl;
-	}
-	void keyboardRepeat(int key, int scancode, int mods) {
-		cout << m_Name << " >> key repeat: " << static_cast<char>(key) << " scancode: " << scancode <<  " mods: " << mods << endl;
-	}
-	void windowResize(int width, int height) {
-		cout << m_Name << " width: " << width <<  " height: " << height << endl;
-	}
-private:
-	std::string m_Name;
-};
-
-int main(int argc, char* argv[]) {
+	glm::vec3 cameraRayCasting(const glm::vec3 &cameraPos, float NDC_x, float NDC_y, const glm::mat4 &projecMat4, const glm::mat4 &viewMat4);
 	
-	//functional_obj_test();
+int main(int argc, char* argv[]) {
+
 	//return 0;
 
 	// SET WINDOW CONTEXT
@@ -256,12 +207,12 @@ int main(int argc, char* argv[]) {
 	
 	glfwMakeContextCurrent(window.getWindow());
 	window.activateContextWindow();
-	glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	// Testing manipualtor CameraGeometryData
 	// --------------------------
 
 		glm::vec3 camPosition(0.0f, 0.0f, 0.0f);
-		camera::CameraGeometryData cam(camPosition, camera::WorldUpVector::Z);
+		camera::CameraGeometryData cam(camPosition, camera::WorldUpVector::Y);
 		
 		camera::CameraMoveManipulator *manipulatorCamMove = new camera::MoveAlongCameraAxis;
 		TestCameraManip testCamManipulators(&cam, manipulatorCamMove, int('W'), int('S'), int('A'), int('D'));
@@ -269,51 +220,16 @@ int main(int argc, char* argv[]) {
 		//camera::CameraMoveManipulator *manipulatorCamUpWorld = new camera::MoveInCameraUpWorld;
 		//TestCameraManip testCamManipulators(&cam, manipulatorCamUpWorld, int('W'), int('S'), int('A'), int('D'));
 		
-		//camera::CameraRotateGameWay rotCamGame(95.0f);
-		//TestRotManip testRoteManipulator(&cam, &rotCamGame);
+		camera::CameraRotateGameWay rotCamGame(95.0f);
+		TestRotManip testRoteManipulator(&cam, &rotCamGame);
 		
-		camera::CameraRotateCADWay rotateCAD(cam.getUpWorldVec_t());
-		camera::RotateDecoratorCAD moveRoteCAD(rotateCAD, glm::vec3(0.0f, 0.0f, 0.0f));
-		TestRotManip testRoteManipulator(&cam, &moveRoteCAD);
+		//camera::CameraRotateCADWay rotateCAD(cam.getUpWorldVec_t());
+		//camera::RotateDecoratorCAD moveRoteCAD(rotateCAD, glm::vec3(0.0f, 0.0f, 0.0f));
+		//TestRotManip testRoteManipulator(&cam, &moveRoteCAD);
 		
 		systemEvent::bindHandler(window, systemEvent::makeMouseMoveHandler(testRoteManipulator, TestRotManip::mouseMove));
 		//systemEvent::bindHandler(window, systemEvent::makeKeyboardPushHandler(testCamManipulators, TestCameraManip::keyboardPush));
 		//systemEvent::bindHandler(window, systemEvent::makeKeyboardRepeatHandler(testCamManipulators, TestCameraManip::keyboardPush));
-		
-	//-------------------------------
-	// End testing manipulator CameraGeometryData
-	
-	
-	/*TestWindowEvent windowEvent1(window.getWindowName());
-	TestWindowEvent windowEvent2(window2.getWindowName());
-	systemEvent::bindHandler(window, systemEvent::makeMouseMoveHandler(windowEvent1, TestWindowEvent::mouseShowPos));
-	systemEvent::bindHandler(window2, systemEvent::makeMouseMoveHandler(windowEvent2, TestWindowEvent::mouseShowPos));
-	
-	systemEvent::bindHandler(window, systemEvent::makeMouseButtonPushHandler(windowEvent1, TestWindowEvent::buttonPush));
-	systemEvent::bindHandler(window, systemEvent::makeMouseButtonReleseHandler(windowEvent1, TestWindowEvent::buttonRelese));
-
-	systemEvent::bindHandler(window2, systemEvent::makeMouseButtonPushHandler(windowEvent2, TestWindowEvent::buttonPush));
-	systemEvent::bindHandler(window2, systemEvent::makeMouseButtonReleseHandler(windowEvent2, TestWindowEvent::buttonRelese));
-
-	systemEvent::bindHandler(window, systemEvent::makeMouseScrollHandler(windowEvent1, TestWindowEvent::scroll));
-	systemEvent::bindHandler(window2, systemEvent::makeMouseScrollHandler(windowEvent2, TestWindowEvent::scroll));
-	
-	systemEvent::bindHandler(window, systemEvent::makeKeyboardPushHandler(windowEvent1, TestWindowEvent::keyboardPush));
-	systemEvent::bindHandler(window, systemEvent::makeKeyboardReleseHandler(windowEvent1, TestWindowEvent::keyboardRelese));
-	systemEvent::bindHandler(window, systemEvent::makeKeyboardRepeatHandler(windowEvent1, TestWindowEvent::keyboardRepeat));
-	systemEvent::bindHandler(window2, systemEvent::makeKeyboardPushHandler(windowEvent2, TestWindowEvent::keyboardPush));
-	systemEvent::bindHandler(window2, systemEvent::makeKeyboardReleseHandler(windowEvent2, TestWindowEvent::keyboardRelese));
-	systemEvent::bindHandler(window2, systemEvent::makeKeyboardRepeatHandler(windowEvent2, TestWindowEvent::keyboardRepeat));
-	
-	systemEvent::bindHandler(window, systemEvent::makeWindowSizeHandler(windowEvent2, TestWindowEvent::windowResize));
-	*/
-	
-	// CALLBACK FUNCTIONS
-	// ------------------
-    //glfwSetFramebufferSizeCallback(window.getWindow(), framebuffer_size_callback);
-	//glfwSetCursorPosCallback(window.getWindow(), mouse_callback);
-	//glfwSetMouseButtonCallback(window.getWindow(), mouse_button_callback);
-	//glfwSetScrollCallback(window.getWindow(), scroll_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -386,11 +302,7 @@ int main(int argc, char* argv[]) {
 			startPoint = glfwGetTime();
 			frameCountPerStep = 0;
 		}
-		
-		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-        
+
 		// input
         // -----
         processInput(window.getWindow());
@@ -416,12 +328,12 @@ int main(int argc, char* argv[]) {
 			
 		// CALCULATE RAY DIRECTION FROM CAMERA
 		// ------------------------ 
-		glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
-		ray_eye.z = -1.0f;
-		ray_eye.w = 0.0f;
-		glm::vec3 ray_wor = glm::vec3(glm::inverse(view) * ray_eye);
-		ray_wor = glm::normalize(ray_wor);
-		
+		double ndc_x, ndc_y;
+		glfwGetCursorPos(window.getWindow(), &ndc_x, &ndc_y);
+		ndc_x = (ndc_x * 2.0f - SCR_WIDTH) / SCR_WIDTH;
+		ndc_y = (SCR_HEIGHT - ndc_y * 2.0f) / SCR_HEIGHT;
+		glm::vec3 rayCastDir = cameraRayCasting(cam.getPos(), ndc_x, ndc_y, projection, view);
+
 		// render ImGui some stuff 
 		// -----------------------
 		// feed inputs to dear imgui, start new frame
@@ -430,9 +342,7 @@ int main(int argc, char* argv[]) {
 			ImGui::NewFrame();
 		// render your GUI
 			ImGui::Begin("Model Color");
-			ImGui::Text("ray_clip: X:%f  Y:%f  Z:%f", ray_clip.x, ray_clip.y, ray_clip.z);
-			ImGui::Text("ray_eye:  X:%f  Y:%f  Z:%f", ray_eye.x, ray_eye.y, ray_eye.z);
-			ImGui::Text("ray_wor:  X:%f  Y:%f  Z:%f", ray_wor.x, ray_wor.y, ray_wor.z);
+			ImGui::Text("ray_wor:  X:%f  Y:%f  Z:%f", rayCastDir.x, rayCastDir.y, rayCastDir.z);
 			static float color[4] = {0.064f, 0.926f, 0.495f, 1.0f};
 			static glm::vec4 rayColor = glm::vec4{0.941f, 0.0, 1.0, 1.0f};
 			ImGui::ColorEdit3("color 3D model", color);
@@ -466,7 +376,7 @@ int main(int argc, char* argv[]) {
 		// ---------
 		glBindVertexArray(lineVAO);
 		float lengthRay = 10.0f;
-		glm::vec3 endRayPos =  viewPos + ray_wor * lengthRay;
+		glm::vec3 endRayPos =  viewPos + rayCastDir * lengthRay;
 		if (pickWhenReleaseButton(glfwGetMouseButton(window.getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS))
 			rays.push_back(Line{viewPos, endRayPos});
 		rays[rays.size() - 1].beginLine = viewPos;
@@ -526,4 +436,19 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	SCR_HEIGHT = height;
     glViewport(0, 0, width, height);
 
+}
+
+glm::vec3 cameraRayCasting(const glm::vec3 &cameraPos, float NDC_x, float NDC_y, const glm::mat4 &projecMat4, const glm::mat4 &viewMat4) {
+	//assert(NDC_x >= -1.0f && NDC_x <= 1.0f && "normalize device coordinat X out of range");
+	//assert(NDC_y >= -1.0f && NDC_y <= 1.0f && "normalize device coordinat X out of range");
+
+	// 3d Normalised Device Coordinates
+	// 4d Homogeneous Clip Coordinates
+	// 4d Eye (Camera) Coordinates
+	// 4d World Coordinates
+
+	glm::vec4 ray_eye = glm::inverse(projecMat4) * glm::vec4(NDC_x, NDC_y, -1.0, 1.0);
+	ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+
+	return glm::normalize(glm::vec3(glm::inverse(viewMat4) * ray_eye));
 }
